@@ -1,18 +1,18 @@
-# uniprot keywords “ñ€ŠÖŒWiç‰®j
+# uniprot keywords äºŒé …é–¢ä¿‚ï¼ˆå®ˆå±‹ï¼‰
 
-* UniProt keyword ‚Ì“à–ó
+* UniProt keyword ã®å†…è¨³
   * ?uniprot up:classifiedWith [keyword ID]
   * [keyword ID] rdfs:subClassOF+ [10 keyword types]
-    * 9990: Technical term (1ŠK‘w (ŠK‘w‚È‚µ))
-    * 9991: PTM (Å‘å3ŠK‘w)
-    * 9992: Molecular function (Å‘å5ŠK‘w)
-    * 9993: Ligand (Å‘å5ŠK‘w)
-    * 9994: Domain (Å‘å2ŠK‘w)
-    * 9995: Disease (Å‘å3ŠK‘w)
-    * (9996: Developmental stage (Å‘å3ŠK‘w) human –³‚µ)
-    * 9997: Coding sequence diversity (1ŠK‘w (ŠK‘w‚È‚µ))
-    * 9998: Cellular component (Å‘å4ŠK‘w)
-    * 9999: Biological process (Å‘å8ŠK‘w)
+    * 9990: Technical term (1éšå±¤ (éšå±¤ãªã—))
+    * 9991: PTM (æœ€å¤§3éšå±¤)
+    * 9992: Molecular function (æœ€å¤§5éšå±¤)
+    * 9993: Ligand (æœ€å¤§5éšå±¤)
+    * 9994: Domain (æœ€å¤§2éšå±¤)
+    * 9995: Disease (æœ€å¤§3éšå±¤)
+    * (9996: Developmental stage (æœ€å¤§3éšå±¤) human ç„¡ã—)
+    * 9997: Coding sequence diversity (1éšå±¤ (éšå±¤ãªã—))
+    * 9998: Cellular component (æœ€å¤§4éšå±¤)
+    * 9999: Biological process (æœ€å¤§8éšå±¤)
 
 ## Parameters
 
@@ -23,7 +23,7 @@
 https://integbio.jp/togosite/sparql
 
 ## `data`
-- Attribute‚ÌŠK‘wŠÖŒWAAttribute‚Æ—v‘fiUniProtj‚ÌŠÖŒW‚ğ“ñ€ŠÖŒW‚Åæ“¾
+- Attributeã®éšå±¤é–¢ä¿‚ã€Attributeã¨è¦ç´ ï¼ˆUniProtï¼‰ã®é–¢ä¿‚ã‚’äºŒé …é–¢ä¿‚ã§å–å¾—
 ```sparql
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
@@ -50,7 +50,7 @@ WHERE {
     ?child rdfs:subClassOf* ?root ;
            a up:Concept ;
            rdfs:subClassOf ?parent .
-    ?parent rdfs:subClassOf* ?root . # keywords ‚Í•¡”‚ÌƒJƒeƒSƒŠ‚É‚Ô‚ç‰º‚ª‚é‚±‚Æ‚ª‚ ‚é‚Ì‚Åe‚Ìroot‚àƒ`ƒFƒbƒN
+    ?parent rdfs:subClassOf* ?root . # keywords ã¯è¤‡æ•°ã®ã‚«ãƒ†ã‚´ãƒªã«ã¶ã‚‰ä¸‹ãŒã‚‹ã“ã¨ãŒã‚ã‚‹ã®ã§è¦ªã®rootã‚‚ãƒã‚§ãƒƒã‚¯
     ?child skos:prefLabel ?child_label .
     BIND(0 AS ?leaf)
   }
@@ -59,7 +59,7 @@ WHERE {
 ```
 
 ## `return`
-- ®Œ`
+- æ•´å½¢
 ```javascript
 ({root, data})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";

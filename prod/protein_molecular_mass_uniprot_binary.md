@@ -1,4 +1,4 @@
-# uniprot mass �񍀊֌W�i�牮�j
+# uniprot mass 二項関係（守屋）
 
 ## Endpoint
 https://integbio.jp/togosite/sparql

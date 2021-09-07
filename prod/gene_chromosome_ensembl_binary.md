@@ -1,4 +1,4 @@
-# Genes on chromosomes �񍀊֌W
+# Genes on chromosomes 二項関係
 
 ## Endpoint
 

@@ -1,4 +1,4 @@
-# uniprot GO �񍀊֌W (�牮)
+# uniprot GO 二項関係 (守屋)
 
 ## Parameters
 

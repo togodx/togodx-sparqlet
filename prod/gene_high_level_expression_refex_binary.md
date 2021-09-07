@@ -1,8 +1,8 @@
-# RefEx organ specific expression based on ROKU flag �񍀊֌W�i�牮�j
+# RefEx organ specific expression based on ROKU flag 二項関係（守屋）
 
 ## Parameters
 
-* `negatively` (�ᔭ��)
+* `negatively` (低発現)
   * example: 1
 
 ## Endpoint

@@ -1,8 +1,8 @@
-# ChIP-Atlas �̓]�ʈ��q�� GO BP �ŕ��� �񍀊֌W
+# ChIP-Atlas の転写因子を GO BP で分類 二項関係
 
 ## Parameters
 
-* �Â��H TF �� biological process �ŕ��ނ��Ă�����̂��
+* 古い？ TF を biological process で分類してたころのやつ
 * `root` (type: go) (Req.)
   * default: GO_0008150
   * example: GO_0008150 (biological process)
