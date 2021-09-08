@@ -1,4 +1,4 @@
-# UniProt phosphorylation-site count（守屋）
+# UniProt phosphorylation-site count distribution（守屋）
 
 ## Description
 

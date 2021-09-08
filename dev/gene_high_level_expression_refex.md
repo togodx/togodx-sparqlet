@@ -1,4 +1,4 @@
-# RefEx organ specific 'high' expression distribution（守屋）
+# RefEx organ specific 'high' expression classification（守屋）
 
 - Required SPARQLet: backend_gene_expression_level_refex
 

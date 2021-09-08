@@ -1,4 +1,4 @@
-# Gene Ontology 'Biological process' distribution（守屋）
+# Gene Ontology 'Biological process' classification（守屋）
 
 - Required SPARQLet: backend_protein_go_uniprot
 

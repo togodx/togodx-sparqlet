@@ -1,4 +1,4 @@
-# UniProt keywords 'Domain' distribution（守屋）
+# UniProt keywords 'Domain' classification（守屋）
 
 - Required SPARQLet: backend_protein_uniprot_keywords_uniprot
 

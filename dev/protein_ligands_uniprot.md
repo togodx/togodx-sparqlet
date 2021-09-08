@@ -1,4 +1,4 @@
-# UniProt keywords 'Ligand' distribution（守屋）
+# UniProt keywords 'Ligand' classification（守屋）
 
 - Required SPARQLet: backend_protein_uniprot_keywords_uniprot
 

@@ -1,4 +1,4 @@
-# Gene Ontology 'Molecular function' distribution（守屋）
+# Gene Ontology 'Molecular function' classification（守屋）
 
 - Required SPARQLet: backend_protein_go_uniprot
 

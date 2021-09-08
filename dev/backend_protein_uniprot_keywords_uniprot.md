@@ -1,4 +1,4 @@
-# UniProt keywords distribution（守屋）
+# UniProt keywords classification（守屋）
 
 - backend SPARQLet
 

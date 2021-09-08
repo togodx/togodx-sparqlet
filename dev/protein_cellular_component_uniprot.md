@@ -1,4 +1,4 @@
-# Gene Ontology 'Cellular component' distribution（守屋）
+# Gene Ontology 'Cellular component' classification（守屋）
 
 - Required SPARQLet: backend_protein_go_uniprot
 

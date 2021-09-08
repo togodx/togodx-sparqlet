@@ -1,4 +1,4 @@
-# UniProt GO distribution (守屋)
+# UniProt GO classification (守屋)
 
 - backend SPARQLet
 
