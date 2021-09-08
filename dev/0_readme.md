@@ -86,6 +86,9 @@
       - false の場合は無くても良い
   - root: boolean
     - ルートノードのみ true
+- prefix が無いと要素 ID と 分類カテゴリ ID が区別つかなくなる場合（どっちも数値だけとか）
+  - leaf フラグで区別してるから問題無いはず
+    - 区別付かない場合は一応報告
 - 参考（備考：入れ子のバックエンド SPARQLet なのでパラメータを受け取ってる）
   - <a href="./backend_protein_go_uniprot">backend_protein_go_uniprot</a>
   - <a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>
