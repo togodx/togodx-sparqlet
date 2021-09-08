@@ -46,6 +46,8 @@
 - binning
   - renge サイズは SPARQList 作成者に任せる
   - ○以上○未満を基本 (begin <= X < end)
+    - ラベルはわかりやすい感じで
+      - カウントとかの離散値の場合 [0〜9, 10〜19, 20〜29] のような以上以下ラベルのほうがわかりやすいかもしれないが、どうか
     - ○超過○以下にしたい場合は報告 (begin < X <= end)
 - 参考
   - <a href="./protein_number_of_phosphorylation_sites_uniprot">protein_number_of_phosphorylation_sites_uniprot</a>
