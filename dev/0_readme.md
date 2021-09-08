@@ -7,8 +7,9 @@
 - データ形式は"連続値系"と"分類系"の２種類
 - どちらも key, value オブジェクトの配列
   - 配列の順番は問わない
+- データが大きくなりがちで、web UI からだと結果を表示できない場合もあるので、curl などで download して確認
 
-## 連続値系 (策定中。まだ変わるかも）
+## 連続値系 (策定中。bin周りがまだ変わるかもしれないけれど、id,label,valueはとりあえず必要）
 - 要素（遺伝子、タンパク質、化合物など）の ID、ラベル、値などを記述
 - 例（UniProt molecular mass）
 ```json
@@ -78,13 +79,10 @@
       - false の場合は無くても良い
   - root: boolean
     - ルートノードのみ true
-- 参考
+- 参考（備考：入れ子のバックエンド SPARQLet なのでパラメータを受け取ってる）
   - <a href="./backend_protein_go_uniprot">backend_protein_go_uniprot</a>
-    - バックエンド SPARQLet なのでパラメータ "root" を受け取ってる
   - <a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>
-    - バックエンド SPARQLet なのでパラメータ "root" を受け取ってる
   - <a href="./backend_gene_expression_level_refex">backend_gene_expression_level_refex</a>
-    - バックエンド SPARQLet なのでパラメータ "negatively" を受け取ってる
 
 ## 分類系：ルートノードが無い場合や、階層が無い場合
 - ルートノードを作成して、階層の無い分類や親の居ない分類をルートノードにぶら下げる
