@@ -46,6 +46,7 @@ WHERE {
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       value: Number(d.value.value),
+      binId: num + 1,
       binBegin: num * 10000,
       binEnd: (num + 1) * 10000,
       binLabel: bin_id + " kDa"

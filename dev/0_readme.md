@@ -20,6 +20,7 @@
     "id": "A0A087WXM7",
     "label": "A0A087WXM7_HUMAN",
     "value": 22482,
+    "binId": 3,
     "binBegin": 20000,
     "binEnd": 30000,
     "binLabel": "20-30 kDa"
@@ -31,6 +32,10 @@
   - id (必須): 要素の ID
   - label (必須): 要素のラベル
   - value (必須:demical): 値
+  - binId (必須): フロントエンドで利用する bin の ID
+    - 数値のように sort に利用できるもの
+      - 独自に数値を振るなら場合 integer
+      - 0 スタートは避けたい
   - binBegin (必須:demical): フロントエンドのバー表示で binning する場合の begin 値
     - binning しない場合は value と同じ
     - ○未満全部を指定する場合は false
