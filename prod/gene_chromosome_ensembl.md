@@ -1,4 +1,17 @@
-# Genes on chromosomes 二項関係
+# Genes on chromosomes (片山、池田、守屋)
+
+## Description
+
+- Data sources
+    - Ensembl human release 102: [http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index](http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index)
+- Input/Output
+    -  Input
+        - Ensembl gene ID
+    - Output
+        - Chromosome number
+- Supplementary information
+    - The chromosome on which each human gene is located.
+    - ヒトの各遺伝子が位置している染色体の番号を示します。
 
 ## Endpoint
 
@@ -32,16 +45,25 @@ WHERE {
 ({data}) => {
   const idPrefix = "http://rdf.ebi.ac.uk/resource/ensembl/";
   
-  let tree = [{
-    id: "root",
-    label: "root node",
-    root: true
-  }];
-  let chk = {};
-  
+  let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+
+  let edge = {};
   data.results.bindings.map(d => {
-    if (!chk[d.parent.value]) {
-      chk[d.parent.value] = true;
+    tree.push({
+      id: d.child.value.replace(idPrefix, ""),
+      label: d.child_label.value,
+      leaf: true,
+      parent: d.parent.value
+    })
+    // root との親子関係を追加
+    if (!edge[d.parent.value]) {
+      edge[d.parent.value] = true;
       tree.push({     
         id: d.parent.value,
         label: "chr" + d.parent.value,
@@ -49,12 +71,6 @@ WHERE {
         parent: "root"
       })
     }
-    tree.push({
-      id: d.child.value.replace(idPrefix, ""),
-      label: d.child_label.value,
-      leaf: true,
-      parent: d.parent.value
-    })
   });
   
   return tree;

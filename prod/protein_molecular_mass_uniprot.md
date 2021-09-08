@@ -1,4 +1,15 @@
-# uniprot mass 二項関係（守屋）
+# UniProt molecular mass distribution（守屋）
+
+## Description
+
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - Molecular mass (kDa) range
 
 ## Endpoint
 https://integbio.jp/togosite/sparql
@@ -10,14 +21,14 @@ PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-SELECT DISTINCT ?uniprot ?label ?mass        
+SELECT DISTINCT ?leaf ?label ?value        
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {
-  ?uniprot a up:Protein ;
-           up:mnemonic ?label ;
-           up:organism taxon:9606 ;
-           up:proteome ?proteome ;
-           up:sequence/up:mass ?mass .
+  ?leaf a up:Protein ;
+         up:mnemonic ?label ;
+         up:organism taxon:9606 ;
+         up:proteome ?proteome ;
+         up:sequence/up:mass ?value .
   FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
 ```
@@ -29,13 +40,14 @@ WHERE {
   
   let tree = [];
   data.results.bindings.map(d => {
-    const num = parseInt(Number(d.mass.value) / 10000) * 10;
-    const bin_id = num + "-" + (num + 10);
+    const num = parseInt(Number(d.value.value) / 10000);
+    const bin_id = (num * 10) + "-" + ((num + 1) * 10);
     tree.push({
-      id: d.uniprot.value.replace(idPrefix, ""),
+      id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
-      value: Number(d.mass.value),
-      binId: bin_id,
+      value: Number(d.value.value),
+      binBegin: num * 10000,
+      binEnd: (num + 1) * 10000,
       binLabel: bin_id + " kDa"
     })
   })
