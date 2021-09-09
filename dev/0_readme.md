@@ -12,6 +12,7 @@
 - データが大きくなりがちで、web UI からだと結果を表示できない場合もあるので、curl などで download して確認
 
 ## 連続値系 (策定中。bin周りがまだ変わるかもしれないけれど、id,label,valueはとりあえず必要）
+エキソンの数、タンパク質の分子量、翻訳後修飾の数など、フロントエンドでヒストグラム表示するもの
 - 要素（遺伝子、タンパク質、化合物など）の ID、ラベル、値などを記述
 - 例（UniProt molecular mass）
 ```json
@@ -45,6 +46,7 @@
   - binLabel (必須): フロントエンドで表示するラベル
 - binning
   - renge サイズは SPARQList 作成者に任せる
+    - 今の '# of exons' のように等分じゃない bin も作れる（今後どうしていくかは調整中）
   - ○以上○未満を基本 (begin <= X < end)
     - ラベルはわかりやすい感じで
       - カウントとかの離散値の場合 [0〜9, 10〜19, 20〜29] のような以上以下ラベルのほうがわかりやすいかもしれないが、どうか
@@ -53,8 +55,16 @@
   - <a href="./protein_number_of_phosphorylation_sites_uniprot">protein_number_of_phosphorylation_sites_uniprot</a>
   - <a href="./protein_molecular_mass_uniprot">protein_molecular_mass_uniprot</a>
 
+## 連続値系：カウント0
+- 何かの数をカウントする系は、p-value 計算に必要なため 0 個であるという情報も取得する
+  - 例外もあるかとは思う
+  - データ取得例は下記参照
+- カウント以外で値を持つ要素と持たない要素が出てくる場合とかあるかな？
+
 ## 分類系：基本
-- 分類カテゴリの親子関係、要素のアノテーション関係を記述
+- ２種類の関係を記述
+  - 分類カテゴリの親子関係
+  - 要素のアノテーション関係を記述
 - 例（UniProt の GO:celluler_component 分類)
 ```json
 [
@@ -93,7 +103,9 @@
     - 区別付かない場合は一応報告
 - 参考（備考：入れ子のバックエンド SPARQLet なのでパラメータを受け取ってる）
   - <a href="./backend_protein_go_uniprot">backend_protein_go_uniprot</a>
+    - カテゴリの親子関係とアノテーション関係を別の SPARQL で取る例
   - <a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>
+    - カテゴリの親子関係とアノテーション関係を１つの SPARQL で取る例
   - <a href="./backend_gene_expression_level_refex">backend_gene_expression_level_refex</a>
 
 ## 分類系：ルートノードが無い場合や、階層が無い場合
@@ -148,6 +160,15 @@
   ...  
 ]
 ```
+  - データ取得例は下記参照
+  
+## その他：カウント0要素, アノテーションの無い要素の取得方法
+- 要素全体との差分を取る
+  - 例：<a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>
+- MINUS 句でアノテーションのあるものを除外する
+  - 例：<a href="./protein_number_of_phosphorylation_sites_uniprot">protein_number_of_phosphorylation_sites_uniprot</a>
+  - 場合によっては著しく遅くなるので注意
+- 他にもあったら追記してください
 
 ## その他：入れ子 SPARQLet でコード流用
 - 以前と同じ

@@ -97,6 +97,7 @@ WHERE {
   ];
 
   let withAnnotation = {};
+  // 親子関係
   graph.results.bindings.map(d => {
     tree.push({
       id: d.child.value.replace(categoryPrefix, ""),
@@ -105,7 +106,7 @@ WHERE {
     })
     if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
   })
-
+  // アノテーション関係
   leaf.results.bindings.map(d => {
     withAnnotation[d.child.value] = true;
     tree.push({
@@ -115,7 +116,7 @@ WHERE {
       parent: d.parent.value.replace(categoryPrefix, "")
     })
   })
-
+  // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
     if (!withAnnotation[d.leaf.value]) {
       tree.push({
