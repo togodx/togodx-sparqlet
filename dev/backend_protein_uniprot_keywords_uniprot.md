@@ -81,7 +81,6 @@ WHERE {
 ```
 
 ## `return`
-- 整形
 ```javascript
 ({root, graph, allLeaf})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";

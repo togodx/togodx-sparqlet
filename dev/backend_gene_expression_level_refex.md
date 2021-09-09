@@ -70,6 +70,7 @@ WHERE {
 
   let withAnnotation = {};
   let edge = {};
+  // アノテーション関係
   data.results.bindings.map(d => {
     withAnnotation[d.child.value] = true;
     tree.push({
@@ -88,7 +89,7 @@ WHERE {
       })
     }
   }) 
-
+  // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
     if (!withAnnotation[d.leaf.value]) {
       tree.push({

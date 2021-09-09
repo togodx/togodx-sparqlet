@@ -1,4 +1,4 @@
-# README (TogoDX-server 用 SPARQlist 手引)
+# README (TogoDX-server 用 SPARQList 手引)
 
 - 内訳を返すのではなく、フロントエンド表示に必要な全データを返す
   - 内訳計算などは TogoDX-server で行う
@@ -68,17 +68,20 @@
 - 例（UniProt の GO:celluler_component 分類)
 ```json
 [
-  { // ルートノード
+  // ルートノード
+  {
     "id": "GO_0005575",
     "label": "cellular_component",
     "root": true
   },
-  { // 分類カテゴリの階層のノード
+  // 分類カテゴリの階層のノード
+  {
     "id": "GO_0005826",
     "label": "actomyosin contractile ring",
     "parent": "GO_0070938"
   },
-  { // 要素への分類カテゴリのアノテーション
+  // 要素への分類カテゴリのアノテーション
+  {
     "id": "A0A0U1RQR1",
     "label": "A0A0U1RQR1_HUMAN",
     "leaf": true,
@@ -103,9 +106,9 @@
     - 区別付かない場合は一応報告
 - 参考（備考：入れ子のバックエンド SPARQLet なのでパラメータを受け取ってる）
   - <a href="./backend_protein_go_uniprot">backend_protein_go_uniprot</a>
-    - カテゴリの親子関係とアノテーション関係を別の SPARQL で取る例
+    - カテゴリの親子関係とアノテーション関係を別の SPARQL クエリで取る例
   - <a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>
-    - カテゴリの親子関係とアノテーション関係を１つの SPARQL で取る例
+    - カテゴリの親子関係とアノテーション関係を UNION 句を使って１つの SPARQL クエリで取る例
   - <a href="./backend_gene_expression_level_refex">backend_gene_expression_level_refex</a>
 
 ## 分類系：ルートノードが無い場合や、階層が無い場合
@@ -113,16 +116,18 @@
 - 例（Ensembl gene の chromosome による分類）
 ```json
 [
-  {  // ルートノードを作成
+  // ルートノードを作成
+  {
     "id": "root",
     "label": "root node",
     "root": true
   },
-  {  // 階層の無い、または親の居ない分類のノード
+  // 階層の無い、または親の居ない分類のノード
+  {
     "id": "3",
     "label": "chr3",
     "leaf": false,
-    "parent": "root"  // ルートノードにぶら下げる
+    "parent": "root"                     // ルートノードにぶら下げる
   },
   {
     "id": "ENSG00000001617",
@@ -146,16 +151,18 @@
     "label": "cellular_component",
     "root": true
   },
-  {  // アノテーションの無い要素カテゴリノードを作成
-    "id": "wo_GO_0005575", //  データ内で unique になるよう ID をつける
+  // アノテーションの無い要素カテゴリノードを作成
+  {
+    "id": "wo_GO_0005575",                  // データ内で unique になるよう ID をつける
     "label": "without annotation",
-    "parent": "GO_0005575"  // ルートノードにぶら下げる
+    "parent": "GO_0005575"                  // ルートノードにぶら下げる
   },
-  {  // アノテーションの無い要素
+  // アノテーションの無い要素
+  {
     "id": "Q5XG85",
     "label": "U633C_HUMAN",
     "leaf": true,
-    "parent": "wo_GO_0005575"  // 作成したノードにぶら下げる
+    "parent": "wo_GO_0005575"               // 作成したノードにぶら下げる
   },
   ...  
 ]
@@ -165,7 +172,8 @@
 ## その他：カウント0要素, アノテーションの無い要素の取得方法
 - 要素全体との差分を取る
   - 例：<a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>
-- MINUS 句でアノテーションのあるものを除外する
+  - 全体が巨大だと遅くなることもある
+- MINUS 句でアノテーションの無いものを取得
   - 例：<a href="./protein_number_of_phosphorylation_sites_uniprot">protein_number_of_phosphorylation_sites_uniprot</a>
   - 場合によっては著しく遅くなるので注意
 - 他にもあったら追記してください
