@@ -54,7 +54,7 @@ WHERE {
 ({data, allLeaf})=>{
   const idPrefix = "http://identifiers.org/ncbigene/";
   const categoryPrefix = "http://purl.jp/bio/01/refexo#";
-  const withoutId = "wo_exp_node";
+  const withoutId = "without_annotation";
 
   let tree = [
     {

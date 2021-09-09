@@ -75,7 +75,7 @@ WHERE {
       parent: root
     }
   ];
-
+return 1; /*
   let uri2label = {};
   allLeaf.results.bindings.map(d => {
     uri2label[d.leaf.value] = d.leaf_label.value;
@@ -114,6 +114,6 @@ WHERE {
     }
   })
   
-  return tree;
+  return tree; */
 }
 ```

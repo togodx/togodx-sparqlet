@@ -8,7 +8,7 @@
 - どちらも key, value オブジェクトの配列
   - 配列の順番は問わない
 - SPARQList 名は前と同じ
-  - 一応 Description 部分もコピペ
+  - Description も一応コピーしておく
 - データが大きくなりがちで、web UI からだと結果を表示できない場合もあるので、curl などで download して確認
 
 ## 連続値系 (策定中。bin周りがまだ変わるかもしれないけれど、id,label,valueはとりあえず必要）
@@ -115,6 +115,8 @@
 
 ## 分類系：ルートノードが無い場合や、階層が無い場合
 - ルートノードを作成して、階層の無い分類や親の居ない分類をルートノードにぶら下げる
+- 内訳をカウント以外でソートする場合、id は sortable にしておく
+  - Chromosome の場合、[1〜22 ,X, Y, MT] -> [1〜22, 23, 24, 25] のように
 - 例（Ensembl gene の chromosome による分類）
 ```json
 [
@@ -126,7 +128,7 @@
   },
   // 階層の無い、または親の居ない分類のノード
   {
-    "id": "3",
+    "id": 3,
     "label": "chr3",
     "leaf": false,
     "parent": "root"                     // ルートノードにぶら下げる
@@ -140,9 +142,12 @@
   ...  
 ]
 ```
+- 
+- 参考
+  - <a href="./gene_chromosome_ensembl">gene_chromosome_ensembl</a>
 
 ## 分類系：アノテーションの無い要素
-- 専用のノードを作成してルートノードにぶら下げる
+- 専用のノード "id: without_annotation" を作成してルートノードにぶら下げる
 - p-value 計算に必要なため、アノテーション無しの要素がある場合はかならず作成する
   - 計算には全体の数（母数）が必要
 - 例（GOアノテーションの付かないUniProt）
@@ -155,7 +160,7 @@
   },
   // アノテーションの無い要素カテゴリノードを作成
   {
-    "id": "wo_GO_0005575",                  // データ内で unique になるよう ID をつける
+    "id": "without_annotation",             // DX-server側でのソート制御のため、 "without_annotation" 固定
     "label": "without annotation",
     "parent": "GO_0005575"                  // ルートノードにぶら下げる
   },
@@ -164,7 +169,7 @@
     "id": "Q5XG85",
     "label": "U633C_HUMAN",
     "leaf": true,
-    "parent": "wo_GO_0005575"               // 作成したノードにぶら下げる
+    "parent": "without_annotation"          // 作成したノードにぶら下げる
   },
   ...  
 ]

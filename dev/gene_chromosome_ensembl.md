@@ -53,18 +53,26 @@ WHERE {
   let edge = {};
   // アノテーション関係
   data.results.bindings.map(d => {
+    let parent_id = d.parent.value;
+    if (parent_id == "X") parent_id = 23;
+    else if (parent_id == "Y") parent_id = 24;
+    else if (parent_id == "MT") parent_id = 25;
+    else {
+      parent_id = Number(parent_id);
+      d.parent.value = "chr" + d.parent.value;
+    }
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
       label: d.child_label.value,
       leaf: true,
-      parent: d.parent.value
+      parent: parent_id
     })
     // root との親子関係を追加
     if (!edge[d.parent.value]) {
       edge[d.parent.value] = true;
       tree.push({     
-        id: d.parent.value,
-        label: "chr" + d.parent.value,
+        id: parent_id,
+        label: d.parent.value,
         leaf: false,
         parent: "root"
       })
