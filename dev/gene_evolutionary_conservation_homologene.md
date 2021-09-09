@@ -77,7 +77,7 @@ WHERE {
       id: elem.human_gene.value.replace("http://identifiers.org/ncbigene/", ""),
       label: elem.gene_label.value,
       leaf: true,
-      parent: elem.branch_id.value,
+      parent: 'branch_' + ('00' + elem.branch_id.value).slice(-2),
     });
   });
 
