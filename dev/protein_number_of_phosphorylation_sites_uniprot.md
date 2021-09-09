@@ -17,11 +17,8 @@ https://integbio.jp/togosite/sparql
 ## `withAnnotation`
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX core: <http://purl.uniprot.org/core/>
-PREFIX up: <http://purl.uniprot.org/uniprot/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT DISTINCT ?leaf ?label (COUNT (DISTINCT ?annotation) AS ?value)
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE
@@ -41,11 +38,8 @@ WHERE
 ## `withoutAnnotation`
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX core: <http://purl.uniprot.org/core/>
-PREFIX up: <http://purl.uniprot.org/uniprot/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT DISTINCT ?leaf ?label ?value
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {

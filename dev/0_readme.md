@@ -176,7 +176,7 @@
   - 例：<a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>
   - 全体が巨大だと遅くなることもある
 - MINUS 句でアノテーションの無いものを取得
-  - 例：<a href="./protein_number_of_phosphorylation_sites_uniprot">protein_number_of_phosphorylation_sites_uniprot</a>
+  - 例：<a href="./protein_number_of_glycosylation_sites_uniprot">protein_number_of_glycosylation_sites_uniprot</a>
   - 場合によっては著しく遅くなるので注意
 - 他にもあったら追記してください
 

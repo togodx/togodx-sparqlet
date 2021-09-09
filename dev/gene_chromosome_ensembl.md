@@ -21,10 +21,7 @@ https://integbio.jp/togosite/sparql
 
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX ensg: <http://rdf.ebi.ac.uk/resource/ensembl/>
-PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 PREFIX taxonomy: <http://identifiers.org/taxonomy/>
 SELECT DISTINCT ?parent ?child ?child_label
@@ -54,6 +51,7 @@ WHERE {
   ];
 
   let edge = {};
+  // アノテーション関係
   data.results.bindings.map(d => {
     tree.push({
       id: d.child.value.replace(idPrefix, ""),

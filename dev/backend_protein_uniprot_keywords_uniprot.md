@@ -65,9 +65,6 @@ WHERE {
 ```sparql
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 SELECT DISTINCT ?leaf ?leaf_label
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/go>
