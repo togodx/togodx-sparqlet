@@ -62,7 +62,7 @@ WHERE {
 ```javascript
 ({data, allLeaf})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-  const withoutId = "without_annotation";
+  const withoutId = "unclassified";
 
   let tree = [
     {

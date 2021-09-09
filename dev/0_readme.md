@@ -155,8 +155,8 @@
   - <a href="./gene_chromosome_ensembl">gene_chromosome_ensembl</a>
 
 ## 分類系：アノテーションの無い要素
-- 専用のノード "id: without_annotation" を作成してルートノードにぶら下げる
-  - DX-server側でのソート制御のため、 "without_annotation" 固定
+- 専用のノード "id: unclassified" を作成してルートノードにぶら下げる
+  - DX-server側でのソート制御のため、 "unclassified" 固定
 - p-value 計算に必要なため、アノテーション無しの要素がある場合は作成する
   - 計算には全体の数（母数）が必要
   - 遺伝子、タンパク質以外は難しいか
@@ -171,8 +171,8 @@
   },
   // アノテーションの無い要素カテゴリノードを作成
   {
-    "id": "without_annotation",             // 専用ノード
-    "label": "without annotation",
+    "id": "unclassified",                   // 専用ノード
+    "label": "without annotation",          // ラベルは自由に適切なものを
     "parent": "GO_0005575"                  // ルートノードにぶら下げる
   },
   // アノテーションの無い要素
@@ -180,7 +180,7 @@
     "id": "Q5XG85",
     "label": "U633C_HUMAN",
     "leaf": true,
-    "parent": "without_annotation"          // 作成したノードにぶら下げる
+    "parent": unclassified"                 // 作成したノードにぶら下げる
   },
   ...  
 ]

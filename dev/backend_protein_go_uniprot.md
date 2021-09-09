@@ -80,7 +80,7 @@ WHERE {
 ({root, leaf, graph, allLeaf}) => {
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   const categoryPrefix = "http://purl.obolibrary.org/obo/";
-  const withoutId = "without_annotation";
+  const withoutId = "unclassified";
   
   let tree = [
     {
