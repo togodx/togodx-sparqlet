@@ -16,26 +16,6 @@
 ## Endpoint
 https://integbio.jp/togosite/sparql
 
-## `top`
-```sparql
-PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-SELECT DISTINCT ?top ?top_label
-FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
-WHERE {
-  ?top_path a biopax:Pathway ;
-            biopax:pathwayComponent ?child_path .
-  MINUS { [] biopax:pathwayComponent ?top_path . }
-  ?top_path biopax:organism ?org ;
-            biopax:displayName ?top_label ;
-            biopax:xref [
-              biopax:db "Reactome"^^xsd:string ;
-              biopax:id ?top ;
-            ] .
-  ?org biopax:name "Homo sapiens"^^xsd:string .
-}
-```
-
 ## `leaf`
 - pathway と UniProt のアノテーション関係
 - 産物と制御
@@ -47,8 +27,11 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT DISTINCT ?parent ?child ?parent_label
 FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
 WHERE {
-  VALUES ?top { {{#each topArray}} "{{this}}"^^xsd:string {{/each}} }
-  ?top biopax:pathwayComponent* ?path .
+  ?top_path a biopax:Pathway ;
+            biopax:organism ?org .
+  ?org biopax:name "Homo sapiens"^^xsd:string .
+  MINUS { [] biopax:pathwayComponent ?top_path . }
+  ?top_path biopax:pathwayComponent* ?path .
   ?path a biopax:Pathway ;
         biopax:displayName ?parent_label ;
         biopax:xref [
@@ -70,24 +53,48 @@ WHERE {
 ```sparql
 PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-SELECT DISTINCT ?parent ?child ?parent_label
+SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
 WHERE {
-  VALUES ?top { {{#each topArray}} "{{this}}"^^xsd:string {{/each}} }
-  ?top biopax:pathwayComponent* ?pareht_path .
+  ?top_path a biopax:Pathway ;
+            biopax:organism ?org .
+  ?org biopax:name "Homo sapiens"^^xsd:string .
+  MINUS { [] biopax:pathwayComponent ?top_path . }
+  ?top_path biopax:pathwayComponent* ?parent_path .
   ?parent_path a biopax:Pathway ;
-        biopax:displayName ?parent_label ;
-        biopax:xref [
-          biopax:db "Reactome"^^xsd:string ;
-          biopax:id ?parent ;
-        ] ;
-        biopax:pathwayComponent ?child_path .
+               biopax:displayName ?parent_label ;
+               biopax:xref [
+                 biopax:db "Reactome"^^xsd:string ;
+                 biopax:id ?parent 
+               ] ;
+               biopax:pathwayComponent ?child_path .
   ?child_path a biopax:Pathway ;
-        biopax:displayName ?child_label ;
-        biopax:xref [
-          biopax:db "Reactome"^^xsd:string ;
-          biopax:id ?child ;
-        ] .
+              biopax:displayName ?child_label ;
+              biopax:xref [
+                biopax:db "Reactome"^^xsd:string ;
+                biopax:id ?child 
+              ] .
+}
+```
+
+## `top`
+- ヒト pathway の top 階層
+```sparql
+PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT DISTINCT ?top ?top_label
+FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
+WHERE {
+  ?top_path a biopax:Pathway ;
+            biopax:pathwayComponent ?child_path .
+  MINUS { [] biopax:pathwayComponent ?top_path . }
+  ?top_path biopax:organism ?org ;
+            biopax:displayName ?top_label ;
+            biopax:xref [
+              biopax:db "Reactome"^^xsd:string ;
+              biopax:id ?top ;
+            ] .
+  ?org biopax:name "Homo sapiens"^^xsd:string .
 }
 ```
 
@@ -111,10 +118,10 @@ WHERE {
 ## `return`
 - 整形
 ```javascript
-({topArray, leaf, graph, allLeaf}) => {
+({top, leaf, graph, allLeaf}) => {
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   const withoutId = "without_annotation";
-  
+
   let tree = [
     {
       id: "root",
@@ -123,22 +130,24 @@ WHERE {
     },{
       id: withoutId,
       label: "without annotation",
-      parent: root
+      parent: "root"
     }
   ];
   
   let id2label = {};
   allLeaf.results.bindings.map(d => {
-    id2label[d.leaf.value.replace(idPrefix, "")] = d.leaf_lavel.value;
+    id2label[d.leaf.value.replace(idPrefix, "")] = d.leaf_label.value;
   })
 
-  let top = {}
-  topArray.map(d => {
-    top[d] = true;
-  })
-  
   let withAnnotation = {};
-  let edge = {};
+  // トップとルートの関係
+  top.results.bindings.map(d => {
+    tree.push({
+      id: d.top.value,
+      label: d.top_label.value,
+      parent: "root"
+    })
+  })
   // 親子関係
   graph.results.bindings.map(d => {
     tree.push({
@@ -146,15 +155,6 @@ WHERE {
       label: d.child_label.value,
       parent: d.parent.value
     })
-    // 最上位パスウェイとルートの関係
-    if (top[d.parent.value] && !edge[d.parent.value]) {
-      edge[d.parent.value] = true;
-      tree.push {
-        id: d.parent.value,
-        label: d.parent_label.value,
-        parent: "root"
-      }
-    }
   })
   // アノテーション関係
   leaf.results.bindings.map(d => {
@@ -163,7 +163,7 @@ WHERE {
       id: d.child.value,
       label: id2label[d.child.value],
       leaf: true,
-      parent: d.parent.value.replace(categoryPrefix, "")
+      parent: d.parent.value
     })
   })
   // アノテーション無し要素
@@ -178,6 +178,6 @@ WHERE {
     }
   })
   
-  return tree;	
+  return tree;
 }
 ```
