@@ -1,13 +1,5 @@
 # 日本の難病疾患のカテゴリフィルター（NANDO階層利用）(高月)
-
-- Parameters
-  - categoryIds (Optional): NANDO_IDを１つ以上指定。空白文字かコンマ区切りのリスト
-   * default: 0000001
-  - queryIds (Optional): NANDO_IDを１つ以上指定。空白文字かコンマ区切りのリスト
-  一カテゴリーは指定難病か小児慢性疾患かで分類されている
-- Output
-  - [ {categoryId:, label:, count: } ]
-  
+ 
 ## Description
 
 - Data sources
