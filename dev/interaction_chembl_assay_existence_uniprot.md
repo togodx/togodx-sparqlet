@@ -62,7 +62,7 @@ WHERE {
 ```javascript
 ({data, allLeaf})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-  const withoutId = "wo_assay";
+  const withoutId = "without_annotation";
 
   let tree = [
     {
@@ -72,10 +72,10 @@ WHERE {
     },{
       id: withoutId,
       label: "without ChEMBL assay",
-      parent: root
+      parent: "root"
     }
   ];
-return 1; /*
+
   let uri2label = {};
   allLeaf.results.bindings.map(d => {
     uri2label[d.leaf.value] = d.leaf_label.value;
@@ -86,17 +86,23 @@ return 1; /*
   // アノテーション関係
   data.results.bindings.map(d => {
     withAnnotation[d.child.value] = true;
+    let parent_id;
+    // id を conf-score [9-0] から sortable に
+    if (d.parent.value.match(/^\d$/)) {
+      parent_id = 10 - Number(d.parent.value);
+      d.parent_label.value = "Conf-score " + d.parent.value + ": " + d.parent_label.value;
+    }
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
       label: uri2label[d.child.value],
       leaf: true,
-      parent: d.parent.value
+      parent: parent_id
     })
     // root との親子関係を追加
     if (!edge[d.parent.value]) {
       edge[d.parent.value] = true;
       tree.push({     
-        id: d.parent.value,
+        id: parent_id,
         label: d.parent_label.value,
         parent: "root"
       })
@@ -114,6 +120,6 @@ return 1; /*
     }
   })
   
-  return tree; */
+  return tree;
 }
 ```

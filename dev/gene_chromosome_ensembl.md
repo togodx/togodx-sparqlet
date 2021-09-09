@@ -53,6 +53,7 @@ WHERE {
   let edge = {};
   // アノテーション関係
   data.results.bindings.map(d => {
+    // 分類ノード id を sortable に
     let parent_id = d.parent.value;
     if (parent_id == "X") parent_id = 23;
     else if (parent_id == "Y") parent_id = 24;

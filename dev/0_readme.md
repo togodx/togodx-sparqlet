@@ -35,8 +35,8 @@
   - value (必須:demical): 値
   - binId (必須): フロントエンドで利用する bin の ID
     - 数値のように sort に利用できるもの
-      - 独自に数値を振るなら場合 integer
-      - 0 スタートは避けたい
+      - 独自に数値を振るなら positive integer
+      - 0 スタートは避ける
   - binBegin (必須:demical): フロントエンドのバー表示で binning する場合の begin 値
     - binning しない場合は value と同じ
     - ○未満全部を指定する場合は false
@@ -115,8 +115,9 @@
 
 ## 分類系：ルートノードが無い場合や、階層が無い場合
 - ルートノードを作成して、階層の無い分類や親の居ない分類をルートノードにぶら下げる
-- 内訳をカウント以外でソートする場合、id は sortable にしておく
+- 内訳をカウント以外でソートする場合、id は ASCII で sortable にしておく
   - Chromosome の場合、[1〜22 ,X, Y, MT] -> [1〜22, 23, 24, 25] のように
+  - 0 は避ける
 - 例（Ensembl gene の chromosome による分類）
 ```json
 [
@@ -134,10 +135,16 @@
     "parent": "root"                     // ルートノードにぶら下げる
   },
   {
+    "id": 25,                            // id を sortable に
+    "label": "MT",
+    "leaf": false,
+    "parent": "root"
+  },
+  {
     "id": "ENSG00000001617",
     "label": "SEMA3F",
     "leaf": true,
-    "parent": "3"
+    "parent": 3
   },
   ...  
 ]
@@ -148,6 +155,7 @@
 
 ## 分類系：アノテーションの無い要素
 - 専用のノード "id: without_annotation" を作成してルートノードにぶら下げる
+  - DX-server側でのソート制御のため、 "without_annotation" 固定
 - p-value 計算に必要なため、アノテーション無しの要素がある場合はかならず作成する
   - 計算には全体の数（母数）が必要
 - 例（GOアノテーションの付かないUniProt）
@@ -160,7 +168,7 @@
   },
   // アノテーションの無い要素カテゴリノードを作成
   {
-    "id": "without_annotation",             // DX-server側でのソート制御のため、 "without_annotation" 固定
+    "id": "without_annotation",             // 専用ノード
     "label": "without annotation",
     "parent": "GO_0005575"                  // ルートノードにぶら下げる
   },
