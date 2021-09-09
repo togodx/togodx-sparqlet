@@ -11,38 +11,6 @@
         - NANDO category
 - Supplementary information
 
-## Parameters
-
-* `categoryIds` 指定したNANDOノードのリストの下位階層のノード数を返す。
-  * default: 0000001
-  * example: 1000001 2000001
-* `queryIds` 数える対象(NANDO_ ID)リスト。ここで指定されたID群が各内訳に何個ずつ該当するかを返す。
-  * example: 1200194 1200196 1200625 1200815 1200915 2200014 2200116 2200204 2100044 2200507 2200714 2200901
-* `mode` 必須パラメータ。内訳の代わりに該当する ID のリストを返す（デフォルトはオフ）idList: リストだけ、objectList: Attributeの入ったリスト（Attribute は下階層ではなく、categoryid で指定したカテゴリ）
-    * example: idList, objectList
-    
-## `queryArray`
-- ユーザが指定した ID リストを配列に分割
-
-```javascript
-({queryIds}) => {
-  queryIds = queryIds.replace(/,/g," ")
-  if (queryIds.match(/[^\s]/)) return queryIds.split(/\s+/);
-  return false;
-}
-```
-
-## `categoryArray`
-
-category ID を配列に分割
-
-```javascript
-({categoryIds}) => {
-  categoryIds = categoryIds.replace(/,/g," ")
-  if (categoryIds.match(/[^\s]/)) return  categoryIds.split(/\s+/);
-  return false;
-}
-```
 
 ## Endpoint
 
