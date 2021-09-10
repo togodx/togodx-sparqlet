@@ -38,20 +38,16 @@ WHERE {
 ({data})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   
-  let tree = [];
-  data.results.bindings.map(d => {
+  return data.results.bindings.map(d => {
     const num = parseInt(Number(d.value.value) / 10000);
     const bin_id = (num * 10) + "-" + ((num + 1) * 10);
-    tree.push({
+    return {
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       value: Number(d.value.value),
-      binBegin: num * 10000,
-      binEnd: (num + 1) * 10000,
+      binId: num + 1,
       binLabel: bin_id + " kDa"
-    })
+    }
   })
-  
-  return tree;
 }
 ```

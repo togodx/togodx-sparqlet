@@ -21,10 +21,7 @@ https://integbio.jp/togosite/sparql
 
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX ensg: <http://rdf.ebi.ac.uk/resource/ensembl/>
-PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 PREFIX taxonomy: <http://identifiers.org/taxonomy/>
 SELECT DISTINCT ?parent ?child ?child_label
@@ -54,19 +51,29 @@ WHERE {
   ];
 
   let edge = {};
+  // アノテーション関係
   data.results.bindings.map(d => {
+    // 分類ノード id を sortable に
+    let parent_id = d.parent.value;
+    if (parent_id == "X") parent_id = 23;
+    else if (parent_id == "Y") parent_id = 24;
+    else if (parent_id == "MT") parent_id = 25;
+    else {
+      parent_id = Number(parent_id);
+      d.parent.value = "chr" + d.parent.value;
+    }
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
       label: d.child_label.value,
       leaf: true,
-      parent: d.parent.value
+      parent: parent_id
     })
     // root との親子関係を追加
     if (!edge[d.parent.value]) {
       edge[d.parent.value] = true;
       tree.push({     
-        id: d.parent.value,
-        label: "chr" + d.parent.value,
+        id: parent_id,
+        label: d.parent.value,
         leaf: false,
         parent: "root"
       })

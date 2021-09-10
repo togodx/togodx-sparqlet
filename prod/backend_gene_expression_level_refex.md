@@ -54,7 +54,7 @@ WHERE {
 ({data, allLeaf})=>{
   const idPrefix = "http://identifiers.org/ncbigene/";
   const categoryPrefix = "http://purl.jp/bio/01/refexo#";
-  const withoutId = "wo_exp_node";
+  const withoutId = "unclassified";
 
   let tree = [
     {
@@ -63,13 +63,14 @@ WHERE {
       root: true
     },{
       id: withoutId,
-      label: "no specific expression",
+      label: "No specific expression",
       parent: "root"
     }
   ];
 
   let withAnnotation = {};
   let edge = {};
+  // アノテーション関係
   data.results.bindings.map(d => {
     withAnnotation[d.child.value] = true;
     tree.push({
@@ -88,7 +89,7 @@ WHERE {
       })
     }
   }) 
-
+  // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
     if (!withAnnotation[d.leaf.value]) {
       tree.push({

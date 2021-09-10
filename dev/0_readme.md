@@ -9,12 +9,12 @@
   - 配列の順番は問わない
 - SPARQList 名は前と同じ
   - 完了したら公開版 https://togodx.integbio.jp/sparqlist/ に移動
-    - しばらくは公開版 Web IF からも保存できるようにしておく
+    - しばらくは公開版も Web UI からも保存できるようにしておく
     - 落ち着いたら公開版は github 経由に以降
   - Description も一応コピーしておく
 - データが大きくなりがちで、web UI からだと結果を表示できない場合もあるので、curl などで download して確認
 
-## 連続値系 (策定中。bin周りがまだ変わるかもしれないけれど、id,label,valueはとりあえず必要）
+## 連続値系
 エキソンの数、タンパク質の分子量、翻訳後修飾の数など、フロントエンドでヒストグラム表示するもの
 - 要素（遺伝子、タンパク質、化合物など）の ID、ラベル、値などを記述
 - 例（UniProt molecular mass）
@@ -33,6 +33,7 @@
 - keys
   - id (必須): 要素の ID
   - label (必須): 要素のラベル
+    - view results テーブルで表示される
   - value (必須:demical): 値
   - binId (必須): フロントエンドで利用する bin の ID
     - フロントエンドでバーの上での並びを反映した ASCII で sort 可能なものにしておく
@@ -41,6 +42,8 @@
   - binLabel (必須): フロントエンドで表示するラベル
   - (binBegin, binEnd: 廃止（作った人は消してください）)
 - binning
+  - binning しない場合も binId, binLabel が必要
+    - value と同じでも良いが binId は 0 を避けるて +1 したりする
   - renge サイズは SPARQList 作成者に任せる
     - 今の '# of exons' のように等分じゃない bin はつくらない
   - ○以上○未満を基本 (begin <= X < end)
@@ -85,7 +88,8 @@
 ```
 - keys
   - id (必須): 要素やカテゴリの ID
-  - label (必須): 要素やカテゴリのラベル 
+  - label (必須): 要素やカテゴリのラベル
+    - view results テーブルに表示される
   - parent: 要素やカテゴリの親ノードの ID
     - ルートノードはには不要、他は必須
   - leaf: boolean
@@ -183,10 +187,9 @@
 <img src="https://sparql-support.dbcls.jp/tmp/file/tree.jpg" height="400">
 
 - 全てのエッジ情報 + ルートノードが必要
-  - A-Z はオントロジーなどの分類ノード
+  - A .. Z はオントロジーなどの分類ノード
     - 共通ルートが無いので作成
-  - gene は左から g1 .. g9
-    - この場合 gene が leaf
+  - g1 .. g9 は geneなどの要素 = leaf
 
 ```pre
 # id(self), parent, leaf
@@ -200,6 +203,7 @@ F, B,
 G, C,
 G, D,
 H, D,
+I, D,  // leaf につながらないのでこのエッジは有っても無くても結果に影響しない
 X, root,
 Y, X,
 Z, X,
