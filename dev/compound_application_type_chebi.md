@@ -46,7 +46,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>
 
-SELECT distinct ?compound GROUP_CONCAT(DISTINCT ?label; SEPARATOR = ", ") as ?label 
+SELECT distinct ?compound GROUP_CONCAT(DISTINCT ?label; SEPARATOR = ", ") as ?compound_label 
                           ?application                                      
                           GROUP_CONCAT(DISTINCT ?application_label; SEPARATOR = ", ") AS ?application_label
 FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
@@ -56,7 +56,7 @@ WHERE
   VALUES ?compound { CHEBI:18012  CHEBI:27732 CHEBI:17594 CHEBI:16866 CHEBI:46195 CHEBI:62867}
       
   ?compound a owl:Class ;
-    rdfs:label ?label ;
+    rdfs:label ?compound_label ;
     rdfs:subClassOf ?r .
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;

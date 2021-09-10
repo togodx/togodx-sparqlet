@@ -1,4 +1,5 @@
-# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚）
+# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） Server対応中未完
+
 
 ## Description
 
