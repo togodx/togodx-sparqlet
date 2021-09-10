@@ -8,7 +8,7 @@
   - どちらも key, value オブジェクトの配列
   - 配列の順番は問わない
 - SPARQList 名は前と同じ
-  - 作業完了したら公開版 <a href="https://togodx.integbio.jp/sparqlist/">https://togodx.integbio.jp/sparqlist/</a> にコピー
+  - 作業完了したら公開版 <a href="https://togodx.integbio.jp/sparqlist/">https://togodx.integbio.jp/sparqlist/</a> にコピーして、DX-serverのテストデータとして使用
     - しばらくは公開版も Web UI からも保存できるようにしておく
     - 落ち着いたら公開版は github 経由に以降
   - Description も一応コピーしておく

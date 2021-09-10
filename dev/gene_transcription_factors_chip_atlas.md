@@ -23,11 +23,11 @@ PREFIX ensembl: <http://identifiers.org/ensembl/>
 
 SELECT DISTINCT ?parent
 WHERE {
-  VALUES ?parent { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
+  #VALUES ?parent { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?parent obo:RO_0002428 [] .
   }
-}
+}LIMIT 5
 ```
 
 ## `geneLabels`
