@@ -46,24 +46,33 @@ WHERE {
 //({main, noTf}) => {
 async ({tf})=>{
   let tfArray = tf.results.bindings.map(d => d.parent.value.replace("http://identifiers.org/ensembl/", ""));
-  let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
-  let options = {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  }
-  return tfArray.map(
-    (d) => {
-      let obj = {};
-      obj.parent = d;
-      options.body = 'tfId=' + d;
-      //let child_array = await fetch(url, options).then(res=>res.json());
-      //obj.child: child_array;
-      obj.option = options;
-      return obj;
-    }
-  );
+  async function getTfTargets(tfId) {
+    let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
+    let options = {
+      method: 'POST',
+      body: 'tfId=' + tfId,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
+    return await fetch(url, options).then(res=>res.json());
+  };  
+
+  let promises = tfArray.map((d) => {
+    return getTfTargets(d);
+  });
+  let ret = await Promise.all(promises);
+  return ret;
+  //return tfArray.map(
+  //  (d) => {
+  //    let obj = {};
+  //    obj.parent = d;
+  //    let child_array = getTfTargets(d);
+  //    obj.child: child_array;
+  //    //obj.option = options;
+  //    return obj;
+  //  }
+  //);
 }
 ```

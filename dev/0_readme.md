@@ -99,7 +99,7 @@
   - parent: 要素やカテゴリの親ノードの ID
     - ルートノードはには不要、他は必須
   - leaf: boolean
-    - "id" が要素（遺伝子、タンパク質、化合物など）の場合 true
+    - "id" が要素（遺伝子、タンパク質、化合物など、内訳のカウント対象）の場合 true
       - disease の例のようにオントロジーの病気自体を数えてる場合は保留
         - 全てのオントロジーに同じ情報を持ったLeafを作る（三橋さんの案）
     - 分類カテゴリの場合 false
@@ -197,6 +197,35 @@
 <img src="https://sparql-support.dbcls.jp/tmp/file/tree.jpg" height="400">
 
 - 全てのエッジ情報 + ルートノードが必要
+  - gene は左から g1 .. g9
+  - この場合 gene が leaf
+
+```pre
+# id(self), parent
+root, -
+A, root
+B, A
+C, A
+D, A
+E, B
+F, B
+G, C
+G, D
+H, D
+X, root
+Y, X
+Z, X
+g1, E
+g2, E
+g3, E
+g4, F
+g5, C
+g6, G
+g6, H
+g7, H
+g8, Y
+g9, Z
+```
 
 ## その他：カウント0要素, アノテーションの無い要素の取得方法
 - 要素全体との差分を取る
