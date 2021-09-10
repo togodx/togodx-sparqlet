@@ -78,12 +78,12 @@ WHERE {
     var range = d.bin_id.value.split("-");  //
     return {
       id: d.enst_id.value, 
-      label: makeLabel(range[1], range[2]),
+      label: d.enst_id.value,
       value: d.exon_count.value,
       binId: range[0],
-      binBegin: range[0],
-      binEnd: range[1],
-      binLabel: d.bin_id.value
+      binBegin: range[1],
+      binEnd: range[2],
+      binLabel: makeLabel(range[1], range[2])
     }
   });
 

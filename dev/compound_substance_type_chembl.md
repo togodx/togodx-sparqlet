@@ -1,5 +1,5 @@
-# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） Server対応中未完
-
+# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） Server対応済だがTimeout
+現在sparqlの結果数を制限中
 
 ## Description
 
@@ -30,6 +30,7 @@ WHERE
                        cco:chemblId  ?child ;
              rdfs:label ?child_label .
              }
+limit 1000
 ```
 ## `return`
 
