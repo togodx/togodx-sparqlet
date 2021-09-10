@@ -188,8 +188,11 @@
 
 - 全てのエッジ情報 + ルートノードが必要
   - A .. Z はオントロジーなどの分類ノード
-    - 共通ルートが無いので作成
   - g1 .. g9 は geneなどの要素 = leaf
+    - 共通ルートが無い場合には root node を作成
+    - tree 状になっていない DAG (node D) の場合も親毎に
+    - multi annotation (leaf g6) も分類毎に
+    - I は分類の終端だけど leaf ではない
 
 ```pre
 # id(self), parent, leaf

@@ -1,4 +1,4 @@
-# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） Server対応済だがTimeout
+# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） 作業中（多数問題）
 現在sparqlの結果数を制限中
 
 ## Description

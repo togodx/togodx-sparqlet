@@ -22,36 +22,37 @@
 
 https://integbio.jp/togosite/sparql
 
-## `leaf`
+## `data`
 - 化合物とATCコードの対応
 - ソートしていない
 
 ```sparql
 PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#> 
 PREFIX molecule: <http://rdf.ebi.ac.uk/resource/chembl/molecule/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?atc ?molecule
+SELECT DISTINCT ?atc ?molecule ?molecule_label
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>  
 
 WHERE {
   # test
-      VALUES ?molecule {  molecule:CHEMBL17860  molecule:CHEMBL231779  molecule:CHEMBL231813  
-  #                        molecule:CHEMBL251634  molecule:CHEMBL292707  molecule:CHEMBL312862  
-  #                        molecule:CHEMBL43184  molecule:CHEMBL566315  molecule:CHEMBL600  molecule:CHEMBL63323 
-                        } 
-  ?molecule cco:atcClassification ?atc .
+  VALUES ?molecule {  
+    molecule:CHEMBL17860  molecule:CHEMBL231779  molecule:CHEMBL231813  molecule:CHEMBL251634  molecule:CHEMBL292707
+  }
+  
+  ?molecule cco:atcClassification ?atc;
+            rdfs:label ?molecule_label.
         
 }
 ```
-
 
 ## `atcGraph` 
 -  ATCコードの階層
 
 ```javascript
-({leaf})=>{
+({data})=>{
   let parents={}
-  leaf.results.bindings.map(d=>{
+  data.results.bindings.map(d=>{
     let atc=d.atc.value;
     if (atc.length==7) {
       let child=atc;
@@ -113,3 +114,47 @@ WHERE
     BIND(substr(str(?atcuri),43) as ?atc)  
 }
 ```
+
+## `return`
+
+```javascript
+({data, atcGraph, atcArray, labelData}) => {
+  const idPrefix = "http://rdf.ebi.ac.uk/resource/chembl/molecule/";
+  
+  let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+
+  let atcLabel={}
+  labelData.results.bindings.map(d=>{
+    atcLabel[d.atc.value]=d.label.value
+  });
+   
+  // アノテーション
+  data.results.bindings.map(d => {
+    
+    tree.push({
+      id: d.molecule.value.replace(idPrefix, ""),
+      label: d.molecule_label.value,
+      leaf: true,
+      parent: d.atc.value
+    })
+  })
+  
+  // ATCコードの階層
+  atcArray.map(d=>{
+    tree.push({     
+        id: d,
+        label: atcLabel[d],
+        leaf: false,
+        parent: atcGraph[d]
+      })
+  })
+  return tree;
+};
+```
+

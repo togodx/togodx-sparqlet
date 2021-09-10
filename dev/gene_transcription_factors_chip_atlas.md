@@ -19,13 +19,15 @@ https://integbio.jp/togosite/sparql
 ## `tf`
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX ensembl: <http://identifiers.org/ensembl/>
 
 SELECT DISTINCT ?parent
 WHERE {
+  VALUES ?parent { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?parent obo:RO_0002428 [] .
   }
-} LIMIT 5
+}
 ```
 
 ## `geneLabels`
@@ -55,9 +57,9 @@ WHERE {
 
 ## `return`
 ```javascript
-//({main, noTf}) => {
-async ({tf, geneLabels})=>{
+async ({tf, geneLabels}) => {
   let tfArray = tf.results.bindings.map(d => d.parent.value.replace("http://identifiers.org/ensembl/", ""));
+  let geneLabelMap = geneLabels.results.bindings.reduce((map, x) => map.set(x.ensg_id.value, x.ensg_label.value), new Map());
   async function getTfTargets(tfId) {
     let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
     let options = {
@@ -71,25 +73,14 @@ async ({tf, geneLabels})=>{
     return await fetch(url, options).then(res=>res.json());
   };  
 
-  //let promises = tfArray.map((d) => ({
-  //  children: getTfTargets(d),
-  //  parent: d
-  //}));
   let promises = tfArray.map((d) => getTfTargets(d));
   let targetsArray = await Promise.all(promises); // [[target genes of tfArray[0]], [target genes of tfArray[1]], ...]
-  //return ret.reduce(
-  //  (objs, current) =>
-  //  current.children.reduce(
-  //    (x, child) =>
-  //    x.concat({parent: current.parent, child: child}),
-  //    objs),
-  //  []);
   return tfArray.reduce(
     (objs, tf, i) =>
     targetsArray[i].reduce(
       (x, target) =>
-      x.concat({parent: tf, child: target}),
-      objs),
-    []);
+      x.concat({parent: tf, id: target, label: geneLabelMap.get(target), leaf: true}),
+      objs.concat({parent: root, id: geneLabelMap.get(tf), label: geneLabelMap.get(tf)})), // set TF label as id to sort by label
+    [{id: "root", label: "root node", root: true}]);
 }
 ```
