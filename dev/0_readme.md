@@ -197,34 +197,36 @@
 <img src="https://sparql-support.dbcls.jp/tmp/file/tree.jpg" height="400">
 
 - 全てのエッジ情報 + ルートノードが必要
+  - A-Z はオントロジーなどの分類ノード
+    - 共通ルートが無いので作成
   - gene は左から g1 .. g9
-  - この場合 gene が leaf
+    - この場合 gene が leaf
 
 ```pre
-# id(self), parent
-root, -
-A, root
-B, A
-C, A
-D, A
-E, B
-F, B
-G, C
-G, D
-H, D
-X, root
-Y, X
-Z, X
-g1, E
-g2, E
-g3, E
-g4, F
-g5, C
-g6, G
-g6, H
-g7, H
-g8, Y
-g9, Z
+# id(self), parent, leaf
+root, ,
+A, root,
+B, A,
+C, A,
+D, A,
+E, B,
+F, B,
+G, C,
+G, D,
+H, D,
+X, root,
+Y, X,
+Z, X,
+g1, E, true
+g2, E, true
+g3, E, true
+g4, F, true
+g5, C, true
+g6, G, true
+g6, H, true
+g7, H, true
+g8, Y, true
+g9, Z, true
 ```
 
 ## その他：カウント0要素, アノテーションの無い要素の取得方法
