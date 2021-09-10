@@ -5,10 +5,10 @@
   - mode での出力の場合分けも無し
   - パラメータも基本不要
 - データ形式は"連続値系"と"分類系"の２種類
-- どちらも key, value オブジェクトの配列
+  - どちらも key, value オブジェクトの配列
   - 配列の順番は問わない
 - SPARQList 名は前と同じ
-  - 完了したら公開版 https://togodx.integbio.jp/sparqlist/ に移動
+  - 作業完了したら公開版 <a href="https://togodx.integbio.jp/sparqlist/">https://togodx.integbio.jp/sparqlist/</a> にコピー
     - しばらくは公開版も Web UI からも保存できるようにしておく
     - 落ち着いたら公開版は github 経由に以降
   - Description も一応コピーしておく
@@ -102,6 +102,7 @@
     - ルートノードのみ true
 - prefix が無いと、要素 ID と 分類カテゴリ ID が区別つかなくなる場合（どっちも数値だけとか）
   - leaf フラグで区別してるから問題無いはず
+  - 分類カテゴリ ID 側に適当な Prefix をつけても良い（フロントエンドとDX-serverの通信に使われるだけなので）
     - 区別付かない場合は一応報告
 - オントロジーに要素のぶら下がっていないノードがある場合
   - そのノードをわざわざ取り除く必要はない（取り除いても良い）

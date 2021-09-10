@@ -1,4 +1,4 @@
-# ChEMBL で薬を薬効（WHO ATC Code）で分類 (mode, hasChild対応, Number対応）（建石、山本） Server対応中未完
+# ChEMBL で薬を薬効（WHO ATC Code）で分類 (Server 対応だが、アノテーションのないものを数えていない）（建石、山本） 
 
 * 入力：
   * ATCコードのカテゴリ。（デフォルトは全部：この場合、パラメータは空白)
@@ -36,15 +36,16 @@ FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
 
 WHERE {
   # test
-  VALUES ?molecule {  
-    molecule:CHEMBL17860  molecule:CHEMBL231779  molecule:CHEMBL231813  molecule:CHEMBL251634  molecule:CHEMBL292707
-  }
+  #VALUES ?molecule {  
+  #  molecule:CHEMBL17860  molecule:CHEMBL231779  molecule:CHEMBL231813  molecule:CHEMBL251634  molecule:CHEMBL292707
+  #}
   
   ?molecule cco:atcClassification ?atc;
             rdfs:label ?molecule_label.
         
 }
 ```
+
 
 ## `atcGraph` 
 -  ATCコードの階層
@@ -94,6 +95,7 @@ WHERE {
 }
 ```
 
+
 ## `labelData`
 * ATCコードのラベル取得
 * Endpointが https://integbio.jp/rdf/mirror/bioportal/sparql のとき
@@ -109,7 +111,7 @@ SELECT ?atc ?label
 FROM <http://rdf.integbio.jp/dataset/togosite/atc>
 WHERE 
 {
-    VALUES ?atcuri  { {{#each atcArray}} atc:{{this}}  {{/each}} }
+    
     ?atcuri  skos:prefLabel ?label.  
     BIND(substr(str(?atcuri),43) as ?atc)  
 }
@@ -157,4 +159,5 @@ WHERE
   return tree;
 };
 ```
+
 

@@ -75,12 +75,30 @@ async ({tf, geneLabels}) => {
 
   let promises = tfArray.map((d) => getTfTargets(d));
   let targetsArray = await Promise.all(promises); // [[target genes of tfArray[0]], [target genes of tfArray[1]], ...]
-  return tfArray.reduce(
+  let woTfGenes = new Set(geneLabelMap.keys());
+  let tree = tfArray.reduce(
     (objs, tf, i) =>
     targetsArray[i].reduce(
-      (x, target) =>
-      x.concat({parent: tf, id: target, label: geneLabelMap.get(target), leaf: true}),
-      objs.concat({parent: root, id: geneLabelMap.get(tf), label: geneLabelMap.get(tf)})), // set TF label as id to sort by label
+      (x, target) => {
+        woTfGenes.delete(target);
+        return x.concat(
+          {
+            parent: geneLabelMap.get(tf),
+            id: target,
+            label: geneLabelMap.get(target),
+            leaf: true
+          }
+        )
+      },
+      objs.concat(
+        {
+          parent: "root",
+          id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
+          label: geneLabelMap.get(tf)
+        }
+      )
+    ),
     [{id: "root", label: "root node", root: true}]);
+  return woTfGenes.size;
 }
 ```
