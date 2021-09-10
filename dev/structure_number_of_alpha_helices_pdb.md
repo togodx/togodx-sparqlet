@@ -16,42 +16,7 @@
 
 https://integbio.jp/togosite/sparql
 
-## Parameters
-
-* `categoryIds`  -(type:α-helixの数)
-  * example: 5 260-270 -2 300-
-* `queryIds` -(type: PDB)
-  * example: 6TIW,6E7C,1PFL
-* `mode`
-  * example: idList, objectList
-
-## `queryArray`
-- Filter 用 PDB を配列に
-```javascript
-({queryIds}) => {
-  queryIds = queryIds.replace(/,/g," ")
-  if (queryIds.match(/[^\s]/)) return queryIds.split(/\s+/);
-  return false;
-}
-```
-
-## `filter`
-```javascript
-({mode, categoryIds})=>{
-  if (!mode || !categoryIds) return "";
-  else if (categoryIds.match(/^[^-]+$/)) {
-    let filters = categoryIds.split(/,/).map(d=>{ return "?target_num = " + d });
-　  return "FILTER( " + filters.join(" || ") + " )";
-  } else {
-    let filters = [];
-    if (categoryIds.match(/^[\d\.]+-/)) filters.push("?target_num >= " + categoryIds.match(/^([\d\.]+)-/)[1]);
-    if (categoryIds.match(/-[\d\.]+$/)) filters.push("?target_num <= " + categoryIds.match(/-([\d\.]+)$/)[1]);
-    return "FILTER( " + filters.join(" && ") + " )";
-  }
-}
-```
-
-## `withTarget`
+## `withAnnotation`
 
 ```sparql
 PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
@@ -60,44 +25,24 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-{{#if mode}}
-SELECT DISTINCT ?PDBentry ?target_num
-{{else}}
-SELECT ?target_num (COUNT(?PDBentry) AS ?count)
-{{/if}}
-WHERE{
-  {
-    SELECT DISTINCT (COUNT(?helix) AS ?target_num) ?PDBentry
-    WHERE {
-      {{#if queryArray}}
-      VALUES ?PDBentry { {{#each queryArray}} pdbr:{{this}} {{/each}} }
-      {{/if}}
-      ?PDBentry  a pdbo:datablock ;
+
+SELECT DISTINCT ?leaf (COUNT(?helix) AS ?target_num) 
+WHERE {
+      ?leaf  a pdbo:datablock ;
                  pdbo:has_struct_confCategory ?helix .
-      ?helix pdbo:has_struct_conf ?helix_each . 
+      ?helix pdbo:has_struct_conf ?helix_each .
+      ?leaf  dc:title ?label .  
       {
-        SELECT DISTINCT ?PDBentry {
-          ?PDBentry pdbo:has_entityCategory
+        SELECT DISTINCT ?leaf {
+          ?leaf pdbo:has_entityCategory
                   / pdbo:has_entity
                   / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
         }
       }
-    }
-  }
-  {{filter}}
-}
-order by ?target_num
-```
-
-## `zero_check`
-```javascript
-({categoryIds})=>{
-  if (!categoryIds || categoryIds.match(/^0*-\d/) || categoryIds.split(/,/).includes("0")) return true;
-  return false;
 }
 ```
 
-## `withoutTarget`
+## `withoutAnnotation`
 - ヘリックスを持たないタンパク質の数
 ```sparql
 PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
@@ -106,14 +51,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-{{#if mode}}
-SELECT DISTINCT ?PDBentry ?target_num
-{{else}}
-SELECT (COUNT(DISTINCT ?PDBentry) AS ?count)
-{{/if}}
-WHERE{
-{{#if zero_check}}
-  {
     SELECT DISTINCT ?PDBentry ?title 
     WHERE {
       {{#if queryArray}}

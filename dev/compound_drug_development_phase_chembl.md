@@ -52,11 +52,11 @@ limit 1000
   
     // development_phase にラベルをつける
     let parent_label = d.parent.value;
-    if (parent_label == "0") parent_label = "0: No description";
-    else if (parent_label == "1") parent_label = "1: PK tolerability";
-    else if (parent_label == "2") parent_label = "2: Efficacy";
-    else if (parent_label == "3") parent_label = "3: Safety & Efficacy";
-    else  (parent_label == "4") parent_label = "4: Indication Discovery & expansion";
+    if (parent_label  == 0) parent_label = "0: No description";
+    else if (parent_label  == 1) parent_label = "1: PK tolerability";
+    else if (parent_label  == 2) parent_label = "2: Efficacy";
+    else if (parent_label  == 3) parent_label = "3: Safety & Efficacy";
+    else  (parent_label  == 4) parent_label = "4: Indication Discovery & expansion";
     
     tree.push({
       id: d.child.value,

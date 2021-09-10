@@ -51,7 +51,7 @@ WHERE {
 ```javascript
 ({leaf})=>{
   let parents={}
-  var a=leaf.results.bindings.map(d=>{
+  leaf.results.bindings.map(d=>{
     let atc=d.atc.value;
     if (atc.length==7) {
       let child=atc;
@@ -108,7 +108,8 @@ SELECT ?atc ?label
 FROM <http://rdf.integbio.jp/dataset/togosite/atc>
 WHERE 
 {
-    VALUES ?atc  { {{#each atcArray}} atc:{{this}}  {{/each}} }
-    ?atc  skos:prefLabel ?label.    
+    VALUES ?atcuri  { {{#each atcArray}} atc:{{this}}  {{/each}} }
+    ?atcuri  skos:prefLabel ?label.  
+    BIND(substr(str(?atcuri),43) as ?atc)  
 }
 ```

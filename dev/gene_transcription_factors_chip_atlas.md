@@ -75,10 +75,8 @@ async ({tf, geneLabels})=>{
   //  children: getTfTargets(d),
   //  parent: d
   //}));
-  let promises = tfArray.map((d) => {
-    return getTfTargets(d);
-  });
-  let ret = await Promise.all(promises);
+  let promises = tfArray.map((d) => getTfTargets(d));
+  let targetsArray = await Promise.all(promises); // [[target genes of tfArray[0]], [target genes of tfArray[1]], ...]
   //return ret.reduce(
   //  (objs, current) =>
   //  current.children.reduce(
@@ -86,6 +84,12 @@ async ({tf, geneLabels})=>{
   //    x.concat({parent: current.parent, child: child}),
   //    objs),
   //  []);
-  return ret;
+  return tfArray.reduce(
+    (objs, tf, i) =>
+    targetsArray[i].reduce(
+      (x, target) =>
+      x.concat({parent: tf, child: target}),
+      objs),
+    []);
 }
 ```

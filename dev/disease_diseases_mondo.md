@@ -1,4 +1,4 @@
-# Diseaseカテゴリフィルタ(Mondo階層利用)(三橋)
+# Diseases in Mondo (三橋) （作業中）
 
 ## Description
 
