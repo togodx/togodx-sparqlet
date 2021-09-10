@@ -10,7 +10,7 @@
 
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+http://sparql-proxy-togodx-1:3000/sparql
 
 ## `categoryArray`
 ```javascript
@@ -80,7 +80,6 @@ WHERE {
       id: d.enst_id.value, 
       label: d.enst_id.value,
       value: d.exon_count.value,
-      binId: range[0],
       binBegin: range[1],
       binEnd: range[2],
       binLabel: makeLabel(range[1], range[2])

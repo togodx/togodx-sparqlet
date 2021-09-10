@@ -17,14 +17,8 @@
 https://integbio.jp/togosite/sparql
 
 ## `tf`
-
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX ensembl: <http://identifiers.org/ensembl/>
-PREFIX taxid: <http://identifiers.org/taxonomy/>
-PREFIX faldo: <http://biohackathon.org/resource/faldo#>
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?parent
 WHERE {
@@ -34,17 +28,35 @@ WHERE {
 } LIMIT 5
 ```
 
-## `tfArray`
-```javascript
-({tf}) => {
-  return tf.results.bindings.map(d => d.parent.value.replace("http://identifiers.org/ensembl/", ""));
+## `geneLabels`
+```sparql
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX ensembl: <http://identifiers.org/ensembl/>
+PREFIX taxid: <http://identifiers.org/taxonomy/>
+PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?ensg_id ?ensg_label
+WHERE {
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
+    ?enst obo:SO_transcribed_from ?ensg .
+    ?ensg obo:RO_0002162 taxid:9606 ; # in taxon
+          faldo:location ?ensg_location ;
+          rdfs:label ?ensg_label ;
+          dc:identifier ?ensg_id .
+    BIND (strbefore(strafter(str(?ensg_location), "GRCh38/"), ":") AS ?chr)
+    FILTER (?chr IN ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                     "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                     "21", "22", "X", "Y", "MT" ))
+  }
 }
 ```
 
 ## `return`
 ```javascript
 //({main, noTf}) => {
-async ({tf})=>{
+async ({tf, geneLabels})=>{
   let tfArray = tf.results.bindings.map(d => d.parent.value.replace("http://identifiers.org/ensembl/", ""));
   async function getTfTargets(tfId) {
     let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
@@ -59,20 +71,12 @@ async ({tf})=>{
     return await fetch(url, options).then(res=>res.json());
   };  
 
-  let promises = tfArray.map((d) => {
-    return getTfTargets(d);
-  });
+  let promises = tfArray.map((d) => ({
+    children: getTfTargets(d),
+    parent: d
+  }));
   let ret = await Promise.all(promises);
-  return ret;
-  //return tfArray.map(
-  //  (d) => {
-  //    let obj = {};
-  //    obj.parent = d;
-  //    let child_array = getTfTargets(d);
-  //    obj.child: child_array;
-  //    //obj.option = options;
-  //    return obj;
-  //  }
-  //);
+  return ret.reduce((objs, current) =>
+    current.children.forEach((x) => objs.push({parent: current.parent, child: x})), []);
 }
 ```

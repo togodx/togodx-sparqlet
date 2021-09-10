@@ -1,4 +1,4 @@
-# PDBエントリをalpha_helixで分類(ヒトのみ)（井手, 守屋）
+# PDB alpha_helix distributeion (井手, 守屋）作業中
 
 ## Description
 
@@ -8,10 +8,9 @@
         - The latest data can be obtained from the URL below. https://data.pdbj.org/pdbjplus/data/pdb/rdf/
 - Query
     - Input
-        - Number of alpha-helices, PDB id
+        - PDB ID
     - Output
-        - The number of PDB entries included in each alpha-helix number
-        - If a PDB id is entered, it returns the alpha-helix value contained in each entry.
+        - The alpha-helix value contained in each entry.
 
 ## Endpoint
 
