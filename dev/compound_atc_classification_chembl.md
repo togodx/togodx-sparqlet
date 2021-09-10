@@ -36,8 +36,9 @@ FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
 WHERE {
   # test
       VALUES ?molecule {  molecule:CHEMBL17860  molecule:CHEMBL231779  molecule:CHEMBL231813  
-                          molecule:CHEMBL251634  molecule:CHEMBL292707  molecule:CHEMBL312862  
-                          molecule:CHEMBL43184  molecule:CHEMBL566315  molecule:CHEMBL600  molecule:CHEMBL63323  } 
+  #                        molecule:CHEMBL251634  molecule:CHEMBL292707  molecule:CHEMBL312862  
+  #                        molecule:CHEMBL43184  molecule:CHEMBL566315  molecule:CHEMBL600  molecule:CHEMBL63323 
+                        } 
   ?molecule cco:atcClassification ?atc .
         
 }
@@ -45,36 +46,69 @@ WHERE {
 
 
 ## `atcGraph` 
--  
+-  ATCコードの階層
 
 ```javascript
 ({leaf})=>{
-  let objects={}
+  let parents={}
   var a=leaf.results.bindings.map(d=>{
     let atc=d.atc.value;
     if (atc.length==7) {
       let child=atc;
       atc=atc.substr(0,5)
-      objects[child]=atc 
+      parents[child]=atc 
     }
     if (atc.length==5) {
       let child=atc;
       atc=atc.substr(0,4)
-      objects[child]=atc 
+      parents[child]=atc 
     }
     if (atc.length==4) {
       let child=atc;
       atc=atc.substr(0,3)
-      objects[child]=atc 
+      parents[child]=atc 
     }
     if (atc.length==3) {
       let child=atc;
       atc=atc.substr(0,1)
-      objects[child]=atc 
+      parents[child]=atc 
+      
+    }
+    if (atc.length==1) {
+      let child=atc;
+      atc=atc.substr(0,1)
+      parents[child]="root" 
     }
   });	
-  return(objects)
+  return(parents)
 }
 ```
 
+## `atcArray`
+- ATCコードのリスト
 
+```javascript
+({atcGraph})=>{
+  return (Object.keys(atcGraph))
+}
+```
+
+## `labelData`
+* ATCコードのラベル取得
+* Endpointが https://integbio.jp/rdf/mirror/bioportal/sparql のとき
+  FROM <http://integbio.jp/rdf/mirror/bioportal/atc>
+
+```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX atc: <http://purl.bioontology.org/ontology/UATC/>
+
+SELECT ?atc ?label 
+FROM <http://rdf.integbio.jp/dataset/togosite/atc>
+WHERE 
+{
+    VALUES ?atc  { {{#each atcArray}} atc:{{this}}  {{/each}} }
+    ?atc  skos:prefLabel ?label.    
+}
+```

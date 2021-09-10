@@ -71,12 +71,21 @@ async ({tf, geneLabels})=>{
     return await fetch(url, options).then(res=>res.json());
   };  
 
-  let promises = tfArray.map((d) => ({
-    children: getTfTargets(d),
-    parent: d
-  }));
+  //let promises = tfArray.map((d) => ({
+  //  children: getTfTargets(d),
+  //  parent: d
+  //}));
+  let promises = tfArray.map((d) => {
+    return getTfTargets(d);
+  });
   let ret = await Promise.all(promises);
-  return ret.reduce((objs, current) =>
-    current.children.forEach((x) => objs.push({parent: current.parent, child: x})), []);
+  //return ret.reduce(
+  //  (objs, current) =>
+  //  current.children.reduce(
+  //    (x, child) =>
+  //    x.concat({parent: current.parent, child: child}),
+  //    objs),
+  //  []);
+  return ret;
 }
 ```
