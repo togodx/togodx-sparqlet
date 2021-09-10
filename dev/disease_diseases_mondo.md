@@ -27,10 +27,12 @@ PREFIX mondo: <http://purl.obolibrary.org/obo/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT DISTINCT ?mondo ?label
+SELECT COUNT(DISTINCT ?mondo) 
+#SELECT DISTINCT ?mondo ?label
 FROM <http://rdf.integbio.jp/dataset/togosite/mondo>
 WHERE {
   ?mondo rdfs:subClassOf+ mondo:MONDO_0000001 .
   ?mondo rdfs:label ?label.
+  ?mondo rdfs:subClassOf ?parent.
 }
 ```
