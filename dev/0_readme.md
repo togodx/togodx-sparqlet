@@ -191,7 +191,13 @@
 ]
 ```
   - データ取得例は下記参照
-  
+
+## イメージ
+
+<img src="https://sparql-support.dbcls.jp/tmp/file/tree.jpg" height="400">
+
+- 全てのエッジ情報 + ルートノードが必要
+
 ## その他：カウント0要素, アノテーションの無い要素の取得方法
 - 要素全体との差分を取る
   - 例：<a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>

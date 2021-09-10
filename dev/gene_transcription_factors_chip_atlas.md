@@ -31,7 +31,7 @@ WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?parent obo:RO_0002428 [] .
   }
-}
+} LIMIT 5
 ```
 
 ## `tfArray`
@@ -44,34 +44,26 @@ WHERE {
 ## `return`
 ```javascript
 //({main, noTf}) => {
-({tfArray}) => {
-  return tfArray;
-  let tree = [{
-    id: "root",
-    label: "root node",
-    root: true
-  }];
-  let chk = {};
-  //let data = main.results.bindings.concat(noTf.results.bindings);
-  let data = main.results.bindings;
-  data.map(d => {
-    if (!chk[d.parent.value]) {
-      chk[d.parent.value] = true;
-      tree.push({     
-        id: d.parent.value,
-        label: d.parent.value,
-        leaf: false,
-        parent: "root"
-      })
+async ({tf})=>{
+  let tfArray = tf.results.bindings.map(d => d.parent.value.replace("http://identifiers.org/ensembl/", ""));
+  let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
+  let options = {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
-    tree.push({
-      id: d.child.value,
-      label: d.child.value,
-      leaf: true,
-      parent: d.parent.value
-    })
-  });
-  
-  return tree;
-};
+  }
+  return tfArray.map(
+    (d) => {
+      let obj = {};
+      obj.parent = d;
+      options.body = 'tfId=' + d;
+      //let child_array = await fetch(url, options).then(res=>res.json());
+      //obj.child: child_array;
+      obj.option = options;
+      return obj;
+    }
+  );
+}
 ```
