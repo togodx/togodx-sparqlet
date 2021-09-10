@@ -28,7 +28,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?parent ?child
 WHERE {
-  VALUES ?parent { ensembl:ENSG00000004487 ensembl:ENSG00000005339 }
+  #VALUES ?parent { ensembl:ENSG00000004487 ensembl:ENSG00000005339 }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?parent obo:RO_0002428 ?child .
   }

@@ -18,30 +18,52 @@
 https://integbio.jp/togosite/sparql
 
 ## `data`
-- SPARQL
-  - 内訳返す場合とchembl compoundリストを返す場合を handlbars で条件分岐
-  - substance type、chembl compoundリストでのフィルタリング
 
 ```sparql
-prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-{{#if mode}}
-SELECT DISTINCT ?chembl_id ?substancetype ?type_id
-{{else}}
-SELECT  ?type_id (COUNT(distinct ?substance) AS ?count)
-{{/if}}
+PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT?parent ?child ?child_label
+FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
 WHERE 
 {
-{{#if query_array}}
-  VALUES ?chembl_id { {{#each query_array}} "{{this}}" {{/each}} }
-{{/if}}
-{{#if category_array}}
-  VALUES (?type_id ?substancetype) { {{#each category_array}} ("{{this.cid}}:{{this.type}}" "{{this.type}}") {{/each}} }
-{{/if}}
-  ?substance cco:chemblId ?chembl_id ;
-            cco:substanceType ?substancetype .
-}
-{{#unless mode}}
-group by ?type_id ?count
-ORDER BY Desc(?count)
-{{/unless}}
+  ?substance cco:substanceType ?parent ;
+                       cco:chemblId  ?child ;
+             rdfs:label ?child_label .
+             }
+```
+## `return`
+
+```javascript
+({data}) => {
+  
+  let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+
+  let edge = {};
+
+    tree.push({
+      id: d.child.value,
+      label: d.child_label.value,
+      leaf: true,
+      parent: d.parent.value
+    })
+   
+  // root との親子関係を追加
+    if (!edge[d.parent.value]) {
+      edge[d.parent.value] = true;
+      tree.push({     
+        label: d.parent.value,
+        leaf: false,
+        parent: "root"
+      })
+    }
+  });
+  
+  return tree;
+};
 ```

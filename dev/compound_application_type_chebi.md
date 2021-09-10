@@ -48,7 +48,7 @@ PREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>
 
 SELECT distinct ?compound GROUP_CONCAT(DISTINCT ?label; SEPARATOR = ", ") as ?compound_label 
                           ?application                                      
-                          GROUP_CONCAT(DISTINCT ?application_label; SEPARATOR = ", ") AS ?application_label
+                          GROUP_CONCAT(DISTINCT ?application_label; SEPARATOR = ", ") AS ?application_label bound(?x) as ?haschild
 FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
 WHERE 
 {
@@ -56,14 +56,14 @@ WHERE
   VALUES ?compound { CHEBI:18012  CHEBI:27732 CHEBI:17594 CHEBI:16866 CHEBI:46195 CHEBI:62867}
       
   ?compound a owl:Class ;
-    rdfs:label ?compound_label ;
+    rdfs:label ?label ;
     rdfs:subClassOf ?r .
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
     owl:someValuesFrom ?application .
   ?application rdfs:subClassOf* obo:CHEBI_{{root}}.  
   ?application rdfs:label ?application_label .
-  
+  optional{?x rdfs:subClassOf ?application}
 }
 ```
 
@@ -103,7 +103,7 @@ WHERE
     tree.push({
       id: d.compound.value.replace(idPrefix, ""),
       label: d.compound_label.value,
-      leaf: true,
+      leaf: Boolean(Number(d.haschild.value)),
       parent: d.application.value.replace(categoryPrefix, "")
     })
   })
