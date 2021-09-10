@@ -63,7 +63,7 @@ WHERE {
       root: true
     },{
       id: withoutId,
-      label: "no specific expression",
+      label: "No specific expression",
       parent: "root"
     }
   ];

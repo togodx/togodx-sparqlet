@@ -129,7 +129,7 @@ WHERE {
       root: true
     },{
       id: withoutId,
-      label: "without annotation",
+      label: "Not in the pathway",
       parent: "root"
     }
   ];

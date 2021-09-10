@@ -71,7 +71,7 @@ WHERE {
       root: true
     },{
       id: withoutId,
-      label: "without ChEMBL assay",
+      label: "No ChEMBL assay",
       parent: "root"
     }
   ];

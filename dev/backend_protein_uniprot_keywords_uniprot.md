@@ -90,7 +90,7 @@ WHERE {
       root: true
     },{
       id: withoutId,
-      label: "without annotation",
+      label: "Unclassified",
       parent: root
     }
   ];
