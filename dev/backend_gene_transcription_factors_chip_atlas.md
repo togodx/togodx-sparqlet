@@ -12,11 +12,15 @@
     - Output
         - Ensembl gene ID of TFs
 
+## Parameters
+* `tfId` (type: ensembl gene ID (TF))
+  * example: ENSG00000275700,ENSG00000101544,ENSG00000048052
+
 ## Endpoint
 
 https://integbio.jp/togosite/sparql
 
-## `tf`
+## `main`
 
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
@@ -26,52 +30,21 @@ PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?parent
+SELECT DISTINCT ?parent ?child
 WHERE {
+  VALUES ?parent { ensembl:{{tfId}} }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
-    ?parent obo:RO_0002428 [] .
+    ?parent obo:RO_0002428 ?child .
   }
-}
-```
-
-## `tfArray`
-```javascript
-({tf}) => {
-  return tf.results.bindings.map(d => d.parent.value.replace("http://identifiers.org/ensembl/", ""));
 }
 ```
 
 ## `return`
 ```javascript
-//({main, noTf}) => {
-({tfArray}) => {
-  return tfArray;
-  let tree = [{
-    id: "root",
-    label: "root node",
-    root: true
-  }];
-  let chk = {};
-  //let data = main.results.bindings.concat(noTf.results.bindings);
-  let data = main.results.bindings;
-  data.map(d => {
-    if (!chk[d.parent.value]) {
-      chk[d.parent.value] = true;
-      tree.push({     
-        id: d.parent.value,
-        label: d.parent.value,
-        leaf: false,
-        parent: "root"
-      })
-    }
-    tree.push({
-      id: d.child.value,
-      label: d.child.value,
-      leaf: true,
-      parent: d.parent.value
-    })
-  });
-  
-  return tree;
+({main}) => {
+  return main.results.bindings.map((d) => ({
+    child: d.child.value.replace("http://identifiers.org/ensembl/", ""),
+    parent: d.parent.value.replace("http://identifiers.org/ensembl/", "")
+  }));
 };
 ```

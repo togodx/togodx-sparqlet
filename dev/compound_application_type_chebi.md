@@ -1,4 +1,4 @@
-# WIP: ChEBI Application での分類 （川島、建石） Server対応中未完
+# WIP: ChEBI Application での分類 （川島、建石） :アノテーションがないケースを数えていない（もとのまま）
 
 
 ## Parameters
@@ -53,7 +53,7 @@ FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
 WHERE 
 {
   #test
-  VALUES ?compound { CHEBI:18012  CHEBI:27732 CHEBI:17594 CHEBI:16866 CHEBI:46195 CHEBI:62867}
+  #VALUES ?compound { CHEBI:18012  CHEBI:27732 CHEBI:17594 CHEBI:16866 CHEBI:46195 CHEBI:62867}
       
   ?compound a owl:Class ;
     rdfs:label ?label ;
@@ -103,7 +103,7 @@ WHERE
     tree.push({
       id: d.compound.value.replace(idPrefix, ""),
       label: d.compound_label.value,
-      leaf: Boolean(Number(d.haschild.value)),
+      leaf: true,
       parent: d.application.value.replace(categoryPrefix, "")
     })
   })

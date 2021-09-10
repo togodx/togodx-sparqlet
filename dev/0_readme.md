@@ -8,8 +8,9 @@
 - どちらも key, value オブジェクトの配列
   - 配列の順番は問わない
 - SPARQList 名は前と同じ
-  - まだ JSON が取れないような、作業中 SPARQList は "dev_" を頭につける
-    - 一旦作業完了して、ちょこっとデバッグするときはそのままで良いです。作業が長期化しそうなら名前変更
+  - 完了したら公開版 https://togodx.integbio.jp/sparqlist/ に移動
+    - しばらくは公開版 Web IF からも保存できるようにしておく
+    - 落ち着いたら公開版は github 経由に以降
   - Description も一応コピーしておく
 - データが大きくなりがちで、web UI からだと結果を表示できない場合もあるので、curl などで download して確認
 
