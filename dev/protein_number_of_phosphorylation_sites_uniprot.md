@@ -70,8 +70,6 @@ WHERE {
       label: d.label.value,
       value: Number(d.value.value),
       binId: Number(d.value.value) + 1,
-      binBegin: Number(d.value.value),
-      binEnd: Number(d.value.value),
       binLabel: d.value.value
     }
   });

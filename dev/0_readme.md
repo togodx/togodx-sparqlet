@@ -25,8 +25,6 @@
     "label": "A0A087WXM7_HUMAN",
     "value": 22482,
     "binId": 3,
-    "binBegin": 20000,
-    "binEnd": 30000,
     "binLabel": "20-30 kDa"
   },
   ...
@@ -40,13 +38,8 @@
     - フロントエンドでバーの上での並びを反映した ASCII で sort 可能なものにしておく
       - 独自に数値を振るなら positive integer
       - 0 スタートは避ける
-  - binBegin (必須:demical): フロントエンドのバー表示で binning する場合の begin 値
-    - binning しない場合は value と同じ
-    - ○未満全部を指定する場合は false
-  - binEnd (必須:demical): フロントエンドのバー表示で binning する場合の end 値
-    - ### binning しない場合は value と同じより、value の次の数値のほうが適してるかも
-    - ○以上全部を指定する場合は false
   - binLabel (必須): フロントエンドで表示するラベル
+  - (binBegin, binEnd: 廃止（作った人は消してください）)
 - binning
   - renge サイズは SPARQList 作成者に任せる
     - 今の '# of exons' のように等分じゃない bin はつくらない
@@ -71,20 +64,17 @@
 - 例（UniProt の GO:celluler_component 分類)
 ```json
 [
-  // ルートノード
-  {
+  {                                         // ルートノード
     "id": "GO_0005575",
     "label": "cellular_component",
     "root": true
   },
-  // 分類カテゴリの階層のノード
-  {
+  {                                         // 分類カテゴリの階層のノード
     "id": "GO_0005826",
     "label": "actomyosin contractile ring",
     "parent": "GO_0070938"
   },
-  // 要素への分類カテゴリのアノテーション
-  {
+  {                                         // 要素への分類カテゴリのアノテーション
     "id": "A0A0U1RQR1",
     "label": "A0A0U1RQR1_HUMAN",
     "leaf": true,
@@ -127,14 +117,12 @@
 - 例（Ensembl gene の chromosome による分類）
 ```json
 [
-  // ルートノードを作成
-  {
+  {                                      // ルートノードを作成
     "id": "root",
     "label": "root node",
     "root": true
   },
-  // 階層の無い、または親の居ない分類のノード
-  {
+  {                                      // 階層の無い、または親の居ない分類のノード
     "id": 3,
     "label": "chr3",
     "leaf": false,
@@ -174,18 +162,16 @@
     "label": "cellular_component",
     "root": true
   },
-  // アノテーションの無い要素カテゴリノードを作成
-  {
-    "id": "unclassified",                   // 専用ノード
+  {                                         // アノテーションの無い要素カテゴリノードを作成
+    "id": "unclassified",                   // 専用 unclassified ノード
     "label": "without annotation",          // ラベルは自由に適切なものを
     "parent": "GO_0005575"                  // ルートノードにぶら下げる
   },
-  // アノテーションの無い要素
-  {
+  {                                         // アノテーションの無い要素の unclassified への分類
     "id": "Q5XG85",
     "label": "U633C_HUMAN",
     "leaf": true,
-    "parent": unclassified"                 // 作成したノードにぶら下げる
+    "parent": unclassified"                 // unclassified ノードにぶら下げる
   },
   ...  
 ]
