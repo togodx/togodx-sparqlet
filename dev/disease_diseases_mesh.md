@@ -18,16 +18,17 @@ WHERE {
   # See https://meshb.nlm.nih.gov/treeView
   VALUES ?diseases_root { mesh:D007239 mesh:D009369 mesh:D009140 mesh:D004066 mesh:D009057 mesh:D012140 mesh:D010038 mesh:D009422 mesh:D005128 mesh:D052801 mesh:D005261 mesh:D002318 mesh:D006425 mesh:D009358 mesh:D017437 mesh:D009750 mesh:D004700 mesh:D0071154 mesh:D007280 mesh:D000820 mesh:D013568 mesh:D009784 }
   ?diseases_root meshv:treeNumber/^meshv:parentTreeNumber* ?tree.
-  ?tree meshv:parentTreeNumber/^meshv:treeNumber ?parent.
   ?tree ^meshv:treeNumber ?descriptor.
   ?descriptor rdfs:label ?label .
+  OPTIONAL {
+      ?tree meshv:parentTreeNumber/^meshv:treeNumber ?parent.
+  }
   OPTIONAL {
     ?tree ^meshv:parentTreeNumber ?tree_child.
   }
   FILTER(lang(?label) = "en")
 }
 GROUP BY ?descriptor ?parent ?label 
-#GROUP BY ?descriptor ?parent ?label ?tree 
 ```
 
 ## `return`
@@ -45,13 +46,13 @@ GROUP BY ?descriptor ?parent ?label
   data.results.bindings.forEach(d => {
     const id = d.descriptor.value.replace(idPrefix, "");
     const parent = d.parent.value.replace(idPrefix, "");
-    if(id === parent){ parent = "root"; }
+
+    if(!parent){  parent = "root";  }
     tree.push({
       id: id,
-      label: d.label.value,
-      leaf: (d.tree_child ? false : true),
       parent: parent
-    })
+    });
+
   });
   return tree;
 };
