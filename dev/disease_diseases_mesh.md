@@ -15,6 +15,7 @@
 https://integbio.jp/togosite/sparql
 
 ## testパターン
+- この例は、[0_readme](https://togodx.integbio.jp/sparqlist_dev/0_readme)の「分類系：ルートノードが無い場合や、階層が無い場合」と近く、「分類系：ルートノードが無いいが、階層がある場合」。
 - parentがrootの例 ([Infections: D007239](https://meshb.nlm.nih.gov/record/ui?ui=D007239))
   - returnのJSONを「"id": "D007239"」で検索する
  ```
@@ -49,7 +50,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 PREFIX tree: <http://id.nlm.nih.gov/mesh/>
-SELECT ?descriptor ?parent ?label SAMPLE(?tree_child) AS ?tree_child
+SELECT ?tree ?descriptor ?parent ?label SAMPLE(?tree_child) AS ?tree_child
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH TreeのRoot(Diseases[C]) のURI もラベルもないので、その下の階層(Infections[C01],...)のDescriptor(D007239)を列挙する
@@ -66,7 +67,8 @@ WHERE {
   }
   FILTER(lang(?label) = "en")
 }
-GROUP BY ?descriptor ?parent ?label 
+GROUP BY ?tree ?descriptor ?parent ?label 
+ORDER BY ?tree
 ```
 
 ## `return`
