@@ -47,6 +47,7 @@ SELECT DISTINCT ?cid ?pubchem_label ?atc ?atc_label
 } 
 ```
 
+
 ## `atcGraph`
 
 ```sparql
@@ -63,10 +64,12 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
       #            }                  
 
       ?atc  skos:broader* ?atctop ;
-            skos:broader ?parent ;
             skos:prefLabel  ?atc_label;
   		    a skos:concept .  # ATC分類である
-      ?parent skos:prefLabel  ?parent_label .
+      OPTIONAL {
+      	?atc skos:broader ?parent .      
+      	?parent skos:prefLabel  ?parent_label .
+        }
 } ORDER BY ?atc
 ```
 
@@ -82,6 +85,11 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
   const categoryVarName = "atc";
   const categoryLabelVarName = "atc_label";
   const categoryPrefix = "http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_";
+  
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.substring(1);
+  }
+  
   let tree = [
     {
       id: "root",
@@ -89,6 +97,11 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
       root: true
     }
   ];
+  let atcLabel={}
+  atcGraph.results.bindings.map(d=>{
+    atcLabel[d.atc.value]=d.atc_label.value
+  });
+   
   // Annotation
   data.results.bindings.map(d=>{
     tree.push({
@@ -99,24 +112,29 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
     })
   })
   
+  //Category tree
+  atcGraph.results.bindings.map(d=>{
+    let child=d[categoryVarName].value.replace(categoryPrefix, "")
+    if (child.length==1){
+      tree.push({     
+        id: child,
+        label: d.atc_label.value,
+        leaf: false,
+        parent: "root",
+      })
+    } else {    
+      tree.push({     
+        id: child,
+        label: d.atc_label.value,
+        leaf: false,
+        parent: d.parent.value,
+      })
+    }  
+  })
   
-  /////////
+  
+  
   return tree ;
-  //data.results.bindings.map(d=>{
-  //    var categorycode = d.atc.value.replace(categoryPrefix, "")
-  //    return {
-  //      id: d[idVarName].value.replace(idPrfix, ""), 
-  //      attribute: {
-  //        categoryId: d.atc.value.replace(categoryPrefix, ""), 
-  //        uri: d.atc.value,
-  //        label : capitalize(d.atc_label.value)
-  //      }
-  //    }
-  //  });
-  
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.substring(1);
-  }
 }
 ```
 

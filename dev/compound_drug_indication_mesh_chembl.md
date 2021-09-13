@@ -60,3 +60,62 @@ WHERE {
   ] .
 }
 ```
+## `return`
+```javascript
+({targetMesh, data})=>{
+ let meshExist = {};
+  for (let d of targetMesh.results.bindings) {
+    meshExist[d.mesh.value.replace("http://id.nlm.nih.gov/mesh/", "")] = true;
+  }
+  let mesh2id = {};
+  let id2label = {};
+  let id2child_tree = {};
+  for (let d of targetMesh.results.bindings) {
+    let mesh = d.mesh.value.replace("http://id.nlm.nih.gov/mesh/", "");
+    let id = d.tree.value.replace("http://id.nlm.nih.gov/mesh/", ""); // tree number
+    if (!mesh2id[mesh]) mesh2id[mesh] = [id];
+    mesh2id[mesh].push(id);
+    if (!id2label[id]) id2label[id] = d.label.value;
+    id2child_tree[id] = Boolean(d.child_tree);
+  }
+  let id2chembl = {};
+  let filteredList = [];
+  for (let d of data.results.bindings) {
+    let parent = d.parent.value.replace("http://identifiers.org/mesh/", "");
+    let child = d.child.value;
+    if (meshExist[parent] && (!chemblFilterExist || chemblFilterExist[child])) {
+      for (let id of mesh2id[parent]) {
+        if (!id2chembl[id]) id2chembl[id] = [];
+        id2chembl[id].push(child);　// tree number と chembl 対応
+        filteredList.push({
+          id: child,
+          attribute: {
+            categoryId: id,
+            uri: "http://id.nlm.nih.gov/mesh/" + id,
+            label: id2label[id]
+          }
+        })
+      }
+    }
+  }
+  let id2count = {};
+  for (let id of Object.keys(id2chembl)) {
+    id2count[id] = Array.from(new Set(id2chembl[id])).length;  // chembl を unique してカウント
+  }
+  if (mode == "objectList") return filteredList;
+  if (mode == "idList") return Array.from(new Set(filteredList.map(d=>d.id))); // chembl を unique
+  
+  return Object.keys(id2count).sort((a,b)=>{
+    if (id2count[a] < id2count[b]) return 1;
+    if (id2count[a] > id2count[b]) return -1;
+    return 0;
+  }).map(id=>{
+    return {
+      categoryId: id,
+      label: id2label[id],
+      count: id2count[id],
+      hasChild: id2child[id]
+    }
+  });                        
+}
+```
