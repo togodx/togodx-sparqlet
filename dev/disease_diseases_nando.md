@@ -22,31 +22,25 @@ https://integbio.jp/togosite/sparql
 PREFIX nando: <http://nanbyodata.jp/ontology/NANDO_>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-#SELECT DISTINCT ?id ?label ?parent
-SELECT ?tree ?id ?parent ?label SAMPLE(?child) AS ?child
+SELECT ?id ?parent ?label SAMPLE(?child) AS ?child
 FROM <http://rdf.integbio.jp/dataset/togosite/nando>
 WHERE {
-#  VALUES ?disease_root { nando: }
+  # ルートノードは、NANDO:0000001（Intractable disease）
+  VALUES ?root { nando:0000001 }
   
+  # ルートノードのJSONはreturn(次のステップのJavaScript)で作成するのでsubClassOf*ではなくsubClassOf+とする。
+  ?id rdfs:subClassOf+ ?root.
   ?id rdfs:label ?label.
   FILTER (lang(?label) = "en")
-  ?id rdfs:subClassOf* ?parent.
-   
-  # ?diseases_rootのエントリにはparentが存在しないのでOPTIONALが必要
-  OPTIONAL {
-    ?id rdfs:subClassOf ?parent.
-  }
+  ?id rdfs:subClassOf ?parent.
   
   # 中間ノードの場合は?childに値が存在し、leafノードの場合は?childは存在しないのでOPTIONALが必要
   OPTIONAL {
     ?id ^rdfs:subClassOf ?child.
   }
-
-  FILTER(?parent == NULL)
 }
-GROUP BY ?tree ?id ?parent ?label 
+GROUP BY ?id ?parent ?label 
 ```
-
 
 ## `return`
 
@@ -55,19 +49,11 @@ GROUP BY ?tree ?id ?parent ?label
   const idPrefix = "http://nanbyodata.jp/ontology/NANDO_";
   let tree = [
     {
-      id: "root",
-      label: "root node",
+      id: "0000001",
+      label: "Intractable disease",
       root: true
     }
   ];
-  data.results.bindings.forEach(d => {
-    tree.push({
-      id: d.id.value.replace(idPrefix, ""),
-      label: d.label.value,
-      leaf: (d.child == undefined ? true : false),
-      parent: (d.parent == undefined ? "root" :  d.parent.value.replace(idPrefix, ""))
-    });
-  });
   return tree;
 };
 ```

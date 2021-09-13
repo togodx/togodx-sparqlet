@@ -95,7 +95,6 @@ GROUP BY ?tree ?id ?parent ?label
       leaf: (d.tree_child == undefined ? true : false),
       parent: (d.parent == undefined ? "root" :  d.parent.value.replace(idPrefix, ""))
     });
-    
   });
   return tree;
 };

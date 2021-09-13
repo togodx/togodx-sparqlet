@@ -1,17 +1,16 @@
-# PDB alpha_helix distributeion (井手, 守屋）
+# PDBエントリをbeta_sheetで分類(ヒトのみ)（井手, 守屋）作業中
 
 ## Description
 
 - Data sources
-    - The number of alpha-helices recorded in the PDB entry.
+    - The number of beta-sheets recorded in the PDB entry.
     - This item based on the data of January 20, 2021 of PDBj. 
         - The latest data can be obtained from the URL below. https://data.pdbj.org/pdbjplus/data/pdb/rdf/
 - Query
     - Input
         - PDB ID
     - Output
-        - The alpha-helix value contained in each entry.
-
+        - The beta-sheets value contained in each entry.
 ## Endpoint
 
 https://integbio.jp/togosite/sparql
@@ -86,9 +85,3 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   });
 }
 ```
-
-
-
-
-
-
