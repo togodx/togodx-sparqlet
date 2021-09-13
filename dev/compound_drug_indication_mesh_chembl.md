@@ -48,7 +48,7 @@ WHERE {
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 PREFIX tree: <http://id.nlm.nih.gov/mesh/>
-SELECT DISTINCT ?mesh ?parent ?parent_label (SAMPLE(?child_tree) AS ?child)
+SELECT DISTINCT ?mesh ?parent ?parent_label (SAMPLE(?child_tree) AS ?child) ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   ?parent a meshv:TreeNumber .
@@ -60,6 +60,7 @@ WHERE {
    ?mesh meshv:treeNumber/meshv:parentTreeNumber* ?parent .
    OPTIONAL {
      ?child_tree meshv:parentTreeNumber ?parent .
+     ?child_tree ^meshv:treeNumber/rdfs:label ?child_label .
    }
 }
 ```
@@ -67,15 +68,14 @@ WHERE {
 # `return`
 ```javascript
 ({root, leaf, graph}) => {
-  const idPrefix = "http://purl.uniprot.org/uniprot/";
   const categoryPrefix = "http://id.nlm.nih.gov/mesh/";
   
-  let tree = {
+  let tree = [
+    {
       id: root,
       root: true
-    };
-
-  let withAnnotation = {};
+    }
+  ];
   // Mesh親子関係
   graph.results.bindings.map(d => {
     tree.push({
@@ -83,13 +83,11 @@ WHERE {
       label: d.child_label.value,
       parent: d.parent.value.replace(categoryPrefix, "")
     })
-    if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
-  })
+ })
   // アノテーション関係
   leaf.results.bindings.map(d => {
-    withAnnotation[d.child.value] = true;
     tree.push({
-      id: d.child.value.replace(idPrefix, ""),
+      id: d.child.value,
       label: d.child_label.value,
       leaf: true,
       parent: d.parent.value.replace(categoryPrefix, "")
