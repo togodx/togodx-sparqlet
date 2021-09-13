@@ -29,7 +29,7 @@ PREFIX concept: <http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_>
 PREFIX pubchemv: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-SELECT DISTINCT ?cid ?atc ?atc_label 
+SELECT DISTINCT ?cid ?pubchem_label ?atc ?atc_label 
     WHERE {
       VALUES ?cid {  compound:3561  compound:6957673  compound:3226  compound:452548  compound:19861  
                      compound:41781  compound:4909  compound:15814656  compound:13342  compound:11597698  
@@ -40,8 +40,10 @@ SELECT DISTINCT ?cid ?atc ?atc_label
             sio:is-attribute-of ?cid ; 
             sio:has-value  ?inn ;
             dcterms:subject ?atc .
+      ?cid sio:has-attribute  [a sio:CHEMINF_000382; sio:has-value ?pubchem_label_temp  ] .
+
       ?atc  skos:prefLabel  ?atc_label.  
-      
+      BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp,"null") AS ?pubchem_label)      
 } 
 ```
 
@@ -75,20 +77,42 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
 ```javascript
 ({data,atcGraph})=>{
   const idVarName = "cid";
-  const idPrfix = "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID";
+  const idPrefix = "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID";
+  const idLabelName="pubchem_label";
+  const categoryVarName = "atc";
+  const categoryLabelVarName = "atc_label";
   const categoryPrefix = "http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_";
+  let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+  // Annotation
+  data.results.bindings.map(d=>{
+    tree.push({
+      id: d[idVarName].value.replace(idPrefix, ""), 
+      label: d[idLabelName].value,
+      leaf: true,
+      parent: d[categoryVarName].value.replace(categoryPrefix, ""), 
+    })
+  })
   
-  return data.results.bindings.map(d=>{
-      var categorycode = d.atc.value.replace(categoryPrefix, "")
-      return {
-        id: d[idVarName].value.replace(idPrfix, ""), 
-        attribute: {
-          categoryId: d.atc.value.replace(categoryPrefix, ""), 
-          uri: d.atc.value,
-          label : capitalize(d.atc_label.value)
-        }
-      }
-    });
+  
+  /////////
+  return tree ;
+  //data.results.bindings.map(d=>{
+  //    var categorycode = d.atc.value.replace(categoryPrefix, "")
+  //    return {
+  //      id: d[idVarName].value.replace(idPrfix, ""), 
+  //      attribute: {
+  //        categoryId: d.atc.value.replace(categoryPrefix, ""), 
+  //        uri: d.atc.value,
+  //        label : capitalize(d.atc_label.value)
+  //      }
+  //    }
+  //  });
   
   function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.substring(1);

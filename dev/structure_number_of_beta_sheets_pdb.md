@@ -1,4 +1,4 @@
-# PDBエントリをbeta_sheetで分類(ヒトのみ)（井手, 守屋）作業中
+# PDB beta_sheet distribution （井手, 守屋)
 
 ## Description
 
@@ -25,11 +25,11 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT DISTINCT ?leaf ?label (COUNT(?helix) AS ?value) 
+SELECT DISTINCT ?leaf ?label (COUNT(?sheet) AS ?value) 
 WHERE {
       ?leaf  a pdbo:datablock ;
-                 pdbo:has_struct_confCategory ?helix .
-      ?helix pdbo:has_struct_conf ?helix_each .
+  			 pdbo:has_struct_sheetCategory ?sheet .
+      ?sheet pdbo:has_struct_sheet ?sheet_each .
       ?leaf  dc:title ?label .  
       {
         SELECT DISTINCT ?leaf {
@@ -54,7 +54,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     WHERE {
       ?leaf a pdbo:datablock ;
                  dc:title ?label .
-      MINUS {?leaf pdbo:has_struct_confCategory ?helix . }
+      MINUS {?leaf pdbo:has_struct_sheetCategory ?sheet. }
       {
         SELECT DISTINCT ?leaf {
           ?leaf pdbo:has_entityCategory

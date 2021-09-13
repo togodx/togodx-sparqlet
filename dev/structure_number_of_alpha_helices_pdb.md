@@ -1,4 +1,4 @@
-# PDB alpha_helix distributeion (井手, 守屋）
+# PDB alpha_helix distribution (井手, 守屋）
 
 ## Description
 

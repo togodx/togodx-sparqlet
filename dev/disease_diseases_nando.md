@@ -54,6 +54,14 @@ GROUP BY ?id ?parent ?label
       root: true
     }
   ];
+  data.results.bindings.forEach(d => {
+    tree.push({
+      id: d.id.value.replace(idPrefix, ""),
+      label: d.label.value,
+      leaf: (d.child == undefined ? true : false),
+      parent: d.parent.value.replace(idPrefix, "")
+    });
+  });
   return tree;
 };
 ```

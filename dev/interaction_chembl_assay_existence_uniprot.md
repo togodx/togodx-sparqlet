@@ -47,7 +47,6 @@ PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 SELECT DISTINCT ?leaf ?leaf_label
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
-FROM <http://rdf.integbio.jp/dataset/togosite/go>
 WHERE {
   ?leaf a up:Protein ;
         up:organism taxon:9606 ;
