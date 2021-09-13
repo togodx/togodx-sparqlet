@@ -24,16 +24,15 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-  SELECT ?value ?leaf ?title
+  SELECT ?value ?leaf ?label
          WHERE {
           ?leaf            rdf:type	                            pdbo:datablock .
-          ?leaf            dc:title  	                        ?title .
+          ?leaf            dc:title  	                        ?label .
           ?leaf            pdbo:has_exptl_crystal_growCategory	?crystal_growCategory .
           ?crystal_growCategory pdbo:has_exptl_crystal_grow	        ?crystal_grow .
           ?crystal_grow         pdbo:exptl_crystal_grow.temp	    ?temperature_str .
           BIND(Round(10*(xsd:decimal(?temperature_str))/10) AS ?value)
       }
-limit 10
 ```
 
 ## `results`
@@ -47,8 +46,8 @@ limit 10
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       value: Number(d.value.value),
-      binId: Number(d.value.value) + 1,
-      binLabel: d.value.value
+      binId: Number(d.value.value),
+      binLabel: d.value.value + " K"
     }
   });
 }
