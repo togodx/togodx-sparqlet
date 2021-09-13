@@ -45,105 +45,74 @@ WHERE {
 ## `graph`
 - Mesh の親子関係
 ```sparql
-
-```
-
-## `targetMesh`
-- mesh D番号 と目的 tree 階層の対応表
-  - Top レベルだけ例外処理
-```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 PREFIX tree: <http://id.nlm.nih.gov/mesh/>
-SELECT DISTINCT ?mesh ?tree ?label (SAMPLE(?child_tree_ori) AS ?child_tree)
-#FROM <http://integbio.jp/rdf/mirror/ontology/mesh>
+SELECT DISTINCT ?mesh ?parent ?parent_label (SAMPLE(?child_tree) AS ?child)
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
-  ?tree a meshv:TreeNumber .
+  ?parent a meshv:TreeNumber .
   MINUS { 
-    ?tree meshv:parentTreeNumber ?parent .
+    ?parent meshv:parentTreeNumber ?parent_tree .
   }
-  FILTER (CONTAINS(STR(?tree),"mesh/C"))
-   ?tree ^meshv:treeNumber/rdfs:label ?label .
-   ?mesh meshv:treeNumber/meshv:parentTreeNumber* ?tree .
+  FILTER (CONTAINS(STR(?parent),"mesh/C"))
+   ?parent ^meshv:treeNumber/rdfs:label ?parent_label .
+   ?mesh meshv:treeNumber/meshv:parentTreeNumber* ?parent .
    OPTIONAL {
-     ?child_tree_ori meshv:parentTreeNumber ?tree .
+     ?child_tree meshv:parentTreeNumber ?parent .
    }
 }
 ```
-
-## `data`
-- ChEMBL molecule - mesh D番号の対応リスト
-```sparql
-PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#> 
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT?child ?child_label ?parent 
-FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
-WHERE {
-  ?molecule cco:chemblId ?child ;
-            rdfs:label ?child_label ;
-            cco:hasDrugIndication [
-    a cco:DrugIndication ;
-    cco:hasMesh ?parent
-  ] .
-}
-```
-## `return`
+# `return`
 ```javascript
-({targetMesh, data})=>{
- let meshExist = {};
-  for (let d of targetMesh.results.bindings) {
-    meshExist[d.mesh.value.replace("http://id.nlm.nih.gov/mesh/", "")] = true;
-  }
-  let mesh2id = {};
-  let id2label = {};
-  let id2child_tree = {};
-  for (let d of targetMesh.results.bindings) {
-    let mesh = d.mesh.value.replace("http://id.nlm.nih.gov/mesh/", "");
-    let id = d.tree.value.replace("http://id.nlm.nih.gov/mesh/", ""); // tree number
-    if (!mesh2id[mesh]) mesh2id[mesh] = [id];
-    mesh2id[mesh].push(id);
-    if (!id2label[id]) id2label[id] = d.label.value;
-    id2child_tree[id] = Boolean(d.child_tree);
-  }
-  let id2chembl = {};
-  let filteredList = [];
-  for (let d of data.results.bindings) {
-    let parent = d.parent.value.replace("http://identifiers.org/mesh/", "");
-    let child = d.child.value;
-    if (meshExist[parent] && (!chemblFilterExist || chemblFilterExist[child])) {
-      for (let id of mesh2id[parent]) {
-        if (!id2chembl[id]) id2chembl[id] = [];
-        id2chembl[id].push(child);　// tree number と chembl 対応
-        filteredList.push({
-          id: child,
-          attribute: {
-            categoryId: id,
-            uri: "http://id.nlm.nih.gov/mesh/" + id,
-            label: id2label[id]
-          }
-        })
-      }
-    }
-  }
-  let id2count = {};
-  for (let id of Object.keys(id2chembl)) {
-    id2count[id] = Array.from(new Set(id2chembl[id])).length;  // chembl を unique してカウント
-  }
-  if (mode == "objectList") return filteredList;
-  if (mode == "idList") return Array.from(new Set(filteredList.map(d=>d.id))); // chembl を unique
+({root, leaf, graph, allLeaf}) => {
+  const idPrefix = "http://purl.uniprot.org/uniprot/";
+  const categoryPrefix = "http://purl.obolibrary.org/obo/";
+  const withoutId = "unclassified";
   
-  return Object.keys(id2count).sort((a,b)=>{
-    if (id2count[a] < id2count[b]) return 1;
-    if (id2count[a] > id2count[b]) return -1;
-    return 0;
-  }).map(id=>{
-    return {
-      categoryId: id,
-      label: id2label[id],
-      count: id2count[id],
-      hasChild: id2child_tree[id]
+  let tree = [
+    {
+      id: root,
+      root: true
+    },{
+      id: withoutId,
+      label: "Unclassified",
+      parent: root
     }
-  });                        
+  ];
+
+  let withAnnotation = {};
+  // 親子関係
+  graph.results.bindings.map(d => {
+    tree.push({
+      id: d.child.value.replace(categoryPrefix, ""),
+      label: d.child_label.value,
+      parent: d.parent.value.replace(categoryPrefix, "")
+    })
+    if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
+  })
+  // アノテーション関係
+  leaf.results.bindings.map(d => {
+    withAnnotation[d.child.value] = true;
+    tree.push({
+      id: d.child.value.replace(idPrefix, ""),
+      label: d.child_label.value,
+      leaf: true,
+      parent: d.parent.value.replace(categoryPrefix, "")
+    })
+  })
+  // アノテーション無し要素
+  allLeaf.results.bindings.map(d => {
+    if (!withAnnotation[d.leaf.value]) {
+      tree.push({
+        id: d.leaf.value.replace(idPrefix, ""),
+        label: d.leaf_label.value,
+        leaf: true,
+        parent: withoutId
+      });
+    }
+  })
+  
+  return tree;	
 }
 ```
