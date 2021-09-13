@@ -36,7 +36,7 @@ PREFIX pubchemv: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-SELECT DISTINCT ?cid ?category ?label
+SELECT DISTINCT ?cid ?atc ?label
 WHERE {
       # test     
       VALUES ?cid {  compound:3561  compound:6957673  compound:3226  compound:452548  compound:19861  
@@ -49,9 +49,9 @@ WHERE {
       ?attr a sio:CHEMINF_000562 ;
             sio:is-attribute-of ?cid ; 
             sio:has-value  ?WHO_INN ;
-            dcterms:subject ?WHO_ATC .
-      ?WHO_ATC skos:broader* ?category ;
-  			   a skos:concept .
+            dcterms:subject ?atc .
+      #?WHO_ATC skos:broader* ?category ;
+  	  #		   a skos:concept .
       # filter(strstarts(str(?WHO_ATC), "http://rdf.")) # MeSH IDが入っていることがあるのを捨てる。
                                                       # ATCコード  http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_xxxx
                                                       # MeSH ID    http://id.nlm.nih.gov/mesh/Mxxxxxx
@@ -59,9 +59,8 @@ WHERE {
       # top。    
       #filter(strlen(str(?category)) = 49)     # regex(str(?category),http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_[A-Z]$)   
   
-      ?category skos:prefLabel  ?label .
-} ORDER BY ?category
-
+      ?atc skos:prefLabel  ?label .
+} 
 ```
 
 ## `return`
@@ -73,11 +72,11 @@ WHERE {
   const categoryPrefix = "http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_";
   
   return data.results.bindings.map(d=>{
-      var categorycode = d.category.value.replace(categoryPrefix, "")
+      var categorycode = d.atc.value.replace(categoryPrefix, "")
       return {
         id: d[idVarName].value.replace(idPrfix, ""), 
         attribute: {
-          categoryId: d.category.value.replace(categoryPrefix, ""), 
+          categoryId: d.atc.value.replace(categoryPrefix, ""), 
           uri: d.category.value,
           label : capitalize(d.label.value)+" ("+categorycode+")"
         }
