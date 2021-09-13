@@ -114,7 +114,7 @@ WHERE {
       categoryId: id,
       label: id2label[id],
       count: id2count[id],
-      hasChild: id2child[id]
+      hasChild: id2child_tree[id]
     }
   });                        
 }

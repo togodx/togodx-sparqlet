@@ -59,7 +59,6 @@ WHERE {
 ```javascript
 async ({tf, geneLabels}) => {
   let times = [];
-  times.push(new Date());
   let tfArray = tf.results.bindings.map(d => d.tf.value.replace("http://identifiers.org/ensembl/", ""));
   let geneLabelMap = geneLabels.results.bindings.reduce((map, x) => map.set(x.ensg_id.value, x.ensg_label.value), new Map());
   async function getTfTargets(tfId) {
@@ -80,31 +79,31 @@ async ({tf, geneLabels}) => {
   let targetsArray = await Promise.all(promises); // [[target genes of tfArray[0]], [target genes of tfArray[1]], ...]
   times.push(new Date());
   let woTfGenes = new Set(geneLabelMap.keys());
-  let tree = tfArray.reduce(
-    (objs, tf, i) =>
-    targetsArray[i].reduce(
-      (x, target) => {
-        woTfGenes.delete(target);
-        return x.concat(
-          {
-            parent: geneLabelMap.get(tf),
-            id: target,
-            label: geneLabelMap.get(target),
-            leaf: true
-          }
-        )
-      },
-      objs.concat(
+
+  let tree = [{id: "root", label: "root node", root: true}];
+  tfArray.forEach((tf, i) => {
+    tree.push(
+      {
+        parent: "root",
+        id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
+        label: geneLabelMap.get(tf)
+      });
+    targetsArray[i].forEach((target) => {
+      woTfGenes.delete(target);
+      tree.push(
         {
-          parent: "root",
-          id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
-          label: geneLabelMap.get(tf)
-        }
-      )
-    ),
-    [{id: "root", label: "root node", root: true}]);
+          parent: geneLabelMap.get(tf),
+          id: target,
+          label: geneLabelMap.get(target),
+          leaf: true
+        });
+      return;
+    });
+    return;
+  })
+  
   times.push(new Date());
-  return times;
-  //return targetsArray;
+  //return times;
+  return tree;
 }
 ```

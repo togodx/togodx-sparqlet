@@ -31,9 +31,10 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 SELECT DISTINCT ?cid ?pubchem_label ?atc ?atc_label 
     WHERE {
-      VALUES ?cid {  compound:3561  compound:6957673  compound:3226  compound:452548  compound:19861  
-                     compound:41781  compound:4909  compound:15814656  compound:13342  compound:11597698  
-                  }                  
+      #test
+      #VALUES ?cid {  compound:3561  compound:6957673  compound:3226  compound:452548  compound:19861  
+      #               compound:41781  compound:4909  compound:15814656  compound:13342  compound:11597698  
+      #            }                  
                    
  	
       ?attr a sio:CHEMINF_000562 ;
@@ -127,7 +128,7 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
         id: child,
         label: d.atc_label.value,
         leaf: false,
-        parent: d.parent.value,
+        parent: d.parent.value.replace(categoryPrefix, "")
       })
     }  
   })
