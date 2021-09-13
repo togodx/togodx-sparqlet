@@ -20,6 +20,34 @@
 
 https://integbio.jp/togosite/sparql
 
+## `leaf`
+- ChEMBL molecule - mesh D番号の対応
+```sparql
+PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tree: <http://id.nlm.nih.gov/mesh/>
+PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+SELECT DISTINCT?child ?child_label ?parent ?parent_label
+FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
+FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
+WHERE {
+  ?molecule cco:chemblId ?child ;
+            rdfs:label ?child_label ;
+            cco:hasDrugIndication [
+    a cco:DrugIndication ;
+    cco:hasMesh ?parent_ori
+  ] .
+  BIND(IRI(REPLACE(STR(?parent_ori), "http://identifiers.org/mesh/","http://id.nlm.nih.gov/mesh/")) AS ?parent)
+  ?parent meshv:treeNumber/meshv:parentTreeNumber* ?tree .
+  ?tree ^meshv:treeNumber/rdfs:label ?parent_label .
+}
+```
+## `graph`
+- Mesh の親子関係
+```sparql
+
+```
+
 ## `targetMesh`
 - mesh D番号 と目的 tree 階層の対応表
   - Top レベルだけ例外処理
