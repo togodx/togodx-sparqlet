@@ -15,7 +15,7 @@
 https://integbio.jp/togosite/sparql
 
 ## testパターン
-- この例は、[0_readme](https://togodx.integbio.jp/sparqlist_dev/0_readme)の「分類系：ルートノードが無い場合や、階層が無い場合」と近く、「分類系：ルートノードが無いいが、階層がある場合」。
+- この例は、[0_readme](https://togodx.integbio.jp/sparqlist_dev/0_readme)の「分類系：ルートノードが無い場合や、階層が無い場合」と近く、「分類系：ルートノードが無いが、階層がある場合」。
 - parentがrootの例 ([Infections: D007239](https://meshb.nlm.nih.gov/record/ui?ui=D007239))
   - returnのJSONを「"id": "D007239"」で検索する
  ```
