@@ -60,7 +60,8 @@ WHERE {
 async ({tf, geneLabels}) => {
   let times = [];
   let tfArray = tf.results.bindings.map(d => d.tf.value.replace("http://identifiers.org/ensembl/", ""));
-  let geneLabelMap = geneLabels.results.bindings.reduce((map, x) => map.set(x.ensg_id.value, x.ensg_label.value), new Map());
+  let geneLabelMap = new Map();
+  geneLabels.results.bindings.forEach((x) => geneLabelMap.set(x.ensg_id.value, x.ensg_label.value));
   async function getTfTargets(tfId) {
     let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
     let options = {

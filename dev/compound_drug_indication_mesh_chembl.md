@@ -63,26 +63,20 @@ WHERE {
    }
 }
 ```
+
 # `return`
 ```javascript
-({root, leaf, graph, allLeaf}) => {
+({root, leaf, graph}) => {
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-  const categoryPrefix = "http://purl.obolibrary.org/obo/";
-  const withoutId = "unclassified";
+  const categoryPrefix = "http://id.nlm.nih.gov/mesh/";
   
-  let tree = [
-    {
+  let tree = {
       id: root,
       root: true
-    },{
-      id: withoutId,
-      label: "Unclassified",
-      parent: root
-    }
-  ];
+    };
 
   let withAnnotation = {};
-  // 親子関係
+  // Mesh親子関係
   graph.results.bindings.map(d => {
     tree.push({
       id: d.child.value.replace(categoryPrefix, ""),
