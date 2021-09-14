@@ -224,7 +224,7 @@ g8, Y, true
 g9, Z, true
 ```
 
-- Attribute バー
+- Attribute バー表示イメージ
 
 <img src="https://sparql-support.dbcls.jp/tmp/file/tree2.png" height="140">
 
