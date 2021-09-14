@@ -1,6 +1,5 @@
-# chembl mesh（山本, 守屋、信定） 作業中
-
-* Top レベル ('C') はノードじゃ無いため URI もラベルもないので objectList 出力の Attribute は取れるもので最上位を出力
+# chembl mesh（山本, 守屋、信定）
+Server対応済み
 
 ## Description
 
@@ -27,7 +26,7 @@ PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX tree: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-SELECT DISTINCT?child ?child_label ?parent ?parent_label
+SELECT DISTINCT?child ?child_label ?parent 
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
@@ -39,7 +38,6 @@ WHERE {
   ] .
   BIND(IRI(REPLACE(STR(?parent_ori), "http://identifiers.org/mesh/","http://id.nlm.nih.gov/mesh/")) AS ?parent)
   ?parent meshv:treeNumber/meshv:parentTreeNumber* ?tree .
-  ?tree ^meshv:treeNumber/rdfs:label ?parent_label .
 }
 ```
 ## `graph`

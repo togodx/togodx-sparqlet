@@ -24,16 +24,18 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX info: <http://rdf.glycoinfo.org/glycan/>
 PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-SELECT DISTINCT ?parent_label ?parent ?child
+SELECT DISTINCT ?parent_label ?parent ?child ?child_label
 WHERE {
-  VALUES ?taxon { <http://rdf.glycoinfo.org/source/9606> }
   [] glycan:has_glycan ?child ;
      a <http://purl.jp/bio/4/id/200906013374193296> ;
-     glycan:has_taxon ?taxon ;
+     glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> ;
      glycan:has_tissue ?parent .
   ?parent rdfs:label ?parent_label .
-  FILTER(DATATYPE(?parent_label) = xsd:string)
+  OPTIONAL {
+    ?child skos:altLabel ?child_label .
+  }
 }
 ```
 
@@ -50,12 +52,13 @@ WHERE {
     root: true
   }];
   let chk = {};
+  let cap = 20;
   // typed literal とそうでないのとで label が二重についているが、 SPARQL では除けないためここで uniq する
   let uniq = Array.from(
     data.results.bindings.reduce(
       (map, current) => 
       map.set(current.parent_label.value + "-" + current.child.value, current), new Map()).values());
-  uniq.map(d => {
+  uniq.forEach(d => {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
       tree.push({     
@@ -65,12 +68,20 @@ WHERE {
         parent: "root"
       })
     }
+    let child_label = "";
+    if (d.child_label.value) {
+      child_label = d.child_label.value;
+      if (child_label.length > cap) {
+        child_label = child_label.substr(0, cap) + "...";
+      }
+    }
     tree.push({
       id: d.child.value.replace(childIdPrefix, ""),
-      label: "",
+      label: child_label,
       leaf: true,
       parent: d.parent.value.replace(parentIdPrefix, "")
-    })
+    });
+    return;
   });
   
   return tree;

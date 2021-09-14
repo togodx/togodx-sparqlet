@@ -183,14 +183,15 @@
 ```
   - データ取得例は下記参照
 
-## イメージ
+## 分類系：イメージ
 
 <img src="https://sparql-support.dbcls.jp/tmp/file/tree.jpg" height="400">
 
 - 全てのエッジ情報 + ルートノードが必要
   - A .. Z はオントロジーなどの分類ノード
-  - g1 .. g9 は geneなどの要素 = leaf
     - 共通ルートが無い場合には root node を作成
+    - ルートの下の第一階層となる A, X の２つが、最初に attribute バーの内訳に出る分類
+  - g1 .. g9 は geneなどの要素 = leaf
     - tree 状になっていない DAG (node D) の場合も親毎に
     - multi annotation (leaf g6) も分類毎に
     - I は分類の終端だけど leaf ではない
