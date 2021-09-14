@@ -30,7 +30,7 @@ WHERE
                        cco:chemblId  ?child ;
              rdfs:label ?child_label .
              }
-
+limit 10000
 ```
 ## `return`
 
