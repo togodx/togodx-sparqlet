@@ -13,17 +13,11 @@
     - Output
         - Substance type
 
-
-  
 ## `offsetArray` 
-- offsetNumbers を配列に分割
+
 ```javascript
-const offsetNumbers = [0, 5];
-({offsetNumbers}) => {
-  offsetNumbers = offsetNumbers.replace(/,/g," ")
-  if (offsetNumbers.match(/[^\s]/)) return offsetNumbers.split(/\s+/);
-  return false;
-}
+const offsetNumbers = ["0", "5"]
+                   
 ```
 
 ## Endpoint
@@ -43,7 +37,7 @@ WHERE
                        cco:chemblId  ?child ;
              rdfs:label ?child_label .
              }
-OFFSET  0
+OFFSET  {{#each offsetNumbers}} {{this}} {{/each}}
 LIMIT 20
 ```
 ## `return`
