@@ -77,44 +77,33 @@ GROUP BY ?tree ?id ?parent ?label
 
 # `return`
 ```javascript
-({root, leaf, graph}) => {
-  const categoryPrefix = "http://id.nlm.nih.gov/mesh/";
-  
+({leaf, graph}) => {
+  const idPrefix = "http://id.nlm.nih.gov/mesh/";
   let tree = [
     {
-      id: root,
+      id: "root",
+      label: "root node",
       root: true
     }
   ];
   // Mesh親子関係
-  graph.results.bindings.map(d => {
+    graph.results.bindings.forEach(d => {
     tree.push({
-      id: d.child.value.replace(categoryPrefix, ""),
-      label: d.child_label.value,
-      parent: d.parent.value.replace(categoryPrefix, "")
-    })
- })
+      id: d.id.value.replace(idPrefix, ""),
+      label: d.label.value,
+      leaf: (d.tree_child == undefined ? true : false),
+      parent: (d.parent == undefined ? "root" :  d.parent.value.replace(idPrefix, ""))
+    });
+  });
   // アノテーション関係
   leaf.results.bindings.map(d => {
     tree.push({
       id: d.child.value,
       label: d.child_label.value,
       leaf: true,
-      parent: d.parent.value.replace(categoryPrefix, "")
+      parent: d.parent.value.replace(idPrefix, "")
     })
   })
-  // アノテーション無し要素
-  allLeaf.results.bindings.map(d => {
-    if (!withAnnotation[d.leaf.value]) {
-      tree.push({
-        id: d.leaf.value.replace(idPrefix, ""),
-        label: d.leaf_label.value,
-        leaf: true,
-        parent: withoutId
-      });
-    }
-  })
-  
   return tree;	
 }
 ```

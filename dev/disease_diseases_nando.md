@@ -1,4 +1,4 @@
-# 日本の難病疾患のカテゴリフィルター（NANDO階層利用）(高月)作業中
+# 日本の難病疾患のカテゴリフィルター（NANDO階層利用）(高月・三橋）
 
 ## Description
 
@@ -69,3 +69,4 @@ GROUP BY ?id ?parent ?label
 ## MEMO
 -Author
  - Takatsuki
+ - Mitsuhashi
