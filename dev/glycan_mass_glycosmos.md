@@ -27,17 +27,18 @@ PREFIX mass: <https://glycoinfo.gitlab.io/wurcsframework/org/glycoinfo/wurcsfram
 PREFIX sbsmpt: <http://www.glycoinfo.org/glyco/owl/relation#>
 PREFIX glyconavi: <http://glyconavi.org/owl#>
 PREFIX struct: <https://glytoucan.org/Structures/Glycans/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT DISTINCT ?mass ?glytoucan ?sbsmpt ?iupac
 WHERE {
   ?s mass:WURCSMassCalculator ?mass ;
      rdfs:seeAlso ?glytoucan ;
-     sbsmpt:subsumes ?sbsmpt ;
+     a ?sbsmpt ;
      sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
   OPTIONAL {
      ?s rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?iupac .
   }
-}LIMIT 100
+}
 ```
 
 ## `return`
@@ -46,17 +47,29 @@ WHERE {
   const idPrefix = "https://glytoucan.org/Structures/Glycans/";
   
   let tree = [];
-  data.results.bindings.map(d => {
-    const num = parseInt(Number(d.mass.value) / 200) * 200;
-    const bin_id = num + "-" + (num + 200);
+  data.results.bindings.forEach(d => {
+    const bin = 200;
+    const num = parseInt(Number(d.mass.value) / bin) * bin;
+    const binLabel = num + "-" + (num + bin) + " Da";
+    const binId = num / bin;
+    const cap = 40;
+    let label = "";
+    if (d.iupac?.value) {
+      label = d.iupac.value;
+      if (label.length > cap) {
+        label = label.substr(0, cap) + "...";
+      }
+    } else if (d.sbsmpt?.value) {
+      label = "(" + d.sbsmpt.value + ")";
+    }
     tree.push({
       id: d.glytoucan.value.replace(idPrefix, ""),
-      label: "",
+      label: label,
       value: Number(d.mass.value),
-      binId: bin_id,
-      binLabel: bin_id + " Da"
-    })
-  })
+      binId: binId,
+      binLabel: binLabel
+    });
+  });
   
   return tree;
 }
