@@ -28,13 +28,16 @@ PREFIX sbsmpt: <http://www.glycoinfo.org/glyco/owl/relation#>
 PREFIX glyconavi: <http://glyconavi.org/owl#>
 PREFIX struct: <https://glytoucan.org/Structures/Glycans/>
 
-SELECT DISTINCT ?mass ?glytoucan
+SELECT DISTINCT ?mass ?glytoucan ?sbsmpt ?iupac
 WHERE {
   ?s mass:WURCSMassCalculator ?mass ;
      rdfs:seeAlso ?glytoucan ;
-     sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso ?taxonomy .
-  VALUES ?taxonomy { <http://identifiers.org/taxonomy/9606> }
-}
+     sbsmpt:subsumes ?sbsmpt ;
+     sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
+  OPTIONAL {
+     ?s rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?iupac .
+  }
+}LIMIT 100
 ```
 
 ## `return`
