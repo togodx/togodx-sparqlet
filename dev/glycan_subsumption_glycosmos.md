@@ -32,6 +32,7 @@ FROM <http://rdf.glytoucan.org/partner/glycome-db>
 FROM <http://rdf.glytoucan.org/partner/bcsdb>
 FROM <http://rdf.glytoucan.org/partner/glycoepitope>
 FROM <http://rdf.glycosmos.org/glycans/subsumption>
+FROM <http://rdf.glycosmos.org/glycans/seq>
 WHERE {
   ?wurcs a ?parent ;
          rdfs:seeAlso ?child ;
@@ -39,8 +40,7 @@ WHERE {
   OPTIONAL {
     ?wurcs rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?iupac .
   }
-  VALUES ?parent {<http://www.glycoinfo.org/glyco/owl/relation#Linkage_defined_saccharide>}
-}LIMIT 100
+}
 ```
 
 ## `return`
@@ -79,7 +79,7 @@ WHERE {
         label = label.substr(0, cap) + "...";
       }
     } else {
-      label = "(" + sbsmpt + ")";
+      label = "(" + sbsmpt.replace(/_/g, " ") + ")";
     }
 
     tree.push({
