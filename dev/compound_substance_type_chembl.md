@@ -13,16 +13,15 @@
     - Output
         - Substance type
 
-# Parameters
-* `offsetNumber`
-  * default: 0, 5
+
   
 ## `offsetArray` 
-- offsetNumber を配列に分割
+- offsetNumbers を配列に分割
 ```javascript
-({offsetNumber}) => {
-  offsetNumber = offsetNumber.replace(/,/g," ")
-  if (offsetNumber.match(/[^\s]/)) return offsetNumber.split(/\s+/);
+const offsetNumbers = [0, 5];
+({offsetNumbers}) => {
+  offsetNumbers = offsetNumbers.replace(/,/g," ")
+  if (offsetNumbers.match(/[^\s]/)) return offsetNumbers.split(/\s+/);
   return false;
 }
 ```
@@ -44,7 +43,7 @@ WHERE
                        cco:chemblId  ?child ;
              rdfs:label ?child_label .
              }
-OFFSET   { {{#each offsetArray}} {{this}} {{/each}}}
+OFFSET  0
 LIMIT 20
 ```
 ## `return`
