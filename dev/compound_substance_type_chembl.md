@@ -13,10 +13,9 @@
     - Output
         - Substance type
 
-# Parameter
-
+# Parameters
 * `offsetNumber`
-  * default: 0, 5, 10
+  * default: 0, 5
   
 ## `offsetArray` 
 - offsetNumber を配列に分割
@@ -45,7 +44,7 @@ WHERE
                        cco:chemblId  ?child ;
              rdfs:label ?child_label .
              }
-OFFSET  {{#each offsetArray}} {{this}} {{/each}} 
+OFFSET   { {{#each offsetArray}} {{this}} {{/each}}}
 LIMIT 20
 ```
 ## `return`
