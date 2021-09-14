@@ -224,6 +224,11 @@ g8, Y, true
 g9, Z, true
 ```
 
+- Attribute バー
+
+<img src="https://sparql-support.dbcls.jp/tmp/file/tree2.png" height="140">
+
+
 ## その他：カウント0要素, アノテーションの無い要素の取得方法
 - 要素全体との差分を取る
   - 例：<a href="./backend_protein_uniprot_keywords_uniprot">backend_protein_uniprot_keywords_uniprot</a>
