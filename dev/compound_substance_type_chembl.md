@@ -12,6 +12,12 @@
         - ChEMBL ID
     - Output
         - Substance type
+        
+## `repeat` 
+- sparqlの結果数が多すぎるので数回に分けて取得
+```javascript
+
+```
 
 ## Endpoint
 
