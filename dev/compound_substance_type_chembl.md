@@ -16,12 +16,13 @@
 ## `repeat` 
 - sparqlの結果数が多すぎるので数回に分けて取得
 ```javascript
-
+const array = [0, 500000, 1000000, 1500000, 2000000, 2500000, 3000000];
 ```
 
 ## Endpoint
+- http://sparql-proxy-togodx-1:3000/sparql
 
-http://sparql-proxy-togodx-1:3000/sparql
+https://integbio.jp/togosite/sparql
 
 ## `data`
 
@@ -36,7 +37,8 @@ WHERE
                        cco:chemblId  ?child ;
              rdfs:label ?child_label .
              }
-limit 10000
+OFFSET {{#each repeat}} {{this}} {{/each}} 
+limit 500000
 ```
 ## `return`
 

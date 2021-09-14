@@ -38,11 +38,12 @@ WHERE {
   }];
   let chk = {};
   
-  data.results.bindings.map(d => {
+  data.results.bindings.forEach(d => {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
       tree.push({     
-        id: d.parent.value.replace(parentIdPrefix, ""),
+        //id: d.parent.value.replace(parentIdPrefix, ""),
+        id: d.parent_label.value.,
         label: d.parent_label.value,
         leaf: false,
         parent: "root"
@@ -52,7 +53,8 @@ WHERE {
       id: d.child.value.replace(childIdPrefix, ""),
       label: d.child_label.value,
       leaf: true,
-      parent: d.parent.value.replace(parentIdPrefix, "")
+      //parent: d.parent.value.replace(parentIdPrefix, "")
+      parent: d.parent_label.value
     })
   });
   
