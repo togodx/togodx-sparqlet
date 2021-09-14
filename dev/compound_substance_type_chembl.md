@@ -13,13 +13,6 @@
     - Output
         - Substance type
 
-## `offsetArray` 
-
-```javascript
-const offsetNumbers = ["0", "5"]
-                   
-```
-
 ## Endpoint
 
 https://integbio.jp/togosite/sparql
@@ -37,7 +30,7 @@ WHERE
                        cco:chemblId  ?child ;
              rdfs:label ?child_label .
              }
-OFFSET  {{#each offsetNumbers}} {{this}} {{/each}}
+OFFSET  0
 LIMIT 20
 ```
 ## `return`
