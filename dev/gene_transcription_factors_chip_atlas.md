@@ -102,7 +102,16 @@ async ({tf, geneLabels}) => {
     });
     return;
   })
-  
+  tree.push({parent: "root", id: "unclassified", label: "no known upstream TF"});
+  woTfGenes.forEach((gene) => {
+    tree.push(
+      {
+        parent: "unclassified",
+        id: gene,
+        label: geneLabelMap.get(gene),
+        leaf: true
+      });
+  });
   times.push(new Date());
   //return times;
   return tree;

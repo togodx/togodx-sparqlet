@@ -67,7 +67,7 @@ WHERE {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
       tree.push({     
-        id: d.parent.value,
+        id: d.parent_label.value,
         label: d.parent_label.value,
         leaf: false,
         parent: "root"
@@ -77,7 +77,7 @@ WHERE {
       id: d.child.value.replace(idPrefix, ""),
       label: d.child_label.value,
       leaf: true,
-      parent: d.parent.value
+      parent: d.parent_label.value
     })
   });
   
