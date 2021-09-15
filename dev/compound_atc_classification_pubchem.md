@@ -74,10 +74,9 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
 } ORDER BY ?atc
 ```
 
-
-
 ## `return`
 - 整形
+
 ```javascript
 ({data,atcGraph})=>{
   const idVarName = "cid";
@@ -86,6 +85,7 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
   const categoryVarName = "atc";
   const categoryLabelVarName = "atc_label";
   const categoryPrefix = "http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_";
+  const withoutId = "unclassified";
   
   function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.substring(1);
@@ -96,8 +96,14 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
       id: "root",
       label: "root node",
       root: true
+    },
+    {
+      id: withoutId,
+      label: "without annotation",
+      parent: "root"
     }
   ];
+  
   let atcLabel={}
   atcGraph.results.bindings.map(d=>{
     atcLabel[d.atc.value]=d.atc_label.value
@@ -138,5 +144,7 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
   return tree ;
 }
 ```
+
+
 
 

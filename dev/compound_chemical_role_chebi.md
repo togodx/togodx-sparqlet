@@ -74,7 +74,7 @@ WHERE
 ({root, leaf, graph}) => {
   const idPrefix = "http://purl.obolibrary.org/obo/CHEBI_";
   const categoryPrefix = "http://purl.obolibrary.org/obo/CHEBI_";
-  const withoutId = "without_annotation";
+  const withoutId = "unclassified";
   
   let tree = [
     {
