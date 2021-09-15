@@ -12,6 +12,7 @@
     - しばらくは公開版も Web UI からも保存できるようにしておく
     - 落ち着いたら公開版は github 経由に以降
   - Description も一応コピーしておく
+  - gthub の <a href="https://togodx.integbio.jp/sparqlist/1_DX-server_config">config</a> 追記してプルリク
 - データが大きくなりがちで、web UI からだと結果を表示できない場合もあるので、curl などで download して確認
 
 ## 連続値系
