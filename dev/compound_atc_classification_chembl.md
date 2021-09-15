@@ -1,9 +1,9 @@
 # ChEMBL で薬を薬効（WHO ATC Code）で分類 (Server 対応だが、アノテーションのないものを数えていない）（建石、山本） 
 
 * 入力：
-  * ATCコードのカテゴリ。（デフォルトは全部：この場合、パラメータは空白)
+  * 
 * 出力：
-  * 入力したATCコードのカテゴリのサブカテゴリに含まれるChEMBL Molecule ID数（サブカテゴリ単位で集計）
+  * ChEMBL の化合物でWHO ATC コードの付与されている化合物をATCコードとともに出漁句
   * 一つの薬に複数のATCコードがついていることがありうる 
 
 ## Description
@@ -122,12 +122,18 @@ WHERE
 ```javascript
 ({data, atcGraph, atcArray, labelData}) => {
   const idPrefix = "http://rdf.ebi.ac.uk/resource/chembl/molecule/";
+  const withoutId = "unclassified";
   
   let tree = [
     {
       id: "root",
       label: "root node",
       root: true
+    },
+    {
+      id: withoutId,
+      label: "without annotation",
+      parent: "root"
     }
   ];
 
