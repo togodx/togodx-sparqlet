@@ -30,6 +30,49 @@ WHERE {
 }#LIMIT 5
 ```
 
+## `tfclassSp`
+```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tfclass: <http://sybig.de/tfclass#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT DISTINCT ?ensg_id ?label ?molsp ?parent
+FROM <http://rdf.integbio.jp/dataset/togosite/tfclass>
+WHERE { 
+  ?s tfclass:xref ?ensg .
+  FILTER(STRSTARTS(?ensg, "ENSEMBL_GeneID:"))
+  BIND(STRAFTER(?ensg, "ENSEMBL_GeneID:") as ?ensg_id)
+  ?s rdfs:subClassOf tfclass:tf_9606 ;
+     rdfs:label ?label ;
+     rdfs:subClassOf / owl:someValuesFrom ?molsp .
+  ?molsp rdfs:label ?molsp_label .
+  ?molsp rdfs:subClassOf ?parent .
+  FILTER(!isBlank(?parent))
+}
+```
+
+## `tfclassSp`
+```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tfclass: <http://sybig.de/tfclass#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT DISTINCT ?child ?parent ?child_label ?parent_label
+FROM <http://rdf.integbio.jp/dataset/togosite/tfclass>
+WHERE { 
+  ?s tfclass:xref ?ensg .
+  FILTER(STRSTARTS(?ensg, "ENSEMBL_GeneID:"))
+  BIND(STRAFTER(?ensg, "ENSEMBL_GeneID:") as ?ensg_id)
+  ?s rdfs:subClassOf tfclass:tf_9606 ;
+     rdfs:subClassOf / owl:someValuesFrom ?molsp .
+  ?molsp rdfs:subClassOf* ?child .
+  ?child rdfs:subClassOf ?parent ;
+         rdfs:label ?child_label .
+  ?parent rdfs:label ?parent_label .
+  FILTER(!isBlank(?parent))
+}
+```
+
 ## `geneLabels`
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
