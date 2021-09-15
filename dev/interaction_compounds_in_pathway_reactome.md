@@ -110,7 +110,7 @@ WHERE {
 - 整形
 ```javascript
 ({top, leaf, graph}) => {
-  const idPrefix = "http://purl.uniprot.org/uniprot/";
+  const idPrefix = "CHEBI:";
   const withoutId = "unclassified";
 
   let tree = [

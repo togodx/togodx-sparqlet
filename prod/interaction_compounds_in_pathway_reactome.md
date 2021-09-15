@@ -110,7 +110,7 @@ WHERE {
 - 整形
 ```javascript
 ({top, leaf, graph}) => {
-  const idPrefix = "http://purl.uniprot.org/uniprot/";
+  const idPrefix = "CHEBI:";
   const withoutId = "unclassified";
 
   let tree = [
@@ -126,7 +126,7 @@ WHERE {
     } */
   ];
 
-  let withAnnotation = {};
+  //let withAnnotation = {};
   // トップとルートの関係
   top.results.bindings.map(d => {
     tree.push({
@@ -145,9 +145,9 @@ WHERE {
   })
   // アノテーション関係
   leaf.results.bindings.map(d => {
-    withAnnotation[d.child.value] = true;
+   // withAnnotation[d.child.value] = true;
     tree.push({
-      id: d.child.value,
+      id: d.child.value.replace(idPrefix, ""),
       label: d.child_label.value,
       leaf: true,
       parent: d.parent.value
