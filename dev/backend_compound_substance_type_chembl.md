@@ -47,3 +47,40 @@ WHERE
 {{#each numArray}}  OFFSET {{this}} {{/each}}
 LIMIT 20
 ```
+## `return`
+
+```javascript
+({data}) => {
+   let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+
+  let edge = {};
+    data.results.bindings.map(d => {
+    tree.push({
+      id: d.child.value,
+      label: d.child_label.value,
+      leaf: true,
+      parent: d.parent.value
+    })
+       
+  // root との親子関係を追加
+    if (!edge[d.parent.value]) {
+      edge[d.parent.value] = true;
+      tree.push({   
+        id: d.parent.value,
+        label: d.parent.value,
+        leaf: false,
+        parent: "root"
+      })
+    }
+      
+  });
+  
+  return tree;
+};
+```
