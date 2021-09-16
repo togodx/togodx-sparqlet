@@ -66,7 +66,7 @@ WHERE {
       label: "root node",
       root: true
     },{
-      id: 1,
+      id: "1",
       label: "Proteins with structure data",
       parent: "root"
     },{
@@ -80,7 +80,7 @@ WHERE {
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
       label: d.child_label.value,
-      parent: 1,
+      parent: "1",
       leaf: true
     })
   })

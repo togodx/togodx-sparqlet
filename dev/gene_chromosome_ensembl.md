@@ -55,11 +55,11 @@ WHERE {
   data.results.bindings.map(d => {
     // 分類ノード id を sortable に
     let parent_id = d.parent.value;
-    if (parent_id == "X") parent_id = 23;
-    else if (parent_id == "Y") parent_id = 24;
-    else if (parent_id == "MT") parent_id = 25;
+    if (parent_id == "X") parent_id = "23";
+    else if (parent_id == "Y") parent_id = "24";
+    else if (parent_id == "MT") parent_id = "25";
     else {
-      parent_id = Number(parent_id);
+      parent_id = ('00' + parent_id).slice(-2);
       d.parent.value = "chr" + d.parent.value;
     }
     tree.push({

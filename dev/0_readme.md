@@ -25,21 +25,20 @@
     "id": "A0A087WXM7",
     "label": "A0A087WXM7_HUMAN",
     "value": 22482,
-    "binId": 3,
+    "binId": "003",
     "binLabel": "20-30 kDa"
   },
   ...
 ]
 ```
 - keys
-  - id (必須): 要素の ID
+  - id (必須: string): 要素の ID
   - label (必須): 要素のラベル
     - view results テーブルで表示される
   - value (必須:demical): 値
-  - binId (必須): フロントエンドで利用する bin の ID
-    - フロントエンドでバーの上での並びを反映した ASCII で sort 可能なものにしておく
-      - 独自に数値を振るなら positive integer
-      - 0 スタートは避ける
+  - binId (必須: integer): フロントエンドで利用する bin の ID
+    - フロントエンドでバーの上での並びを反映した integer
+    - 0 は避ける
   - binLabel (必須): フロントエンドで表示するラベル
   - (binBegin, binEnd: 廃止（作った人は消してください）)
 - binning
@@ -88,8 +87,8 @@
 ]
 ```
 - keys
-  - id (必須): 要素やカテゴリの ID
-  - label (必須): 要素やカテゴリのラベル
+  - id (必須: string): 要素やカテゴリの ID
+  - label (必須: string): 要素やカテゴリのラベル
     - view results テーブルに表示される
   - parent: 要素やカテゴリの親ノードの ID
     - ルートノードはには不要、他は必須
@@ -116,11 +115,10 @@
 
 ## 分類系：ルートノードが無い場合や、階層が無い場合
 - ルートノードを作成して、階層の無い分類や親の居ない分類をルートノードにぶら下げる
-- 内訳をカウント以外でソートする場合、id は ASCII で sort 可能なものにしておく
-  - 何でソートするかは、config json に記述予定（内訳数、ID）
-  - Chromosome の場合、[1〜22 ,X, Y, MT] -> [1〜22, 23, 24, 25] のように
-  - 0 は避ける
-- 例（Ensembl gene の chromosome による分類）
+- 内訳をカウント以外でソートする場合、id は alphabetical で sort 可能な string にしておく
+  - 何でソートするかは、config json に記述予定（内訳数、ID、ラベル）
+  - Chromosome の場合、["1"〜"22" ,"X", "Y", "MT"] -> ["01"〜"22", "23", "24", "25"] のように
+- 例（Ensembl gene の chromosome による分類
 ```json
 [
   {                                      // ルートノードを作成
@@ -129,13 +127,13 @@
     "root": true
   },
   {                                      // 階層の無い、または親の居ない分類のノード
-    "id": 3,
+    "id": "03",
     "label": "chr3",
     "leaf": false,
     "parent": "root"                     // ルートノードにぶら下げる
   },
   {
-    "id": 25,                            // id を sortable に
+    "id": "25",                            // id を sortable に
     "label": "MT",
     "leaf": false,
     "parent": "root"
@@ -144,7 +142,7 @@
     "id": "ENSG00000001617",
     "label": "SEMA3F",
     "leaf": true,
-    "parent": 3
+    "parent": "03"
   },
   ...  
 ]

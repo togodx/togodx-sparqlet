@@ -12,38 +12,32 @@
         - ChEMBL ID
     - Output
         - Substance type
-## Parameters
-* `off_num` (type: offset number)
-  * example: 0, 5, 10
-  
-## `numArray`
-- ユーザが指定したoff_numリストを配列に分割
-
+        
+## `return`
 ```javascript
-({off_num}) => {
-  off_num = off_num.replace(/,/g," ")
-   if (off_num.match(/[^\s]/))  return off_num.split(/\s+/);
-  return false;
-}
-```
-  
-## Endpoint
+async ({tf, geneLabels}) => {
+  let times = [];
+  let tfArray = tf.results.bindings.map(d => d.tf.value.replace("http://identifiers.org/ensembl/", ""));
+  let geneLabelMap = new Map();
+  geneLabels.results.bindings.forEach((x) => geneLabelMap.set(x.ensg_id.value, x.ensg_label.value));
+  async function getTfTargets(tfId) {
+    let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
+    let options = {
+      method: 'POST',
+      body: 'tfId=' + tfId,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
+    return await fetch(url, options).then(res=>res.json());
+  };  
+  times.push(new Date());
+  let promises = tfArray.map((d) => getTfTargets(d));
+  times.push(new Date());
+  let targetsArray = await Promise.all(promises); // [[target genes of tfArray[0]], [target genes of tfArray[1]], ...]
+  times.push(new Date());
+  let woTfGenes = new Set(geneLabelMap.keys());
 
-https://integbio.jp/togosite/sparql
 
-## `data`
-
-```sparql
-PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT?parent ?child ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
-WHERE 
-{
-  ?substance cco:substanceType ?parent ;
-                       cco:chemblId  ?child ;
-             rdfs:label ?child_label .
-             }
-{{#each numArray}}  OFFSET {{this}} {{/each}}
-LIMIT 20
 ```
