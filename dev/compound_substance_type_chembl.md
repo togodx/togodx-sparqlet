@@ -12,7 +12,21 @@
         - ChEMBL ID
     - Output
         - Substance type
+## Parameters
+* `off_num` (type: offset number)
+  * example: 0, 5, 10
+  
+## `numArray`
+- ユーザが指定したoff_numリストを配列に分割
 
+```javascript
+({off_num}) => {
+  off_num = off_num.replace(/,/g," ")
+   if (off_num.match(/[^\s]/))  return off_num.split(/\s+/);
+  return false;
+}
+```
+  
 ## Endpoint
 
 https://integbio.jp/togosite/sparql
@@ -30,42 +44,6 @@ WHERE
                        cco:chemblId  ?child ;
              rdfs:label ?child_label .
              }
-OFFSET  0
+{{#each numArray}}  OFFSET {{ off_num}} {{/each}}
 LIMIT 20
-```
-## `return`
-
-```javascript
-({data}) => {
-  
-  let tree = [
-    {
-      id: "root",
-      label: "root node",
-      root: true
-    }
-  ];
-
-  let edge = {};
-  data.results.bindings.map(d => {
-    tree.push({
-      id: d.child.value,
-      label: d.child_label.value,
-      leaf: true,
-      parent: d.parent.value
-    })
-  // root との親子関係を追加
-    if (!edge[d.parent.value]) {
-      edge[d.parent.value] = true;
-      tree.push({   
-        id: d.parent.value,
-        label: d.parent.value,
-        leaf: false,
-        parent: "root"
-      })
-    }
-  });
-  
-  return tree;
-};
 ```
