@@ -16,18 +16,17 @@
 
 https://integbio.jp/togosite/sparql
 
-## `tf`
+## `tfGenes`
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX ensembl: <http://identifiers.org/ensembl/>
 
 SELECT DISTINCT ?tf
 WHERE {
-  # VALUES ?tf { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?tf obo:RO_0002428 [] .
   }
-}#LIMIT 5
+}
 ```
 
 ## `geneLabels`
@@ -57,54 +56,73 @@ WHERE {
 
 ## `return`
 ```javascript
-async ({tf, geneLabels}) => {
-  let times = [];
-  let tfArray = tf.results.bindings.map(d => d.tf.value.replace("http://identifiers.org/ensembl/", ""));
-  let geneLabelMap = new Map();
-  geneLabels.results.bindings.forEach((x) => geneLabelMap.set(x.ensg_id.value, x.ensg_label.value));
-  async function getTfTargets(tfId) {
-    let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
-    let options = {
+async ({ tfGenes, geneLabels }) => {
+  let tf = tfGenes.results.bindings.map((d) => d.tf.value.replace('http://identifiers.org/ensembl/', ''));
+
+  let labels = new Map();
+  geneLabels.results.bindings.forEach((x) => labels.set(x.ensg_id.value, x.ensg_label.value));
+  let unclassifiedGenes = new Set(labels.keys());
+
+  let tree = [
+    {
+      id: 'root',
+      label: 'root node',
+    }
+  ];
+  let errors = [];
+
+  for (let i = 0; i < tf.length; i++) {
+    tree.push({
+      parent: 'root',
+      id: labels.get(tf[i]), // use TF labels as ids of TFs to sort by label
+      label: labels.get(tf[i])
+    });
+
+    const targetGenes = await fetch('test_backend_gene_transcription_factors_chip_atlas',　{
       method: 'POST',
-      body: 'tfId=' + tfId,
+      body: `tfId=${tf[i]}`,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded'
       }
-    };
-    return await fetch(url, options).then(res=>res.json());
-  };  
-  let woTfGenes = new Set(geneLabelMap.keys());
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        errors.push(tf[i]);
+      }
+    });
 
-  let tree = [{id: "root", label: "root node", root: true}];
-  const len = tfArray.length;
-  for (let i = 0; i < 10; i++) {
-    const tf = tfArray[i];
-    tree.push({
-      parent: "root",
-      id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
-      label: geneLabelMap.get(tf)
-    });
-    const targets = await getTfTargets(tf);
-    targets.forEach((target) => {
-      woTfGenes.delete(target);
-      tree.push({
-        parent: geneLabelMap.get(tf),
-        id: target,
-        label: geneLabelMap.get(target),
-        leaf: true
+    if (targetGenes) {
+      targetGenes.forEach((gene) => {
+        unclassifiedGenes.delete(gene);
+        tree.push({
+          parent: labels.get(tf[i]),
+          id: gene,
+          label: labels.get(gene),
+          leaf: true
+        });
       });
-    });
+    }
   }
-  tree.push({parent: "root", id: "unclassified", label: "no known upstream TF"});
-  woTfGenes.forEach((gene) => {
+
+  tree.push({
+    parent: 'root',
+    id: 'unclassified',
+    label: 'no known upstream TF'
+  });
+  unclassifiedGenes.forEach((gene) => {
     tree.push({
-      parent: "unclassified",
+      parent: 'unclassified',
       id: gene,
-      label: geneLabelMap.get(gene),
+      label: labels.get(gene),
       leaf: true
     });
   });
+
+  if (errors.length) {
+    tree.push({ errors: errors });
+  }
   return tree;
 }
 ```
