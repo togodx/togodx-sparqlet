@@ -14,7 +14,6 @@ PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT?chembl ?parent ?child ?child_label  
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
-
 WHERE 
 {
  ?chembl cco:chemblId ?child ;
@@ -45,7 +44,8 @@ limit 10
       id: elem.child.value,
       label: elem.child_label.value,
       leaf: true,
-      parent: elem.parent.value
+      parent: elem.parent.value,
+      p_label: parent_label,
     })
     })
   });

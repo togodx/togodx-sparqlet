@@ -1,5 +1,4 @@
 # ChEMBLを薬の開発フェーズで分類する（信定） 
-server対応済み
 
 ## Description
 
@@ -21,18 +20,12 @@ https://integbio.jp/togosite/sparql
 
 ```sparql
 PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT?parent ?child ?child_label  
+SELECT DISTINCT?development_phase
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
-
 WHERE 
 {
- ?drug cco:chemblId ?child ;
-            rdfs:label ?child_label ;
-            cco:highestDevelopmentPhase ?parent .
-  filter not exists { ?drug a cco:DrugIndication }
+  ?chembl cco:highestDevelopmentPhase  ?development_phase.
 }
-limit 1000
 ```
 ## `return`
 
