@@ -17,8 +17,10 @@ WHERE {
     ?child refexo:isPositivelySpecificTo ?parent .
   }
   BIND(URI(REPLACE(STR(?child), "http://identifiers.org/ensembl/", "http://rdf.ebi.ac.uk/resource/ensembl/")) AS ?ebi_ensg)
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
-    ?ebi_ensg rdfs:label ?child_label .
+  OPTIONAL { # some of ENSG IDs used in HPA are obsolete and do not have label
+    GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
+      ?ebi_ensg rdfs:label ?child_label .
+    }
   }
   ?parent rdfs:label ?parent_label .
 }
@@ -64,23 +66,25 @@ WHERE {
   data.results.bindings.forEach(d => {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
-      tree.push({     
-        //id: d.parent.value.replace(parentIdPrefix, ""),
+      tree.push({
         id: d.parent_label.value,
         label: d.parent_label.value,
         leaf: false,
         parent: "root"
       })
     }
+    let label = "(obsolete)";
+    if (d.child_label) {
+      label = d.child_label.value;
+    }
     tree.push({
       id: d.child.value.replace(childIdPrefix, ""),
-      label: d.child_label.value,
+      label: label,
       leaf: true,
-      //parent: d.parent.value.replace(parentIdPrefix, "")
       parent: d.parent_label.value
     })
   });
- 
+
   tree.push({     
     id: "unclassified",
     label: "Low specificity",

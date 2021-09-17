@@ -1,19 +1,8 @@
-# WIP: ChEBI Application での分類 （川島、建石） :アノテーションがないケースを数えていない（もとのまま）
+# WIP: ChEBI Chemical Role での分類 （川島、建石、信定） :アノテーションがないケースを数えていない（もとのまま）
 
-## Description
 
-- Data sources
-    -  [Chemical Entities of Biological Interest (ChEBI) ](https://www.ebi.ac.uk/chebi/) 
-- Query
-    - Input
-        - ChEBI id (number) for chemical compound(s)
-    - Output
-        -  ChEBI id (number) for application type(s) (subcategories of [Application (CHEBI:33232)](https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:33232) ) corresponding to the compound(s)
-- Supplementary Information
-	-  The classification of compounds according to their application, defined in ChEBI ontology.
-	- ChEBI Ontologyに定義された用途による、化合物の分類です。
-    
 ## Parameters
+
 
 
 
@@ -21,7 +10,7 @@
 https://integbio.jp/togosite/sparql
 
 ## `graph`
-- Application の親子関係
+- Chemical Role の親子関係
 
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
@@ -37,7 +26,7 @@ WHERE
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
     owl:someValuesFrom ?child .
-  ?child rdfs:subClassOf* obo:CHEBI_33232.
+  ?child rdfs:subClassOf* obo:CHEBI_51086.
   ?child rdfs:subClassOf ?parent.
   ?child rdfs:label ?child_label .
   ?parent rdfs:label ?parent_label .
@@ -55,8 +44,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>
 
 SELECT distinct ?compound GROUP_CONCAT(DISTINCT ?label; SEPARATOR = ", ") as ?compound_label 
-                          ?application                                      
-                          GROUP_CONCAT(DISTINCT ?application_label; SEPARATOR = ", ") AS ?application_label bound(?x) as ?haschild
+                          ?role                                      
+                          GROUP_CONCAT(DISTINCT ?role_label; SEPARATOR = ", ") AS ?role_label 
 FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
 WHERE 
 {
@@ -68,11 +57,10 @@ WHERE
     rdfs:subClassOf ?r .
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
-    owl:someValuesFrom ?application .
-  ?application rdfs:subClassOf*  obo:CHEBI_33232.
-
-  ?application rdfs:label ?application_label .
-  optional{?x rdfs:subClassOf ?application}
+    owl:someValuesFrom ?role .
+  ?role  rdfs:subClassOf* obo:CHEBI_51086.  
+  ?role rdfs:label ?role_label .
+  
 }
 ```
 
@@ -113,7 +101,7 @@ WHERE
       id: d.compound.value.replace(idPrefix, ""),
       label: d.compound_label.value,
       leaf: true,
-      parent: d.application.value.replace(categoryPrefix, "")
+      parent: d.role.value.replace(categoryPrefix, "")
     })
   })
   // アノテーション無し要素

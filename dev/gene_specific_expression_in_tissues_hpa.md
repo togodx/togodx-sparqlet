@@ -17,17 +17,42 @@ WHERE {
     ?child refexo:isPositivelySpecificTo ?parent .
   }
   BIND(URI(REPLACE(STR(?child), "http://identifiers.org/ensembl/", "http://rdf.ebi.ac.uk/resource/ensembl/")) AS ?ebi_ensg)
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
-    ?ebi_ensg rdfs:label ?child_label .
+  OPTIONAL { # some of ENSG IDs used in HPA are obsolete and do not have label
+    GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
+      ?ebi_ensg rdfs:label ?child_label .
+    }
   }
   ?parent rdfs:label ?parent_label .
+}
+```
+
+## `lowSpec`
+
+```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX refexo: <http://purl.jp/bio/01/refexo#>
+
+SELECT DISTINCT ?child ?child_label
+WHERE {
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/hpa_tissue_specificity> {
+    ?child a refexo:HPA_ts_evaluated_gene .
+    FILTER NOT EXISTS {
+      ?child refexo:isPositivelySpecificTo ?t .
+    }
+  }
+  BIND(URI(REPLACE(STR(?child), "http://identifiers.org/ensembl/", "http://rdf.ebi.ac.uk/resource/ensembl/")) AS ?ebi_ensg)
+  OPTIONAL { # some of ENSG IDs used in HPA are obsolete and do not have label
+    GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
+      ?ebi_ensg rdfs:label ?child_label .
+    }
+  }
 }
 ```
 
 ## `return`
 
 ```javascript
-({data}) => {
+({data, lowSpec}) => {
   const childIdPrefix = "http://identifiers.org/ensembl/";
   const parentIdPrefix = "http://purl.obolibrary.org/obo/caloha.obo#"
 
@@ -41,23 +66,44 @@ WHERE {
   data.results.bindings.forEach(d => {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
-      tree.push({     
-        //id: d.parent.value.replace(parentIdPrefix, ""),
-        id: d.parent_label.value.,
+      tree.push({
+        id: d.parent_label.value,
         label: d.parent_label.value,
         leaf: false,
         parent: "root"
       })
     }
+    let label = "(obsolete)";
+    if (d.child_label) {
+      label = d.child_label.value;
+    }
     tree.push({
       id: d.child.value.replace(childIdPrefix, ""),
-      label: d.child_label.value,
+      label: label,
       leaf: true,
-      //parent: d.parent.value.replace(parentIdPrefix, "")
       parent: d.parent_label.value
     })
   });
-  
+
+  tree.push({     
+    id: "unclassified",
+    label: "Low specificity",
+    leaf: false,
+    parent: "root"
+  });
+
+  lowSpec.results.bindings.forEach(d => {
+    let label = "(obsolete)";
+    if (d.child_label) {
+      label = d.child_label.value;
+    }
+    tree.push({
+      id: d.child.value.replace(childIdPrefix, ""),
+      label: label,
+      leaf: true,
+      parent: "unclassified"
+    });
+  });
   return tree;
 };
 ```
