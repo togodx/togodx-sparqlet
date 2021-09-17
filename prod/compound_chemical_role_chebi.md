@@ -1,5 +1,14 @@
-# WIP: ChEBI Chemical Role での分類 （川島、建石、信定） :アノテーションがないケースを数えていない（もとのまま）
+# ChEBI Chemical Role での分類 （川島、建石、信定） :アノテーションがないケースを数えていない（もとのまま）
 
+## Description
+
+- Data sources
+    -  [Chemical Entities of Biological Interest (ChEBI) ](https://www.ebi.ac.uk/chebi/) 
+- Query
+    - Input
+        - ChEBI id (number)
+    - Output
+        -  [Chemical Role (CHEBI:51086)](https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:51086) and its subcategories
 
 ## Parameters
 
