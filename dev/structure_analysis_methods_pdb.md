@@ -18,7 +18,6 @@ https://integbio.jp/togosite/sparql
 
 ## `data`
 ```sparql
-
 PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
 PREFIX pdbo: <https://rdf.wwpdb.org/schema/pdbx-v50.owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -35,7 +34,7 @@ SELECT DISTINCT ?leaf ?label ?parent_id
           ?exptl          pdbo:exptl.method	       ?methods .
           BIND(REPLACE(?methods, " ", "_") AS ?parent_id)
          }
-
+limit 10
 ```
 
 ## `return`
@@ -130,9 +129,9 @@ SELECT DISTINCT ?leaf ?label ?parent_id
     }
     
   ];
-  return;
+  
   data.results.bindings.map(d => {
-	let parent_id = d.parent.value;
+	let parent_id = d.parent_id.value;
  	if (parent_id  == "X-RAY_DIFFRACTION") parent_id = "01";
 	else if (parent_id == "SOLUTION_NMR") parent_id = "02";
 	else if (parent_id == "ELECTRON_MICROSCOPY") parent_id = "03";
@@ -156,5 +155,6 @@ SELECT DISTINCT ?leaf ?label ?parent_id
   });
   
   return tree;
+  
 }
 ```
