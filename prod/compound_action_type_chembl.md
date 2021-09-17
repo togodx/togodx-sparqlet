@@ -1,5 +1,5 @@
-# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） 作業中（多数問題）
-現在sparqlの結果数を制限中
+# ChEMBLを作用機作で分類する（信定・八塚・鈴木） 
+server対応済み
 
 ## Description
 
@@ -11,22 +11,8 @@
     -  Input
         - ChEMBL ID
     - Output
-        - Substance type
-## Parameters
-* `off_num` (type: offset number)
-  * example: 0, 5, 10
-  
-## `numArray`
-- ユーザが指定したoff_numリストを配列に分割
+        - Mechanism action type
 
-```javascript
-({off_num}) => {
-  off_num = off_num.replace(/,/g," ")
-   if (off_num.match(/[^\s]/))  return off_num.split(/\s+/);
-  return false;
-}
-```
-  
 ## Endpoint
 
 https://integbio.jp/togosite/sparql
@@ -36,22 +22,24 @@ https://integbio.jp/togosite/sparql
 ```sparql
 PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT?parent ?child ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
+SELECT DISTINCT?parent ?child ?child_label  
 WHERE 
 {
-  ?substance cco:substanceType ?parent ;
-                       cco:chemblId  ?child ;
-             rdfs:label ?child_label .
-             }
-{{#each numArray}}  OFFSET {{this}} {{/each}}
-LIMIT 20
+  ?chembl_drug_mechanism a cco:Mechanism ;
+                        cco:hasMolecule ?molecule ;
+                        cco:mechanismActionType ?parent .
+ ?molecule cco:chemblId ?child ;
+           rdfs:label ?child_label .
+}
+
 ```
+
 ## `return`
 
 ```javascript
 ({data}) => {
-   let tree = [
+  
+  let tree = [
     {
       id: "root",
       label: "root node",
@@ -60,14 +48,13 @@ LIMIT 20
   ];
 
   let edge = {};
-    data.results.bindings.map(d => {
+  data.results.bindings.map(d => {
     tree.push({
       id: d.child.value,
       label: d.child_label.value,
       leaf: true,
       parent: d.parent.value
     })
-       
   // root との親子関係を追加
     if (!edge[d.parent.value]) {
       edge[d.parent.value] = true;
@@ -78,10 +65,8 @@ LIMIT 20
         parent: "root"
       })
     }
-      
   });
   
   return tree;
 };
 ```
-

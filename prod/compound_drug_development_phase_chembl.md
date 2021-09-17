@@ -1,5 +1,5 @@
-# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） 作業中（多数問題）
-現在sparqlの結果数を制限中
+# ChEMBLを薬の開発フェーズで分類する（信定） 
+server対応済み
 
 ## Description
 
@@ -11,23 +11,9 @@
     -  Input
         - ChEMBL ID
     - Output
-        - Substance type
-## Parameters
-* `off_num` (type: offset number)
-  * example: 0, 5, 10
-  
-## `numArray`
-- ユーザが指定したoff_numリストを配列に分割
-
-```javascript
-({off_num}) => {
-  off_num = off_num.replace(/,/g," ")
-   if (off_num.match(/[^\s]/))  return off_num.split(/\s+/);
-  return false;
-}
-```
-  
-## Endpoint
+        - Highest development phase
+        
+ ## Endpoint
 
 https://integbio.jp/togosite/sparql
 
@@ -36,22 +22,24 @@ https://integbio.jp/togosite/sparql
 ```sparql
 PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT?parent ?child ?child_label
+SELECT DISTINCT?parent ?child ?child_label  
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
+
 WHERE 
 {
-  ?substance cco:substanceType ?parent ;
-                       cco:chemblId  ?child ;
-             rdfs:label ?child_label .
-             }
-{{#each numArray}}  OFFSET {{this}} {{/each}}
-LIMIT 20
+ ?drug cco:chemblId ?child ;
+            rdfs:label ?child_label ;
+            cco:highestDevelopmentPhase ?parent .
+  filter not exists { ?drug a cco:DrugIndication }
+}
+limit 1000
 ```
 ## `return`
 
 ```javascript
 ({data}) => {
-   let tree = [
+  
+  let tree = [
     {
       id: "root",
       label: "root node",
@@ -61,6 +49,14 @@ LIMIT 20
 
   let edge = {};
     data.results.bindings.map(d => {
+    // development_phase にラベルをつける
+    let parent_label = d.parent.value;
+    if (parent_label  == 0) parent_label = "0: No description";
+    else if (parent_label  == 1) parent_label = "1: PK tolerability";
+    else if (parent_label  == 2) parent_label = "2: Efficacy";
+    else if (parent_label  == 3) parent_label = "3: Safety & Efficacy";
+    else if  (parent_label  == 4) parent_label = "4: Indication Discovery & expansion";
+ 
     tree.push({
       id: d.child.value,
       label: d.child_label.value,
@@ -73,15 +69,13 @@ LIMIT 20
       edge[d.parent.value] = true;
       tree.push({   
         id: d.parent.value,
-        label: d.parent.value,
+        label: parent_label,
         leaf: false,
         parent: "root"
       })
     }
-      
   });
   
   return tree;
 };
 ```
-
