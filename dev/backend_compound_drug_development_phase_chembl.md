@@ -30,7 +30,9 @@ limit 10
 ({ main }) => {
   let tree = [];
   let edge = {};
+
     main.results.bindings.map(d => {
+  
     // development_phase にラベルをつける
     let parent_label = d.parent.value;
     if (parent_label  == 0) parent_label = "0: No description";
@@ -38,8 +40,8 @@ limit 10
     else if (parent_label  == 2) parent_label = "2: Efficacy";
     else if (parent_label  == 3) parent_label = "3: Safety & Efficacy";
     else if  (parent_label  == 4) parent_label = "4: Indication Discovery & expansion";
-
-  main.results.bindings.forEach((elem) => {
+ 
+    main.results.bindings.forEach((elem) => {
     tree.push({
       id: elem.child.value,
       label: elem.child_label.value,
@@ -47,7 +49,7 @@ limit 10
       parent: elem.parent.value,
       p_label: parent_label,
     })
-    })
+   })
   });
 
   return tree;
