@@ -1,87 +1,43 @@
-# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） 作業中（多数問題）
-現在sparqlの結果数を制限中
+# ChEMBLをsubstancetypeで分類する
 
-## Description
-
-- Data sources
-    - (More data sources description goes here..)
-    - ChEMBL-RDF 28.0: http://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBL-RDF/
-- Query
-    - (More query details go here..)
-    -  Input
-        - ChEMBL ID
-    - Output
-        - Substance type
-## Parameters
-* `off_num` (type: offset number)
-  * example: 0, 5, 10
-  
-## `numArray`
-- ユーザが指定したoff_numリストを配列に分割
-
-```javascript
-({off_num}) => {
-  off_num = off_num.replace(/,/g," ")
-   if (off_num.match(/[^\s]/))  return off_num.split(/\s+/);
-  return false;
-}
-```
-  
 ## Endpoint
 
 https://integbio.jp/togosite/sparql
 
-## `data`
+## Parameters
+* `i` (The first digit of the CHEMBL ID: 1..9)
+  * default: 1
 
+## `main`
 ```sparql
-PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT?parent ?child ?child_label
+PREFIX chembl: <http://rdf.ebi.ac.uk/terms/chembl#>
+
+SELECT DISTINCT ?chembl ?type ?id ?label
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
-WHERE 
-{
-  ?substance cco:substanceType ?parent ;
-                       cco:chemblId  ?child ;
-             rdfs:label ?child_label .
-             }
-{{#each numArray}}  OFFSET {{this}} {{/each}}
-LIMIT 20
+WHERE {
+  ?chembl chembl:substanceType ?type ;
+      chembl:chemblId ?id ;
+      rdfs:label ?label .
+  FILTER (regex(str(?chembl), 'CHEMBL{{i}}'))
+}
 ```
+
 ## `return`
 
 ```javascript
-({data}) => {
-   let tree = [
-    {
-      id: "root",
-      label: "root node",
-      root: true
-    }
-  ];
+({ main }) => {
+  let tree = [];
 
-  let edge = {};
-    data.results.bindings.map(d => {
+  main.results.bindings.forEach((elem) => {
     tree.push({
-      id: d.child.value,
-      label: d.child_label.value,
+      id: elem.id.value,
+      label: elem.label.value,
       leaf: true,
-      parent: d.parent.value
+      parent: elem.type.value
     })
-       
-  // root との親子関係を追加
-    if (!edge[d.parent.value]) {
-      edge[d.parent.value] = true;
-      tree.push({   
-        id: d.parent.value,
-        label: d.parent.value,
-        leaf: false,
-        parent: "root"
-      })
-    }
-      
   });
-  
+
   return tree;
 };
 ```
-

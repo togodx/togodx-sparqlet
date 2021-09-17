@@ -50,10 +50,29 @@ WHERE {
 }
 ```
 
+## `all`
+```sparql
+# Endpoint: https://integbio.jp/togosite/sparql
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?child ?child_label
+WHERE {
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
+    ?child a ?type ;
+           rdfs:label ?child_label .
+    [] obo:SO_transcribed_from ?child .
+    VALUES ?type { enso:lncRNA obo:SO_0001217 obo:SO_0000336 enso:TEC }
+    MINUS { ?child a enso:rRNA_pseudogene }
+  }
+}
+```
+
 ## `return`
 
 ```javascript
-({data}) => {
+({data, all}) => {
   const idPrefix = "http://rdf.ebi.ac.uk/resource/ensembl/";
 
   let tree = [{
@@ -62,8 +81,11 @@ WHERE {
     root: true
   }];
   let chk = {};
-  
-  data.results.bindings.map(d => {
+  let unclassified = {};
+  all.results.bindings.forEach(d => {
+    unclassified[d.child.value] = d.child_label.value;
+  });
+  data.results.bindings.forEach(d => {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
       tree.push({     
@@ -71,16 +93,32 @@ WHERE {
         label: d.parent_label.value,
         leaf: false,
         parent: "root"
-      })
+      });
     }
+    delete unclassified[d.child.value];
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
       label: d.child_label.value,
       leaf: true,
       parent: d.parent_label.value
-    })
+    });
   });
-  
+
+  tree.push({     
+    id: "unclassified",
+    label: "Expressed in all tissues",
+    leaf: false,
+    parent: "root"
+  });
+
+  Object.keys(unclassified).forEach(d => {
+    tree.push({
+      id: d.replace(childIdPrefix, ""),
+      label: unclassified[d],
+      leaf: true,
+      parent: "unclassified"
+    });
+  });
   return tree;
 };
 

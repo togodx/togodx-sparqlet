@@ -1,5 +1,4 @@
-# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚） 作業中（多数問題）
-現在sparqlの結果数を制限中
+# ChEMBLをsubstancetypeで分類する（信定・鈴木・八塚）
 
 ## Description
 
@@ -12,22 +11,70 @@
         - ChEMBL ID
     - Output
         - Substance type
-        
+
+## Endpoint
+
+https://integbio.jp/togosite/sparql
+
+## `main`
+
+```sparql
+PREFIX chembl: <http://rdf.ebi.ac.uk/terms/chembl#>
+
+SELECT DISTINCT ?type
+FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
+WHERE 
+{
+  ?chembl chembl:substanceType ?type .
+}
+```
+
 ## `return`
 ```javascript
-async () => {
-  async function getSubstance(off_num) {
-    let url = "backend_compound_substance_type_chembl"; // parent SPARQLet relative path
-    let options = {
+async ({ main }) => {  
+  let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+
+  main.results.bindings.map(d => {
+    tree.push({
+      id: d.type.value,
+      label: d.type.value,
+      parent: 'root'
+    });
+  });
+
+  let errors = [];
+  for (let i = 1; i <= 9; i++) {
+    const results = await fetch('backend_compound_substance_type_chembl',　{
       method: 'POST',
-      body: 'off_num=' + off_num,
+      body: `i=${i}`,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded'
       }
-    };
-    return await fetch(url, options);
-  };  
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        errors.push(`CHEMBL${i}`);
+      }
+    });
+    
+    if (results) {
+      results.forEach((elem) => {
+        tree.push(elem);
+      });
+    }
+  }
 
-
+  if (errors.length) {
+    tree.push({ errors: errors });
+  }
+  return tree;
+};
 ```
