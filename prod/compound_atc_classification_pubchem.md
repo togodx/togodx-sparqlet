@@ -1,5 +1,5 @@
-# PubChem で薬を薬効で分類（FDA Approved Drugs → WHO ATC Code）(Annotationのない化合物を数えていない＝もとのまま)（建石, 守屋, 山本）
-
+# PubChem で薬を薬効で分類（FDA Approved Drugs → WHO ATC Code）（建石, 守屋, 山本）
+- (Annotationのない化合物を数えていない＝もとのまま)
 
 ## Description
 

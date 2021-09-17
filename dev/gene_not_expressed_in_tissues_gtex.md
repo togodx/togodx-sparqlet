@@ -11,7 +11,6 @@ https://integbio.jp/togosite/sparql
 
 ## `data`
 ```sparql
-# Endpoint: https://integbio.jp/togosite/sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -43,7 +42,7 @@ WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
     ?child a ?type ;
            rdfs:label ?child_label .
-    VALUES ?type { enso:lncRNA obo:SO_0001217 obo:SO_0000336 enso:TEC }
+    VALUES ?type { enso:lncRNA obo:SO_0001217 obo:SO_0000336 enso:TEC } # lncRNA, protein_coding_gene, pseudogene
     MINUS { ?child a enso:rRNA_pseudogene }
   }
 
@@ -52,7 +51,6 @@ WHERE {
 
 ## `all`
 ```sparql
-# Endpoint: https://integbio.jp/togosite/sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

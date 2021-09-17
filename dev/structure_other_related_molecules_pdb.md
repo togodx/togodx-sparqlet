@@ -40,7 +40,7 @@ LIMIT 100
 ## `results`
 
 ```javascript
-({ mode, main, total_count }) => {
+({ main }) => {
   if (mode === "idList") {
     return Array.from(new Set(
       main.results.bindings.map((elem) =>

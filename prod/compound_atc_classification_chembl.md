@@ -1,5 +1,5 @@
-# ChEMBL で薬を薬効（WHO ATC Code）で分類 (Server 対応だが、アノテーションのないものを数えていない）（建石、山本） 
-
+# ChEMBL で薬を薬効（WHO ATC Code）で分類 （建石、山本） 
+- (Server 対応だが、アノテーションのないものを数えていない）
 
 ## Description
 

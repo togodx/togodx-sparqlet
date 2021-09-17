@@ -1,5 +1,5 @@
-# ChEBI Biological Role での分類 （川島、建石、信定） :アノテーションがないケースを数えていない（もとのまま）
-
+# ChEBI Biological Role での分類 （川島、建石、信定） 
+- アノテーションがないケースを数えていない（もとのまま）
 ## Description
 
 - Data sources

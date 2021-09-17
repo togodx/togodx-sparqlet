@@ -1,5 +1,5 @@
-# ChEBI Application での分類 （川島、建石） :アノテーションがないケースを数えていない（もとのまま）
-
+# ChEBI Application での分類 （川島、建石） 
+- アノテーションがないケースを数えていない（もとのまま）
 ## Description
 
 - Data sources
