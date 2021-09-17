@@ -40,8 +40,40 @@ WHERE {
 ```
 ## `return`
 - 整形
-```
-
+```javascript
+ ({data}) => {
+   const idPrefix = "http://purl.obolibrary.org/obo/MONDO_";
+   
+   let tree = [
+     {
+       id: "root",
+       label: "root node",
+       root: true
+     }
+   ];
+   
+   let edge = { };
+   data.result.bindings.map(d =>{
+     let parent_id = d.parent.value;
+   }
+   tree.push({
+     id: d.mondo.value.replace(idPrefix, ""),
+     label: d.rabel.value,
+     leaf: true,
+     parent: parent_id
+ })
+ if(!edge[d.parent.value]) {
+   edge[d.parent.value] = ture;
+   tree.push({
+     id: parent,
+     label: d.parent.value,
+     leaf: fales,
+     parent: "root"
+   })
+}
+});
+ return tree;
+};
 ```
 
 ## MEMO

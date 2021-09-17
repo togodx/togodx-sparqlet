@@ -113,7 +113,7 @@ WHERE {
 
   Object.keys(unclassified).forEach(d => {
     tree.push({
-      id: d.replace(childIdPrefix, ""),
+      id: d.replace(idPrefix, ""),
       label: unclassified[d],
       leaf: true,
       parent: "unclassified"
