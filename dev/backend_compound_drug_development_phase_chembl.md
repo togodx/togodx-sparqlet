@@ -22,7 +22,6 @@ WHERE
   filter not exists { ?chembl a cco:DrugIndication }
   FILTER (regex(str(?chembl), 'CHEMBL{{i}}'))
 }
-limit 10
 ```
 ## `return`
 

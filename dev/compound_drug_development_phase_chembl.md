@@ -39,6 +39,7 @@ async ({ main }) => {
     }
   ];
 
+  main.results.bindings.map(d => {
   // development_phase にラベルをつける
     let parent_label = d.development_phase.value;
     if (parent_label  == 0) parent_label = "0: No description";
@@ -47,7 +48,6 @@ async ({ main }) => {
     else if (parent_label  == 3) parent_label = "3: Safety & Efficacy";
     else if  (parent_label  == 4) parent_label = "4: Indication Discovery & expansion";
   
-  main.results.bindings.map(d => {
     tree.push({
       id: d.development_phase.value,
       label: parent_label,
