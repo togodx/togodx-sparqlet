@@ -43,9 +43,10 @@ SELECT DISTINCT ?cid ?pubchem_label ?atc ?atc_label
             sio:is-attribute-of ?cid ; 
             sio:has-value  ?inn ;
             dcterms:subject ?atc .
+      ?atc  a skos:concept .  
       ?cid sio:has-attribute  [a sio:CHEMINF_000382; sio:has-value ?pubchem_label_temp  ] .
 
-      ?atc  skos:prefLabel  ?atc_label.  
+
       BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp,"null") AS ?pubchem_label)      
 } 
 ```
