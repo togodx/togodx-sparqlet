@@ -130,11 +130,10 @@ SELECT DISTINCT ?leaf ?label ?parent_id
     }
     
   ];
-  
-  let edge = {};
+  return;
   data.results.bindings.map(d => {
-    let parent_id = d.parent.value;
-    if (parent_id  == "X-RAY_DIFFRACTION") parent_id = "01";
+	let parent_id = d.parent.value;
+ 	if (parent_id  == "X-RAY_DIFFRACTION") parent_id = "01";
 	else if (parent_id == "SOLUTION_NMR") parent_id = "02";
 	else if (parent_id == "ELECTRON_MICROSCOPY") parent_id = "03";
 	else if (parent_id == "NEUTRON_DIFFRACTION") parent_id = "04";
@@ -149,7 +148,7 @@ SELECT DISTINCT ?leaf ?label ?parent_id
 	else { (parent_id == "FLUORESCENCE_TRANSFER") parent_id = "13"; 
          }
     tree.push({
-      id: d.child.value.replace(idPrefix, ""),
+      id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       leaf: true,
       parent: parent_id
