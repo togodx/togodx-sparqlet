@@ -38,6 +38,34 @@ WHERE {
         }
  } 
  GROUP BY ?hp ?parent ?label
+Limit 100
              
 ```
+## `return`
 
+```javascript
+({data}) => {
+  const idPrefix = "http://purl.obolibrary.org/obo/HP_";
+  let tree = [
+    {
+      id: "0000118",
+      label: "Phenotypic abnormality",
+      root: true
+    }
+  ];
+  data.results.bindings.forEach(d => {
+    tree.push({
+      id: d.hp.value.replace(idPrefix, ""),
+      label: d.label.value,
+      leaf: (d.child == undefined ? true : false),
+      parent: d.parent.value.replace(idPrefix, "")
+    });
+  });
+  return tree;
+};
+```
+
+## MEMO
+-Author
+ - Takatsuki
+ - Mitsuhashi
