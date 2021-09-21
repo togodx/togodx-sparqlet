@@ -33,7 +33,6 @@ WHERE {
       pdbo:pdbx_entity_nonpoly.comp_id ?comp_id ;
       pdbo:pdbx_entity_nonpoly.name ?name .
 }
-LIMIT 100
 ```
 
 ## `main`
@@ -53,7 +52,6 @@ WHERE {
       pdbo:pdbx_entity_nonpoly.comp_id ?comp_id ;
       pdbo:pdbx_entity_nonpoly.name ?name .
 }
-LIMIT 100
 ```
 
 ## `results`
@@ -105,10 +103,5 @@ LIMIT 100
     function capitalize(s) {
       return s.charAt(0).toUpperCase() + s.substring(1).toLowerCase();
     }
-  
-  
- 
 }
-  
- 
 ```
