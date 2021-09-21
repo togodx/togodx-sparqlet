@@ -39,3 +39,31 @@ WHERE {
    }
 GROUP BY ?mondo ?parent ?label 
 ```
+## `return`
+
+```javascript
+({data}) => {
+  const idPrefix = "http://purl.obolibrary.org/obo/MONDO_";
+  let tree = [
+    {
+      id: "0000001",
+      label: "Disease and disorder",
+      root: true
+    }
+  ];
+  data.results.bindings.forEach(d => {
+    tree.push({
+      id: d.mondo.value.replace(idPrefix, ""),
+      label: d.label.value,
+      leaf: (d.child == undefined ? true : false),
+      parent: d.parent.value.replace(idPrefix, "")
+    });
+  });
+  return tree;
+};
+```
+
+## MEMO
+-Author
+ - Takatsuki
+ - Mitsuhashi
