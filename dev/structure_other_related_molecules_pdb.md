@@ -56,13 +56,11 @@ WHERE {
 LIMIT 100
 ```
 
-
 ## `results`
 
 ```javascript
-({ getIDs }) => {
+({ getIDs, main }) => {
   const idPrefix = "https://rdf.wwpdb.org/pdb/";
-  
   let tree = [
     {
       id: "root",
@@ -72,30 +70,44 @@ LIMIT 100
   ];
   
   getIDs.results.bindings.map((elem) => {
-  'let parent_id = d.parent.value;
      tree.push({
-      "id": elem.comp_id.value,
-      "label": makelabel(elem),
-      "leaf": false,
-      "parent": "root"
+      id: elem.comp_id.value,
+      label: makeLabel(elem),
+      leaf: false,
+      parent: "root"
     })
   });
+  
+   main.results.bindings.map((elem2) => {
+     let parent_id = elem2.comp_id.value;
+     tree.push({
+      id: elem2.pdb.value.replace(idPrefix, ""),
+      label: makeLabel(elem2),
+      leaf: true,
+      parent: parent_id
+    })
+  }); 
+  
+  
   return tree;
   
-  function makeLabel(elem) {
-    let label = capitalize(elem.name.value)
-        .replace('(iii)', '(III)').replace('(ii)', '(II)').replace('ix', 'IX')
-        .replace('(2r)', '(2R)').replace('(4r)', '(4R)').replace('(4s)', '(4S)').replace('(9z)', '(9Z)').replace('(n-', '(N-')
-        .replace('-l-', '-L-').replace(/^Nadh /, 'NADH ').replace(/^Nadph /, 'NADPH ').replace(/ fe$/, ' Fe').replace(/^Fe2\/s2/, 'Fe2/S2');
-    if (label.length <= 27) {
-      return label;
-    } else {
-      return `${elem.comp_id.value}: ` + label.substr(0, 27) + '...';
+    function makeLabel(elem) {
+      let label = capitalize(elem.name.value)
+          .replace('(iii)', '(III)').replace('(ii)', '(II)').replace('ix', 'IX')
+          .replace('(2r)', '(2R)').replace('(4r)', '(4R)').replace('(4s)', '(4S)').replace('(9z)', '(9Z)').replace('(n-', '(N-')
+          .replace('-l-', '-L-').replace(/^Nadh /, 'NADH ').replace(/^Nadph /, 'NADPH ').replace(/ fe$/, ' Fe').replace(/^Fe2\/s2/, 'Fe2/S2');
+      if (label.length <= 27) {
+        return label;
+      } else {
+        return `${elem.comp_id.value}: ` + label.substr(0, 27) + '...';
+      }
     }
-  }
-  function capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.substring(1).toLowerCase();
-  }
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.substring(1).toLowerCase();
+    }
+  
+  
+ 
 }
   
  
