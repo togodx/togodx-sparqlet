@@ -30,7 +30,6 @@ WHERE {
   ?hp rdfs:label ?label.
   ?hp rdfs:subClassOf* ?parent.
   ?hp rdf:type owl:Class.  
-  # ?hp rdfs:subClassOf* ?category が?hpの値に関係なく、trueになってしまうため追加。次のOPTIONALも同じ意図だがこちらの方が軽いはず。
   # HP以外のIDも登録されているため、HPに限定するためにフィルターを追加
   FILTER regex(str(?hp), "http://purl.obolibrary.org/obo/HP_" )
   # 中間ノードの場合は？parentに値が存在し、leafノードの場合は?parentは存在しないのでOPTIONALが必要

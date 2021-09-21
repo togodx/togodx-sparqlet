@@ -1,4 +1,4 @@
-# ChEMBLを薬の開発フェーズで分類する（信定） 
+# test_ChEMBLを薬の開発フェーズで分類する（信定） 
 
 ## Description
 
@@ -20,17 +20,39 @@ https://integbio.jp/togosite/sparql
 
 ```sparql
 PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-SELECT DISTINCT?development_phase
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT?chembl_id ?chembl_label ?development_phase
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
 WHERE 
 {
-  ?chembl cco:highestDevelopmentPhase ?development_phase .
+  ?chembl cco:chemblId ?chembl_id ;
+            rdfs:label ?chembl_label ;
+            cco:highestDevelopmentPhase ?development_phase .
+  filter not exists { ?chembl a cco:DrugIndication }
+  filter  (?development_phase !="0" )
 }
 ```
+
+## `allLeaf`
+- 全ChEMBL (without annotation 用)
+```sparql
+PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT?chembl_id ?chembl_label
+FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
+WHERE 
+{
+  ?chembl cco:chemblId ?chembl_id ;
+          rdfs:label ?chembl_label ;
+          cco:highestDevelopmentPhase ?development_phase .
+  filter not exists { ?chembl a cco:DrugIndication }
+}
+```
+
 ## `return`
 
 ```javascript
-async ({ main }) => {  
+({main}) => {
   let tree = [
     {
       id: "root",
@@ -48,6 +70,15 @@ async ({ main }) => {
     else if (parent_label  == 3) parent_label = "3: Safety & Efficacy";
     else if  (parent_label  == 4) parent_label = "4: Indication Discovery & expansion";
   
+    let edge = {};
+  data.results.bindings.map(d => {
+    tree.push({
+      id: d.child.value,
+      label: d.child_label.value,
+      leaf: true,
+      parent: d.parent.value
+    })
+    
     tree.push({
       id: d.development_phase.value,
       label: parent_label,
