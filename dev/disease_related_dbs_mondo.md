@@ -34,47 +34,49 @@ WHERE {
   BIND (strbefore(str(?id), ":") AS ?parent)  
   FILTER(!STRSTARTS(str(?id), "http"))
   FILTER regex(str(?mondo), "http://purl.obolibrary.org/obo/MONDO_" )
- VALUES ?parent {"UMLS" "ICD10" "DOID" "Orphanet" "OMIM" "SCTID" "MESH" "NCIT" "GARD" "ICD9" "EFO" "COHD"}
+ VALUES ?parent {"UMLS" "ICD10" "DOID" "Orphanet" "OMIM" "SCTID" "MESH" "NCIT" "GARD" 
+                        "ICD9" "EFO" "COHD" "MedDRA" "GC_ID" "SNOMEDCT_US" "PMID" "ICD0" "HP" "ONCOTREE"
+                        "OMIMPS" "MSH" "FMA" "DC" "BTO" "CALOHA"}
 }
 
 ```
 ## `return`
-- 整形
+
 ```javascript
- ({data}) => {
-   const idPrefix = "http://purl.obolibrary.org/obo/MONDO_";
-   
-   let tree = [
-     {
-       id: "root",
-       label: "root node",
-       root: true
-     }
-   ];
-   
-   let edge = { };
-   data.result.bindings.map(d =>{
-     let parent_id = d.parent.value;
-   }
-   tree.push({
-     id: d.mondo.value.replace(idPrefix, ""),
-     label: d.rabel.value,
-     leaf: true,
-     parent: parent_id
- })
- if(!edge[d.parent.value]) {
-   edge[d.parent.value] = ture;
-   tree.push({
-     id: parent,
-     label: d.parent.value,
-     leaf: fales,
-     parent: "root"
-   })
-}
-});
- return tree;
+({data}) => {
+  const idPrefix = "http://purl.obolibrary.org/obo/MONDO_";
+  let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+
+  let edge = {};
+  data.results.bindings.map(d => {
+    tree.push({
+      id: d.mondo.value.replace(idPrefix, ""),
+      label: d.label.value,
+      leaf: true,
+      parent: d.parent.value
+    })
+  // root との親子関係を追加
+    if (!edge[d.parent.value]) {
+      edge[d.parent.value] = true;
+      tree.push({   
+        id: d.parent.value,
+        label: d.parent.value,
+        leaf: false,
+        parent: "root"
+      })
+    }
+  });
+  
+  return tree;
 };
 ```
+
 
 ## MEMO
 -Author
