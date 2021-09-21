@@ -34,9 +34,9 @@ WHERE {
   BIND (strbefore(str(?id), ":") AS ?parent)  
   FILTER(!STRSTARTS(str(?id), "http"))
   FILTER regex(str(?mondo), "http://purl.obolibrary.org/obo/MONDO_" )
- VALUES ?parent {"UMLS" "ICD10" "DOID" "Orphanet" "OMIM" "SCTID" "MESH" "NCIT" "GARD" 
-                        "ICD9" "EFO" "COHD" "MedDRA" "GC_ID" "SNOMEDCT_US" "PMID" "ICD0" "HP" "ONCOTREE"
-                        "OMIMPS" "MSH" "FMA" "DC" "BTO" "CALOHA"}
+ VALUES ?parent {"UMLS" "ICD10" "DOID" "Orphanet" "OMIM" "SCTID" "MESH"
+                 "NCIT" "GARD"  "ICD9" "EFO" "COHD" "MedDRA" "GC_ID" "SNOMEDCT_US"
+                 "PMID" "ICD0" "HP" "ONCOTREE" "OMIMPS" "MSH" "FMA" "DC" "BTO" "CALOHA"}
 }
 
 ```

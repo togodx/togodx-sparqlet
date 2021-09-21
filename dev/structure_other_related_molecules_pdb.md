@@ -16,6 +16,26 @@
 
 https://integbio.jp/togosite/sparql
 
+## `getIDs`
+```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX taxid: <http://identifiers.org/taxonomy/>
+PREFIX pdbo: <https://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX pdb: <https://rdf.wwpdb.org/pdb/>
+
+SELECT DISTINCT ?comp_id ?name
+FROM <http://rdf.integbio.jp/dataset/togosite/pdbj>
+WHERE {
+  ?pdb a pdbo:datablock ;
+      pdbo:has_entityCategory/pdbo:has_entity/rdfs:seeAlso taxid:9606 ;
+      pdbo:has_pdbx_entity_nonpolyCategory/pdbo:has_pdbx_entity_nonpoly ?nonpoly .
+  ?nonpoly
+      pdbo:pdbx_entity_nonpoly.comp_id ?comp_id ;
+      pdbo:pdbx_entity_nonpoly.name ?name .
+}
+LIMIT 100
+```
+
 ## `main`
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -40,42 +60,28 @@ LIMIT 100
 ## `results`
 
 ```javascript
-({ main }) => {
-  if (mode === "idList") {
-    return Array.from(new Set(
-      main.results.bindings.map((elem) =>
-        elem.pdb.value.replace("https://rdf.wwpdb.org/pdb/", ""))
-    ));
-  } else if (mode === "objectList") {
-    return main.results.bindings.map((elem) => ({ 
-      id: elem.pdb.value.replace("https://rdf.wwpdb.org/pdb/", ""), 
-      attribute: {
-        categoryId: elem.comp_id.value,
-        label: makeLabel(elem)
-      }
-    }));
-  } else {
-    const total = total_count.results.bindings[0].count.value;
-    let sum = 0;
-    let arr = [];
-    main.results.bindings.forEach((elem) => {
-      arr.push({
-        categoryId: elem.comp_id.value,
-        label: makeLabel(elem),
-        count: Number(elem.count.value)
-      });
-      sum += Number(elem.count.value);
-    });
-    if (total - sum > 0) {
-      arr.push({
-        categoryId: "_other",
-        label: "Other molecules",
-        count: total - sum
-      });
+({ getIDs }) => {
+  const idPrefix = "https://rdf.wwpdb.org/pdb/";
+  
+  let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
     }
-    return arr;
-  }
-
+  ];
+  
+  getIDs.results.bindings.map((elem) => {
+  'let parent_id = d.parent.value;
+     tree.push({
+      "id": elem.comp_id.value,
+      "label": makelabel(elem),
+      "leaf": false,
+      "parent": "root"
+    })
+  });
+  return tree;
+  
   function makeLabel(elem) {
     let label = capitalize(elem.name.value)
         .replace('(iii)', '(III)').replace('(ii)', '(II)').replace('ix', 'IX')
@@ -91,4 +97,6 @@ LIMIT 100
     return s.charAt(0).toUpperCase() + s.substring(1).toLowerCase();
   }
 }
+  
+ 
 ```
