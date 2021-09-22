@@ -1,12 +1,18 @@
-# WIP: ChEBI Chemical Role での分類 （川島、建石、信定） :アノテーションがないケースを数えていない（もとのまま）
+# ChEBI Chemical Role での分類 （川島、建石、信定） 
+- アノテーションがないケースを数えていない（もとのまま）
+## Description
 
+- Data sources
+    -  [Chemical Entities of Biological Interest (ChEBI) ](https://www.ebi.ac.uk/chebi/) 
+- Query
+    - Input
+        - ChEBI id (number)
+    - Output
+        -  [Chemical Role (CHEBI:51086)](https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:51086) and its subcategories
 
 ## Parameters
 
-* `root` (type: obo:CHEBI_) (Req.)
-  * default: 51086
-  * example: 51086 (Chemical Role)
-  
+
 
 
 ## Endpoint
@@ -29,7 +35,7 @@ WHERE
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
     owl:someValuesFrom ?child .
-  ?child rdfs:subClassOf* obo:CHEBI_{{root}}.
+  ?child rdfs:subClassOf* obo:CHEBI_51086.
   ?child rdfs:subClassOf ?parent.
   ?child rdfs:label ?child_label .
   ?parent rdfs:label ?parent_label .
@@ -61,7 +67,7 @@ WHERE
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
     owl:someValuesFrom ?role .
-  ?role  rdfs:subClassOf* obo:CHEBI_{{root}}.  
+  ?role  rdfs:subClassOf* obo:CHEBI_51086.  
   ?role rdfs:label ?role_label .
   
 }
@@ -71,23 +77,18 @@ WHERE
 
 ```javascript
 
-({root, leaf, graph}) => {
+({leaf, graph}) => {
   const idPrefix = "http://purl.obolibrary.org/obo/CHEBI_";
   const categoryPrefix = "http://purl.obolibrary.org/obo/CHEBI_";
-  const withoutId = "unclassified";
   
   let tree = [
     {
-      id: root,
+      id: "51086",
+      label: "chemical role",
       root: true
-    },{
-      id: withoutId,
-      label: "without annotation",
-      parent: root
     }
   ];
 
-  let withAnnotation = {};
   // 親子関係
   graph.results.bindings.map(d => {
     tree.push({
@@ -95,11 +96,9 @@ WHERE
       label: d.child_label.value,
       parent: d.parent.value.replace(categoryPrefix, "")
     })
-    if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
   })
   // アノテーション関係
   leaf.results.bindings.map(d => {
-    withAnnotation[d.compound.value] = true;
     tree.push({
       id: d.compound.value.replace(idPrefix, ""),
       label: d.compound_label.value,
@@ -107,17 +106,6 @@ WHERE
       parent: d.role.value.replace(categoryPrefix, "")
     })
   })
-  // アノテーション無し要素
-  //allLeaf.results.bindings.map(d => {
-    //if (!withAnnotation[d.leaf.value]) {
-      //tree.push({
-        //id: d.leaf.value.replace(idPrefix, ""),
-        //label: d.leaf_label.value,
-        //leaf: true,
-        //parent: withoutId
-      //});
-    //}
-  //})
   
   return tree;	
 }
