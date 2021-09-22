@@ -14,7 +14,7 @@
         
  ## Endpoint
 
-https://integbio.jp/togosite/sparql
+http://sparql-proxy-togodx-1:3000/sparql
 
 ## `main`
 

@@ -2,7 +2,7 @@
 
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+http://sparql-proxy-togodx-1:3000/sparql
 
 ## Parameters
 * `i` (The first digit of the CHEMBL ID: 1..9)
