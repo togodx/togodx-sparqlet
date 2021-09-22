@@ -1,12 +1,20 @@
-# WIP: ChEBI Application での分類 （川島、建石） :アノテーションがないケースを数えていない（もとのまま）
+# ChEBI Application での分類 （川島、建石） 
+- アノテーションがないケースを数えていない（もとのまま）
+## Description
 
-
+- Data sources
+    -  [Chemical Entities of Biological Interest (ChEBI) ](https://www.ebi.ac.uk/chebi/) 
+- Query
+    - Input
+        - ChEBI id (number) for chemical compound(s)
+    - Output
+        -  ChEBI id (number) for application type(s) (subcategories of [Application (CHEBI:33232)](https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:33232) ) corresponding to the compound(s)
+- Supplementary Information
+	-  The classification of compounds according to their application, defined in ChEBI ontology.
+	- ChEBI Ontologyに定義された用途による、化合物の分類です。
+    
 ## Parameters
 
-* `root` (type: obo:CHEBI_) (Req.)
-  * default: 33232
-  * example: 33232 (Application), 52217 (pharmaceutical), 64047 (food additive)
-  
 
 
 ## Endpoint
@@ -29,7 +37,7 @@ WHERE
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
     owl:someValuesFrom ?child .
-  ?child rdfs:subClassOf* obo:CHEBI_{{root}}.
+  ?child rdfs:subClassOf* obo:CHEBI_33232.
   ?child rdfs:subClassOf ?parent.
   ?child rdfs:label ?child_label .
   ?parent rdfs:label ?parent_label .
@@ -61,7 +69,8 @@ WHERE
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
     owl:someValuesFrom ?application .
-  ?application rdfs:subClassOf* obo:CHEBI_{{root}}.  
+  ?application rdfs:subClassOf*  obo:CHEBI_33232.
+
   ?application rdfs:label ?application_label .
   optional{?x rdfs:subClassOf ?application}
 }
@@ -70,24 +79,18 @@ WHERE
 ## `return`
 
 ```javascript
-
-({root, leaf, graph}) => {
+({leaf, graph}) => {
   const idPrefix = "http://purl.obolibrary.org/obo/CHEBI_";
   const categoryPrefix = "http://purl.obolibrary.org/obo/CHEBI_";
-  const withoutId = "unclassified";
   
   let tree = [
     {
-      id: root,
+      id: "33232",
+      label: "application",
       root: true
-    },{
-      id: withoutId,
-      label: "without annotation",
-      parent: root
     }
   ];
 
-  let withAnnotation = {};
   // 親子関係
   graph.results.bindings.map(d => {
     tree.push({
@@ -95,11 +98,9 @@ WHERE
       label: d.child_label.value,
       parent: d.parent.value.replace(categoryPrefix, "")
     })
-    if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
   })
   // アノテーション関係
   leaf.results.bindings.map(d => {
-    withAnnotation[d.compound.value] = true;
     tree.push({
       id: d.compound.value.replace(idPrefix, ""),
       label: d.compound_label.value,
@@ -107,19 +108,7 @@ WHERE
       parent: d.application.value.replace(categoryPrefix, "")
     })
   })
-  // アノテーション無し要素
-  //allLeaf.results.bindings.map(d => {
-    //if (!withAnnotation[d.leaf.value]) {
-      //tree.push({
-        //id: d.leaf.value.replace(idPrefix, ""),
-        //label: d.leaf_label.value,
-        //leaf: true,
-        //parent: withoutId
-      //});
-    //}
-  //})
   
   return tree;	
 }
-
 ```
