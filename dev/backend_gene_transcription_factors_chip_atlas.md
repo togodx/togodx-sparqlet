@@ -26,12 +26,17 @@ PREFIX taxid: <http://identifiers.org/taxonomy/>
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cao: <http://chip-atlas.org/ontology/>
 
 SELECT DISTINCT ?child
 WHERE {
   VALUES ?parent { ensembl:{{tfId}} }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
-    ?parent obo:RO_0002428 ?child .
+    # ?parent obo:RO_0002428 ?child .
+    ?s a cao:PutativeRegulation ;
+       cao:score5k ?score ;
+       cao:hasTF ?parent ;
+       cao:hasTargetGene ?child .
   }
 }
 ```

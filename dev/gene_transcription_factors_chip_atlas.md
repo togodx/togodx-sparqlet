@@ -27,49 +27,54 @@ WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?tf obo:RO_0002428 [] .
   }
-}#LIMIT 5
+}LIMIT 5
 ```
 
 ## `tfclassSp`
+
+molecular species とその所属先の genus
+
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX tfclass: <http://sybig.de/tfclass#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT DISTINCT ?ensg_id ?label ?molsp ?parent
+SELECT DISTINCT ?ensg_id ?genus_id
 FROM <http://rdf.integbio.jp/dataset/togosite/tfclass>
 WHERE { 
   ?s tfclass:xref ?ensg .
   FILTER(STRSTARTS(?ensg, "ENSEMBL_GeneID:"))
   BIND(STRAFTER(?ensg, "ENSEMBL_GeneID:") as ?ensg_id)
   ?s rdfs:subClassOf tfclass:tf_9606 ;
-     rdfs:label ?label ;
-     rdfs:subClassOf / owl:someValuesFrom ?molsp .
-  ?molsp rdfs:label ?molsp_label .
-  ?molsp rdfs:subClassOf ?parent .
-  FILTER(!isBlank(?parent))
+     # rdfs:label ?label ;
+     rdfs:subClassOf / owl:someValuesFrom ?genus .
+  BIND(STRAFTER(STR(?genus), "http://sybig.de/tfclass#") AS ?genus_id)
 }
 ```
 
-## `tfclassSp`
+## `tfclass`
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX tfclass: <http://sybig.de/tfclass#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT DISTINCT ?child ?parent ?child_label ?parent_label
+SELECT DISTINCT ?child_id ?parent_id ?child_label ?parent_label
 FROM <http://rdf.integbio.jp/dataset/togosite/tfclass>
 WHERE { 
   ?s tfclass:xref ?ensg .
   FILTER(STRSTARTS(?ensg, "ENSEMBL_GeneID:"))
   BIND(STRAFTER(?ensg, "ENSEMBL_GeneID:") as ?ensg_id)
   ?s rdfs:subClassOf tfclass:tf_9606 ;
-     rdfs:subClassOf / owl:someValuesFrom ?molsp .
-  ?molsp rdfs:subClassOf* ?child .
+     rdfs:subClassOf / owl:someValuesFrom ?genus .
+  ?genus rdfs:subClassOf* ?child .
   ?child rdfs:subClassOf ?parent ;
          rdfs:label ?child_label .
-  ?parent rdfs:label ?parent_label .
+  OPTIONAL {
+    ?parent rdfs:label ?parent_label . # "TF_class" does not have a label
+  }
   FILTER(!isBlank(?parent))
+  BIND(STRAFTER(STR(?child), "http://sybig.de/tfclass#") AS ?child_id)
+  BIND(STRAFTER(STR(?parent), "http://sybig.de/tfclass#") AS ?parent_id)
 }
 ```
 
@@ -90,7 +95,7 @@ WHERE {
           faldo:location ?ensg_location ;
           rdfs:label ?ensg_label ;
           dc:identifier ?ensg_id .
-    BIND (strbefore(strafter(str(?ensg_location), "GRCh38/"), ":") AS ?chr)
+    BIND(STRBEFORE(STRAFTER(STR(?ensg_location), "GRCh38/"), ":") AS ?chr)
     FILTER (?chr IN ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
                      "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
                      "21", "22", "X", "Y", "MT" ))
@@ -100,8 +105,7 @@ WHERE {
 
 ## `return`
 ```javascript
-async ({tf, geneLabels}) => {
-  let times = [];
+async ({tf, tfclassSp, tfclass, geneLabels}) => {
   let tfArray = tf.results.bindings.map(d => d.tf.value.replace("http://identifiers.org/ensembl/", ""));
   let geneLabelMap = new Map();
   geneLabels.results.bindings.forEach((x) => geneLabelMap.set(x.ensg_id.value, x.ensg_label.value));
@@ -117,22 +121,68 @@ async ({tf, geneLabels}) => {
     };
     return await fetch(url, options).then(res=>res.json());
   };  
-  times.push(new Date());
-  let promises = tfArray.map((d) => getTfTargets(d));
-  times.push(new Date());
-  let targetsArray = await Promise.all(promises); // [[target genes of tfArray[0]], [target genes of tfArray[1]], ...]
-  times.push(new Date());
+  //let promises = tfArray.map((d) => getTfTargets(d));
+  //let targetsArray = await Promise.all(promises); // [[target genes of tfArray[0]], [target genes of tfArray[1]], ...]
   let woTfGenes = new Set(geneLabelMap.keys());
+  let tfclassSpGenusMap = new Map();
+  tfclassSp.results.bindings.forEach((d) => tfclassSpGenusMap.set(d.ensg_id.value, d.genus_id.value));
 
-  let tree = [{id: "root", label: "root node", root: true}];
-  tfArray.forEach((tf, i) => {
-    tree.push(
-      {
-        parent: "root",
-        id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
-        label: geneLabelMap.get(tf)
-      });
-    targetsArray[i].forEach((target) => {
+  let tree = [{id: "root", label: "root node", root: true},
+              {id: "_not_in_tfclass", label: "Not in TFClass", parent: "root"}];
+  tfclass.results.bindings.forEach((d) => {
+    if(d.parent_id.value === "TF_class") {
+      tree.push(
+        {
+          parent: "root",
+          id: d.child_id.value,
+          label: d.child_label.value
+        });
+    } else if(d.parent_id.value != "") { // exclude an erroneous entry with blank string
+      tree.push(
+        {
+          parent: d.parent_id.value,
+          id: d.child_id.value,
+          label: d.child_label.value
+        });
+    }
+  });
+
+  let errors = [];
+
+  //tfArray.forEach((tf, i) => {
+  for (let i = 0; i < tfArray.length; i++) {
+    let tf = tfArray[i];
+    let genus = tfclassSpGenusMap.get(tf)
+    if(genus) {
+      tree.push(
+        {
+          parent: genus,
+          id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
+          label: geneLabelMap.get(tf)
+        });
+    } else {
+      tree.push(
+        {
+          parent: "_not_in_tfclass",
+          id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
+          label: geneLabelMap.get(tf)
+        });
+    }
+    const targetGenes = await fetch('backend_gene_transcription_factors_chip_atlas',　{
+      method: 'POST',
+      body: `tfId=${tf}`,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        errors.push(tf);
+      }
+    });
+    targetGenes.forEach((target) => {
       woTfGenes.delete(target);
       tree.push(
         {
@@ -141,10 +191,8 @@ async ({tf, geneLabels}) => {
           label: geneLabelMap.get(target),
           leaf: true
         });
-      return;
     });
-    return;
-  })
+  });
   tree.push({parent: "root", id: "unclassified", label: "no known upstream TF"});
   woTfGenes.forEach((gene) => {
     tree.push(
@@ -155,8 +203,7 @@ async ({tf, geneLabels}) => {
         leaf: true
       });
   });
-  times.push(new Date());
-  //return times;
+
   return tree;
 }
 ```
