@@ -3,17 +3,8 @@
 ## Parameters
 
 * `categoryIds` (type:Clinical significance from ClinVar)
+  * default: uncertain_significance,likely_benign,benign,pathogenic,likely_pathogenic,conflicting_interpretations_of_pathogenicity,not_provided,benign_or_likely_benign,pathogenic_or_likely_pathogenic,other,drug_response,risk_factor,association,affects,protective
   * example: uncertain_significance,likely_benign,benign,pathogenic,likely_pathogenic,conflicting_interpretations_of_pathogenicity,not_provided,benign_or_likely_benign,pathogenic_or_likely_pathogenic,other,drug_response,risk_factor,association,affects,protective
-
-## `queryArray`
-- Query TogoVarIDを配列に
-```javascript
-({queryIds}) => {
-  queryIds = queryIds.replace(/,/g," ")
-  if (queryIds.match(/[^\s]/)) return queryIds.split(/\s+/);
-  return false;
-}
-```
 
 ## `categoryArray`
 - Clinical siginificanceのIDをlabel(ClinVarの表記と同じ)に変換して配列に代入する。
@@ -86,29 +77,28 @@ PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dct: <http://purl.org/dc/terms/>
 
-SELECT ?id ?parent ?label SAMPLE(?child)
+SELECT ?tgv_id ?rs_id ?category (COUNT (DISTINCT ?tgv_id) AS ?count) 
+{{/if}}
 FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
 FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
 WHERE {  
-{{#if categoryArray}}
-  VALUES ?category { {{#each categoryArray}} "{{this}}" {{/each}} }    
-{{/if}}
+  VALUES ?category { {{#each categoryArray}} "{{this}}" {{/each}} }   
   ?togovar dct:identifier ?tgv_id.
-  ?togovar rdfs:seeAlso ?label.
+  ?togovar rdfs:seeAlso ?rs_id.
   ?togovar tgvo:condition/rdfs:seeAlso/cvo:interpreted_record/cvo:rcv_list/cvo:rcv_accession/cvo:interpretation ?category.  
 }
-GROUP BY ?id ?parent ?label
+ORDER BY ?tgv_id ?rs_id 
 ```
 
 ## `return`
 - 整形
 ```javascript
-({data})=>{
+({mode, data})=>{
   const idVarName = "tgv_id";
   const idPrfix = "";
   const categoryPrefix = "";
-  return data.results.bindings.map(d=>{
+  if (mode == "objectList") return data.results.bindings.map(d=>{
     return {
       id: d[idVarName].value.replace(idPrfix, ""), 
       attribute: {
@@ -118,5 +108,15 @@ GROUP BY ?id ?parent ?label
       }
     }
   });
+  if (mode == "idList") return Array.from(new Set(data.results.bindings.map(d=>d[idVarName].value.replace(idPrfix, "")))); // unique
+
+  return data.results.bindings.map(d=>{ 
+    return {
+      categoryId: d.category.value.toLowerCase().replace("/", "_or_").replace(/,?\s+/g, "_"),
+      label: d.label.value.charAt(0).toUpperCase() + d.label.value.slice(1),   // 先頭の１文字だけを大文字にする。
+      count: Number(d.count.value),
+      hasChild: false      // ClinVarは無階層のため常にfalse
+    };
+  });	
 }
 ```

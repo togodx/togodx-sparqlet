@@ -20,7 +20,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
-SELECT DISTINCT ?child ?parent_label ?parent (REPLACE (STR(?dbsnp), "http://identifiers.org/dbsnp/", "") AS ?child_label)
+SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
 FROM <http://rdf.integbio.jp/dataset/togosite/efo>
@@ -30,10 +30,10 @@ WHERE {
             a owl:Class .
   }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>{
-    ?parent ^terms:mapped_trait_uri/terms:dbsnp_url ?dbsnp .
+    ?parent ^terms:mapped_trait_uri/terms:dbsnp_url ?child_label .
   }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
-    ?dbsnp ^rdfs:seeAlso/dct:identifier ?child .
+    ?child_label ^rdfs:seeAlso/dct:identifier ?child .
   }
 }
 ```
@@ -45,7 +45,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 PREFIX efo: <http://www.ebi.ac.uk/efo/>
-SELECT DISTINCT ?child ?parent ?child_label ?parent_label
+SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
 FROM <http://rdf.integbio.jp/dataset/togosite/efo>
@@ -67,6 +67,7 @@ WHERE {
 ## `return`
 ```javascript
 ({leaf, graph}) => {
+  const childLabelPrefix = "http://identifiers.org/dbsnp/";
   
   let tree = [
     {
@@ -87,8 +88,8 @@ WHERE {
   // アノテーション関係
   leaf.results.bindings.map(d => {
     tree.push({
-      id: d.child.value.replace(idPrefix, ""),
-      label: d.child_label.value,
+      id: d.child.value,
+      label: d.child_label.value.replace(childLabelPrefix, ""),
       leaf: true,
       parent: d.parent.value.split(/\//).slice(-1)[0]
     })
