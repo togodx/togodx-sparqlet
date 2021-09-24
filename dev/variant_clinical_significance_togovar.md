@@ -6,7 +6,7 @@
   * default:uncertain_significance,likely_benign,benign,pathogenic,likely_pathogenic,conflicting_interpretations_of_pathogenicity,not_provided,benign_Likely_benign,pathogenic_likely_pathogenic,other,drug_response,risk_factor
   * example:uncertain_significance,likely_benign,benign,pathogenic,likely_pathogenic,conflicting_interpretations_of_pathogenicity,not_provided,benign_or_likely_benign,pathogenic_or_likely_pathogenic,other,drug_response,risk_factor,association,affects,protective
 
-## `categoryArray`
+## `categories`
 - Clinical siginificanceのIDをlabel(ClinVarの表記と同じ)に変換して配列に代入する。
   - [IDとClinVar表記の対応表](https://docs.google.com/spreadsheets/d/1qEy1uyS24AwlhfmNGdXWHLZv16ebvtCTa4W5dK28lwg/edit?usp=sharing)
   - [ClinVarのClinical significance一覧を取得するSPARQL](https://is.gd/01zgpr)
@@ -67,7 +67,7 @@
 
 https://integbio.jp/togosite/sparql
 
-## `data`
+## `leaf`
 ```sparql
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -83,33 +83,45 @@ FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
 FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
 WHERE {  
-  VALUES ?category { {{#each categoryArray}} "{{this}}" {{/each}} }   
+  VALUES ?category { {{#each categories}} "{{this}}" {{/each}} }   
   ?togovar dct:identifier ?tgv_id.
   ?togovar rdfs:seeAlso ?rs_id.
   ?togovar tgvo:condition/rdfs:seeAlso/cvo:interpreted_record/cvo:rcv_list/cvo:rcv_accession/cvo:interpretation ?category.  
 }
-#limit 100
+limit 100
 ```
 
 ## `return`
-- 整形
 ```javascript
-({data})=>{
-  const idVarName = "tgv_id";
-  const idPrfix = "";
-  const categoryPrefix = "";
+({categories,leaf}) => {
+  const childLabelPrefix = "http://identifiers.org/dbsnp/";
   
-  return data;
-  
-  return data.results.bindings.map(d=>{
-    return {
-      id: d[idVarName].value.replace(idPrfix, ""), 
-      attribute: {
-        categoryId: d.category.value.toLowerCase().replace("/", "_or_").replace(/,?\s+/g, "_"),
-        uri: d.category.value.toLowerCase().replace("/", "_or_").replace(/,?\s+/g, "_"),
-        label : d.label.value.charAt(0).toUpperCase() + d.label.value.slice(1)   // 先頭の１文字だけを大文字にする。
-      }
+  let tree = [
+    {
+      id: "root",
+      label: "Clinvar root",
+      root: true
     }
-  });
+  ];
+
+  // 親子関係
+  for(let id in categories){
+    tree.push({
+      id: id,
+      label: categories[id],
+      parent: root
+    })
+  })
+  // アノテーション関係
+  leaf.results.bindings.map(d => {
+    tree.push({
+      id: d.tgv_id.value,
+      label: d.rs_id.value.replace(childLabelPrefix, ""),
+      leaf: true,
+      parent: d.category.value
+    })
+  })
+  
+  return tree;	
 }
 ```

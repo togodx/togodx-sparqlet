@@ -23,7 +23,7 @@ PREFIX ensembl: <http://identifiers.org/ensembl/>
 
 SELECT DISTINCT ?tf
 WHERE {
-  #VALUES ?tf { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
+  VALUES ?tf { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?tf obo:RO_0002428 [] .
   }
@@ -109,13 +109,13 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
   let tfArray = tf.results.bindings.map(d => d.tf.value.replace("http://identifiers.org/ensembl/", ""));
   let geneLabelMap = new Map();
   geneLabels.results.bindings.forEach((x) => geneLabelMap.set(x.ensg_id.value, x.ensg_label.value));
-  function getGeneLabel(id, map) {
-    let label = map.get(id);
-    if(label)
-      return label;
-    else
-      return id;
-  };
+  //function getGeneLabel(id, map) {
+  //  let label = map.get(id);
+  //  if(label)
+  //    return label;
+  //  else
+  //    return id;
+  //};
   let woTfGenes = new Set(geneLabelMap.keys());
   let tfclassSpGenusMap = new Map();
   tfclassSp.results.bindings.forEach((d) => tfclassSpGenusMap.set(d.ensg_id.value, d.genus_id.value));
@@ -150,20 +150,23 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
   //const to = tfArray.length;
   for (let i = from; i < to; i++) {
     let tf = tfArray[i];
-    let genus = tfclassSpGenusMap.get(tf)
+    let genus = tfclassSpGenusMap.get(tf);
+    let tf_label = geneLabelMap.get(tf);
+    if(!tf_label)
+      tf_label = tf;
     if(genus) {
       tree.push(
         {
           parent: genus,
-          id: getGeneLabel(tf, geneLabelMap), // use TF labels as ids of TFs to sort by label
-          label: getGeneLabel(tf, geneLabelMap)
+          id: tf_label, // use TF labels as ids of TFs to sort by label
+          label: tf_label
         });
     } else {
       tree.push(
         {
           parent: "_not_in_tfclass",
-          id: getGeneLabel(tf, geneLabelMap), // use TF labels as ids of TFs to sort by label
-          label: getGeneLabel(tf, geneLabelMap)
+          id: tf_label, // use TF labels as ids of TFs to sort by label
+          label: tf_label
         });
     }
     const targetGenes = await fetch('backend_gene_transcription_factors_chip_atlas',　{
@@ -182,22 +185,28 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
     });
     targetGenes.forEach((target) => {
       woTfGenes.delete(target);
+      let target_label = geneLabelMap.get(target);
+      if(!target_label)
+        target_label = target;
       tree.push(
         {
-          parent: getGeneLabel(tf, geneLabelMap),
+          parent: tf_label,
           id: target,
-          label: getGeneLabel(target, geneLabelMap),
+          label: target_label,
           leaf: true
         });
     });
   }
   tree.push({parent: "root", id: "unclassified", label: "no known upstream TF"});
   woTfGenes.forEach((gene) => {
+    let label = geneLabelMap.get(gene);
+    if(!label)
+      label = gene;
     tree.push(
       {
         parent: "unclassified",
         id: gene,
-        label: getGeneLabel(gene, geneLabelMap),
+        label: label,
         leaf: true
       });
   });
