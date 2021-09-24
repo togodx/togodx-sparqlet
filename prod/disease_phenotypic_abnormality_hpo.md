@@ -1,4 +1,4 @@
-# Diseaseカテゴリフィルタ(HPO階層利用)(三橋・高月)(作業中）
+# Diseaseカテゴリフィルタ(HPO階層利用)(三橋・高月)
 
 ## Description
 

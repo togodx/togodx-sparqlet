@@ -23,11 +23,11 @@ PREFIX ensembl: <http://identifiers.org/ensembl/>
 
 SELECT DISTINCT ?tf
 WHERE {
-  VALUES ?tf { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
+  #VALUES ?tf { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?tf obo:RO_0002428 [] .
   }
-}LIMIT 5
+}#LIMIT 5
 ```
 
 ## `tfclassSp`
@@ -109,20 +109,6 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
   let tfArray = tf.results.bindings.map(d => d.tf.value.replace("http://identifiers.org/ensembl/", ""));
   let geneLabelMap = new Map();
   geneLabels.results.bindings.forEach((x) => geneLabelMap.set(x.ensg_id.value, x.ensg_label.value));
-  async function getTfTargets(tfId) {
-    let url = "backend_gene_transcription_factors_chip_atlas"; // parent SPARQLet relative path
-    let options = {
-      method: 'POST',
-      body: 'tfId=' + tfId,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    };
-    return await fetch(url, options).then(res=>res.json());
-  };  
-  //let promises = tfArray.map((d) => getTfTargets(d));
-  //let targetsArray = await Promise.all(promises); // [[target genes of tfArray[0]], [target genes of tfArray[1]], ...]
   let woTfGenes = new Set(geneLabelMap.keys());
   let tfclassSpGenusMap = new Map();
   tfclassSp.results.bindings.forEach((d) => tfclassSpGenusMap.set(d.ensg_id.value, d.genus_id.value));
@@ -149,8 +135,13 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
 
   let errors = [];
 
-  //tfArray.forEach((tf, i) => {
-  for (let i = 0; i < tfArray.length; i++) {
+  const from = 0;
+  const to = tfArray.length;
+  //const from = 0;
+  //const to = parseInt(tfArray.length/2);
+  //const from = parseInt(tfArray.length/2);
+  //const to = tfArray.length;
+  for (let i = from; i < to; i++) {
     let tf = tfArray[i];
     let genus = tfclassSpGenusMap.get(tf)
     if(genus) {
@@ -192,7 +183,7 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
           leaf: true
         });
     });
-  });
+  }
   tree.push({parent: "root", id: "unclassified", label: "no known upstream TF"});
   woTfGenes.forEach((gene) => {
     tree.push(

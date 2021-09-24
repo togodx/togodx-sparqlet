@@ -1,4 +1,4 @@
-# Diseases in Mondo (三橋・高月) （作業中）
+# Diseases in Mondo (三橋・高月) 
 
 ## Description
 

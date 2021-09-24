@@ -35,6 +35,7 @@ WHERE {
     # ?parent obo:RO_0002428 ?child .
     ?s a cao:PutativeRegulation ;
        cao:score5k ?score ;
+       # cao:score10k ?score ;
        cao:hasTF ?parent ;
        cao:hasTargetGene ?child .
   }
