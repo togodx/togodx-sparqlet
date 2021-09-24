@@ -42,36 +42,46 @@ WHERE {
 }
 ```
 
-## `all`
-差分を取る SPARQL だとなぜか数が合わない。全部取ってから js 内で差分を取る
+## `unclassified`
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX info: <http://rdf.glycoinfo.org/glycan/>
 PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX sbsmpt: <http://www.glycoinfo.org/glyco/owl/relation#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT DISTINCT ?gtc ?label ?sbsmpt
+#SELECT DISTINCT (COUNT(DISTINCT ?wurcs) AS ?c)
 FROM <http://rdf.glytoucan.org/partner/glycome-db>
 FROM <http://rdf.glytoucan.org/partner/bcsdb>
 FROM <http://rdf.glytoucan.org/partner/glycoepitope>
 FROM <http://rdf.glycosmos.org/glycans/subsumption>
 FROM <http://rdf.glycosmos.org/glycans/seq>
+FROM <http://rdf.glycosmos.org/glycomeatlas>
 WHERE {
   ?wurcs a ?sbsmpt ;
          rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?label;
          rdfs:seeAlso ?gtc ;
          sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
   VALUES ?sbsmpt { sbsmpt:Glycosidic_topology sbsmpt:Linkage_defined_saccharide }
+  FILTER NOT EXISTS {
+    [] glycan:has_glycan ?child ;
+       a <http://purl.jp/bio/4/id/200906013374193296> ;
+       glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> ;
+       glycan:has_tissue ?tissue .
+    ?child glycan:has_glycosequence / glycan:has_sequence / ^rdfs:label ?wurcs .
+  }
 }
 ```
 
 ## `return`
 
 ```javascript
-({data, all}) => {
+({data, unclassified}) => {
   const parentIdPrefix = "http://purl.obolibrary.org/obo/";
   const childIdPrefix = "http://rdf.glycoinfo.org/glycan/";
 
@@ -99,13 +109,7 @@ WHERE {
     data.results.bindings.reduce(
       (map, current) =>
       map.set(current.parent_label.value + "-" + current.child.value, current), new Map()).values());
-  let unclassified = {};
-  all.results.bindings.forEach(d => {
-    unclassified[d.gtc.value.replace("https://glytoucan.org/Structures/Glycans/", "")] = {
-      label: d.label.value,
-      sbsmpt: d.sbsmpt.value
-    };
-  });
+
   uniq.forEach(d => {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
@@ -123,7 +127,6 @@ WHERE {
       leaf: true,
       parent: d.parent.value.replace(parentIdPrefix, "")
     });
-    delete unclassified[d.child.value.replace(childIdPrefix, "")];
   });
 
   tree.push({
@@ -133,10 +136,10 @@ WHERE {
     parent: "root"
   });
 
-  Object.keys(unclassified).forEach(d => {
+  unclassified.results.bindings.forEach(d => {
     tree.push({
-      id: d.replace("https://glytoucan.org/Structures/Glycans/", ""),
-      label: makeLabel(unclassified[d].label, unclassified[d].sbsmpt, cap),
+      id: d.gtc.value.replace("https://glytoucan.org/Structures/Glycans/", ""),
+      label: makeLabel(d.label.value, d.sbsmpt.value, cap),
       leaf: true,
       parent: "unclassified"
     });

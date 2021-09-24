@@ -77,28 +77,31 @@ PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dct: <http://purl.org/dc/terms/>
 
-SELECT ?tgv_id ?rs_id ?category (COUNT (DISTINCT ?tgv_id) AS ?count) 
-{{/if}}
+#SELECT count(DISTINCT ?tgv_id)
+SELECT ?tgv_id ?rs_id ?category
 FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
 FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
 WHERE {  
-  VALUES ?category { {{#each categoryArray}} "{{this}}" {{/each}} }   
+#  VALUES ?category { {{#each categoryArray}} "{{this}}" {{/each}} }   
   ?togovar dct:identifier ?tgv_id.
   ?togovar rdfs:seeAlso ?rs_id.
   ?togovar tgvo:condition/rdfs:seeAlso/cvo:interpreted_record/cvo:rcv_list/cvo:rcv_accession/cvo:interpretation ?category.  
 }
-ORDER BY ?tgv_id ?rs_id 
+#limit 100
 ```
 
 ## `return`
 - 整形
 ```javascript
-({mode, data})=>{
+({data})=>{
   const idVarName = "tgv_id";
   const idPrfix = "";
   const categoryPrefix = "";
-  if (mode == "objectList") return data.results.bindings.map(d=>{
+  
+  return data;
+  
+  return data.results.bindings.map(d=>{
     return {
       id: d[idVarName].value.replace(idPrfix, ""), 
       attribute: {
@@ -108,15 +111,5 @@ ORDER BY ?tgv_id ?rs_id
       }
     }
   });
-  if (mode == "idList") return Array.from(new Set(data.results.bindings.map(d=>d[idVarName].value.replace(idPrfix, "")))); // unique
-
-  return data.results.bindings.map(d=>{ 
-    return {
-      categoryId: d.category.value.toLowerCase().replace("/", "_or_").replace(/,?\s+/g, "_"),
-      label: d.label.value.charAt(0).toUpperCase() + d.label.value.slice(1),   // 先頭の１文字だけを大文字にする。
-      count: Number(d.count.value),
-      hasChild: false      // ClinVarは無階層のため常にfalse
-    };
-  });	
 }
 ```

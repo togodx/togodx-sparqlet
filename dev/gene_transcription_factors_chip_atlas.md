@@ -109,6 +109,13 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
   let tfArray = tf.results.bindings.map(d => d.tf.value.replace("http://identifiers.org/ensembl/", ""));
   let geneLabelMap = new Map();
   geneLabels.results.bindings.forEach((x) => geneLabelMap.set(x.ensg_id.value, x.ensg_label.value));
+  function getGeneLabel(id, map) {
+    let label = map.get(id);
+    if(label)
+      return label;
+    else
+      return id;
+  };
   let woTfGenes = new Set(geneLabelMap.keys());
   let tfclassSpGenusMap = new Map();
   tfclassSp.results.bindings.forEach((d) => tfclassSpGenusMap.set(d.ensg_id.value, d.genus_id.value));
@@ -148,15 +155,15 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
       tree.push(
         {
           parent: genus,
-          id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
-          label: geneLabelMap.get(tf)
+          id: getGeneLabel(tf, geneLabelMap), // use TF labels as ids of TFs to sort by label
+          label: getGeneLabel(tf, geneLabelMap)
         });
     } else {
       tree.push(
         {
           parent: "_not_in_tfclass",
-          id: geneLabelMap.get(tf), // use TF labels as ids of TFs to sort by label
-          label: geneLabelMap.get(tf)
+          id: getGeneLabel(tf, geneLabelMap), // use TF labels as ids of TFs to sort by label
+          label: getGeneLabel(tf, geneLabelMap)
         });
     }
     const targetGenes = await fetch('backend_gene_transcription_factors_chip_atlas',　{
@@ -177,9 +184,9 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
       woTfGenes.delete(target);
       tree.push(
         {
-          parent: geneLabelMap.get(tf),
+          parent: getGeneLabel(tf, geneLabelMap),
           id: target,
-          label: geneLabelMap.get(target),
+          label: getGeneLabel(target, geneLabelMap),
           leaf: true
         });
     });
@@ -190,7 +197,7 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
       {
         parent: "unclassified",
         id: gene,
-        label: geneLabelMap.get(gene),
+        label: getGeneLabel(gene, geneLabelMap),
         leaf: true
       });
   });
