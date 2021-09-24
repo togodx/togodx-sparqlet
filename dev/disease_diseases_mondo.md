@@ -21,8 +21,8 @@ PREFIX mondo: <http://purl.obolibrary.org/obo/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT COUNT(DISTINCT ?mondo) 
-#SELECT ?mondo ?label ?parent SAMPLE(?child)
+#SELECT COUNT(DISTINCT ?mondo) 
+SELECT ?mondo ?label ?parent SAMPLE(?child)
 FROM <http://rdf.integbio.jp/dataset/togosite/mondo>
 WHERE {
   #root nodeはMONDO_0000001
