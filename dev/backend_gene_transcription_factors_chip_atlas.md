@@ -34,7 +34,7 @@ WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     # ?parent obo:RO_0002428 ?child .
     ?s a cao:PutativeRegulation ;
-       cao:score1k ?score ;
+       cao:score5k ?score ;
        # cao:score10k ?score ;
        cao:hasTF ?parent ;
        cao:hasTargetGene ?child .

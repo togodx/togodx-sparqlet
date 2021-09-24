@@ -109,7 +109,7 @@ limit 100
     tree.push({
       id: id,
       label: categories[id],
-      parent: root
+      parent: "root"
     })
   })
   // アノテーション関係

@@ -23,7 +23,7 @@ PREFIX ensembl: <http://identifiers.org/ensembl/>
 
 SELECT DISTINCT ?tf
 WHERE {
-  VALUES ?tf { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
+  #VALUES ?tf { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
     ?tf obo:RO_0002428 [] .
   }
@@ -169,7 +169,7 @@ async ({tf, tfclassSp, tfclass, geneLabels}) => {
           label: tf_label
         });
     }
-    const targetGenes = await fetch('backend_gene_transcription_factors_chip_atlas',　{
+    const targetGenes = await fetch('backend_gene_transcription_factors_chip_atlas', {
       method: 'POST',
       body: `tfId=${tf}`,
       headers: {
