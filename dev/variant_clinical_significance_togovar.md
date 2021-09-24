@@ -82,12 +82,12 @@ FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
 FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
 WHERE {  
 #  VALUES ?category { {{#each categories}} "{{this}}" {{/each}} }   
-  VALUES ?catgory { "Uncertain significance" "Likely benign" "Benign" "Pathogenic" "Likely pathogenic" "Conflicting interpretations of pathogenicity" "not provided" "Benign/Likely benign" "Pathogenic/Likely pathogenic" "other" "drug response" "risk factor"}
+#  VALUES ?catgory { "Uncertain significance" "Likely benign" "Benign" "Pathogenic" "Likely pathogenic" "Conflicting interpretations of pathogenicity" "not provided" "Benign/Likely benign" "Pathogenic/Likely pathogenic" "other" "drug response" "risk factor"   VALUES ?catgory { "Uncertain significance" "Likely benign" "Benign" "Pathogenic" "Likely pathogenic" "Conflicting interpretations of pathogenicity" "not provided" "Benign/Likely benign" "Pathogenic/Likely pathogenic" "other" "drug response" "risk factor"  VALUES ?catgory { "Uncertain significance" "Likely benign" "Benign" "Pathogenic" "Likely pathogenic" "Conflicting interpretations of pathogenicity" "not provided" "Benign/Likely benign" "Pathogenic/Likely pathogenic" "other" "drug response" "risk factor"   VALUES ?catgory { "Uncertain significance" "Likely benign" "Benign" "Pathogenic" "Likely pathogenic" "Conflicting interpretations of pathogenicity" "not provided" "Benign/Likely benign" "Pathogenic/Likely pathogenic" "other" "drug response" "risk factor"#}
   ?togovar dct:identifier ?tgv_id.
   ?togovar rdfs:seeAlso ?rs_id.
   ?togovar tgvo:condition/rdfs:seeAlso/cvo:interpreted_record/cvo:rcv_list/cvo:rcv_accession/cvo:interpretation ?category.  
 }
-limit 100000
+#limit 100000
 ```
 
 ## `return`
@@ -98,7 +98,7 @@ limit 100000
   let tree = [
     {
       id: "root",
-      label: "Clinvar root",
+      label: "root node",
       root: true
     }
   ];
