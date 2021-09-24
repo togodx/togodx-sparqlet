@@ -33,12 +33,23 @@ FROM <http://rdf.glytoucan.org/partner/bcsdb>
 FROM <http://rdf.glytoucan.org/partner/glycoepitope>
 FROM <http://rdf.glycosmos.org/glycans/subsumption>
 FROM <http://rdf.glycosmos.org/glycans/seq>
+FROM <http://rdf.glycosmos.org/glycomeatlas>
 WHERE {
-  ?wurcs a ?parent ;
-         rdfs:seeAlso ?child ;
-         sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
-  OPTIONAL {
-    ?wurcs rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?iupac .
+  {
+    ?wurcs a ?parent ;
+           rdfs:seeAlso ?child ;
+           sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
+    OPTIONAL {
+      ?wurcs rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?iupac .
+    }
+  } UNION {
+    ?wurcs a ?parent ;
+           rdfs:seeAlso ?child ;
+           sbsmpt:subsumes* / rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence ?gtc .
+    ?gtc ^glycan:has_glycan / glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> .
+    OPTIONAL {
+      ?gtc skos:altLabel ?iupac .
+    }
   }
 }
 ```

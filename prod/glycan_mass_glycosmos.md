@@ -31,12 +31,23 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT DISTINCT ?mass ?glytoucan ?sbsmpt ?iupac
 WHERE {
-  ?s mass:WURCSMassCalculator ?mass ;
-     rdfs:seeAlso ?glytoucan ;
-     a ?sbsmpt ;
-     sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
-  OPTIONAL {
+  {
+    ?s mass:WURCSMassCalculator ?mass ;
+       rdfs:seeAlso ?glytoucan ;
+       a ?sbsmpt ;
+       sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
+    OPTIONAL {
      ?s rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?iupac .
+    }
+  } UNION {
+    ?s mass:WURCSMassCalculator ?mass ;
+       rdfs:seeAlso ?glytoucan ;
+       a ?sbsmpt .
+    ?s sbsmpt:subsumes* / rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence ?gtc .
+    ?gtc ^glycan:has_glycan / glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> .
+    OPTIONAL {
+      ?gtc skos:altLabel ?iupac .
+    }
   }
 }
 ```
