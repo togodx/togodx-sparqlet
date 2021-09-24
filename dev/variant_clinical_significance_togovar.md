@@ -3,8 +3,8 @@
 ## Parameters
 
 * `categoryIds` (type:Clinical significance from ClinVar)
-  * default: uncertain_significance,likely_benign,benign,pathogenic,likely_pathogenic,conflicting_interpretations_of_pathogenicity,not_provided,benign_or_likely_benign,pathogenic_or_likely_pathogenic,other,drug_response,risk_factor,association,affects,protective
-  * example: uncertain_significance,likely_benign,benign,pathogenic,likely_pathogenic,conflicting_interpretations_of_pathogenicity,not_provided,benign_or_likely_benign,pathogenic_or_likely_pathogenic,other,drug_response,risk_factor,association,affects,protective
+  * default:uncertain_significance,likely_benign,benign,pathogenic,likely_pathogenic,conflicting_interpretations_of_pathogenicity,not_provided,benign_Likely_benign,pathogenic_likely_pathogenic,other,drug_response,risk_factor
+  * example:uncertain_significance,likely_benign,benign,pathogenic,likely_pathogenic,conflicting_interpretations_of_pathogenicity,not_provided,benign_or_likely_benign,pathogenic_or_likely_pathogenic,other,drug_response,risk_factor,association,affects,protective
 
 ## `categoryArray`
 - Clinical siginificanceのIDをlabel(ClinVarの表記と同じ)に変換して配列に代入する。
@@ -83,7 +83,7 @@ FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
 FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
 WHERE {  
-#  VALUES ?category { {{#each categoryArray}} "{{this}}" {{/each}} }   
+  VALUES ?category { {{#each categoryArray}} "{{this}}" {{/each}} }   
   ?togovar dct:identifier ?tgv_id.
   ?togovar rdfs:seeAlso ?rs_id.
   ?togovar tgvo:condition/rdfs:seeAlso/cvo:interpreted_record/cvo:rcv_list/cvo:rcv_accession/cvo:interpretation ?category.  
