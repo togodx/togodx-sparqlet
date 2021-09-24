@@ -38,7 +38,7 @@ WHERE {
         }
  } 
  GROUP BY ?hp ?parent ?label
-Limit 100
+
              
 ```
 ## `return`
