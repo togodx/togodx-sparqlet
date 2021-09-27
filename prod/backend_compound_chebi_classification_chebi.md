@@ -1,5 +1,9 @@
-# ChEBI classification での分類 （川島、建石） 
+# ChEBI classification での分類 （川島、建石、信定） 
+
+- backend SPARQLet
+  - ChEBI: application type, biological role, chemical role
 - アノテーションがないケースを数えていない（もとのまま）
+
 ## Parameters
 
 * `root`
@@ -50,7 +54,7 @@ WHERE
     rdfs:subClassOf ?r .
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
-    owl:someValuesFrom ?application .
+    owl:someValuesFrom ?category .
   ?category rdfs:subClassOf*  obo:CHEBI_{{root}} .
 }
 ```
