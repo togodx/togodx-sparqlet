@@ -1,18 +1,5 @@
 # ChEBI classification での分類 （川島、建石） 
 - アノテーションがないケースを数えていない（もとのまま）
-## Description
-
-- Data sources
-    -  [Chemical Entities of Biological Interest (ChEBI) ](https://www.ebi.ac.uk/chebi/) 
-- Query
-    - Input
-        - ChEBI id (number) for chemical compound(s)
-    - Output
-        -  ChEBI id (number) for application type(s) (subcategories of [Application (CHEBI:33232)](https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:33232) ) corresponding to the compound(s)
-- Supplementary Information
-	-  The classification of compounds according to their application, defined in ChEBI ontology.
-	- ChEBI Ontologyに定義された用途による、化合物の分類です。
-    
 ## Parameters
 
 * `root`
@@ -97,7 +84,7 @@ WHERE
       id: d.compound.value.replace(idPrefix, ""),
       label: d.compound_label.value,
       leaf: true,
-      parent: d.application.value.replace(categoryPrefix, "")
+      parent: d.category.value.replace(categoryPrefix, "")
     })
   })
   
