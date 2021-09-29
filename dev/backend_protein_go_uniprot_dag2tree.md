@@ -52,7 +52,56 @@ WHERE {
       parent: root
     }
   ];
+/*
+  const extract = (dag, id) => {
+    let upper = [];
+    let lower = [];
+    for (let d of dag) {
+      if (d.parents.includes(id)) lower.push(d);
+      else upper.push(d);
+    }
+    return [upper, lower];
+  }
+  
+  const dag2tree = (dag, id) => {
+    let [upper, lower] = extract(dag, id);
+    console.log(lower);
+return upper;
+    let index = 1;
+    let new_lower = [];
+    for (let d of upper) {
+      if (d.id == id || d.origin == id) {
+        if (d.id == id) d.origin = id;
+        d.id = d.id + "_" + index;
+        new_lower.concat(lower.map(d => {
+          unless (d.origin) d.origin = id;
+          d.id = d.id + "_" + index;
+          return d;
+        }))                            
+        index++;
+      }
+    }
+    return upper.concat(new_lower);
+  }
+*/
+  let parents = {};
+  for (let d of graph.results.bindings) {
+    if (!d.id) console.log(d);
+  //  if (!parents[d.id.value]) parents[d.id.value] = [];
+  //  parents[d.id.value].push(d.parent.value);
+  }
 
+  /*graph.results.bindings = graph.results.bindings.map(d => {
+    d.parents = parents[d.id.value];
+    return d;
+  })*/
+console.log(graph.results.bindings);
+/*  for (let id of Object.keys(parents)) {
+    if (parents[id].length > 1) {
+      graph.results.bindings = dag2tree(graph.results.bindings, id);
+    }
+  }*/
+  
   let withAnnotation = {};
   // 親子関係
   graph.results.bindings.map(d => {
