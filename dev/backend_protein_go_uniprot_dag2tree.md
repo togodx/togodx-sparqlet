@@ -48,7 +48,7 @@ FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/go>
 WHERE {
   ?child rdfs:subClassOf* obo:{{root}} ;
-         rdfs:subClassOf* ?parent .
+         rdfs:subClassOf+ ?parent .
   FILTER(REGEX(STR(?child), "GO_"))
   FILTER(REGEX(STR(?parent), "GO_"))
 }
@@ -72,11 +72,14 @@ WHERE {
     }
   ];
 
+  let ancestors = {};
+  let parents = {};  
+
   const extract = (dag, id) => {
     let upper = [];
     let lower = [];
     for (let d of dag) {
-      if (d.parents.includes(id)) lower.push(d);
+      if (d.ancestors.includes(id)) lower.push(d);
       else upper.push(d);
     }
     return [upper, lower];
@@ -87,12 +90,11 @@ WHERE {
     let index = 1;
     let new_lower = [];
     for (let d of upper) {
-      if (d.id == id || (d.origin && d.origin == id)) {
-        if (d.id == id) d.origin = id;
+      if (d.originalId == id) {
         d.id = d.id + "_" + index;
         new_lower = new_lower.concat(lower.map(d => {
-          if (!d.origin) d.origin = id;
           d.id = d.id + "_" + index;
+          d.parent = d.parent + "_" + index;
           return d;
         }))                            
         index++;
@@ -101,27 +103,31 @@ WHERE {
     return upper.concat(new_lower);
   }
 
-  let parents = {};
   parents_graph.results.bindings.map(d => {
     const id = d.child.value.replace(categoryPrefix, "");
-    if (!parents[id]) parents[id] = [];
-    parents[id].push(d.parent.value.replace(categoryPrefix, ""));
+    const parent = d.parent.value.replace(categoryPrefix, "");
+    if (!ancestors[id]) ancestors[id] = [];
+    ancestors[id].push(parent);
   })
-  
+
   let dag = graph.results.bindings.map(d => {
+    const id = d.child.value.replace(categoryPrefix, "");
+    const parent = d.parent.value.replace(categoryPrefix, "");
+    if (!parents[id]) parents[id] = [];
+    parents[id].push(parent);
     if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
     return {
-      id: d.child.value.replace(categoryPrefix, ""),
+      id: id,
+      originalId: id,
       label: d.child_label.value,
-      parent: d.parent.value.replace(categoryPrefix, ""),
-      parents: parents[d.child.value.replace(categoryPrefix, "")]
+      parent: parent,
+      ancestors: ancestors[id]
     }
   })
 
   for (let id of Object.keys(parents)) {
     if (parents[id].length > 1) {
       dag = dag2tree(dag, id);
-      break;
     }
   }
 
