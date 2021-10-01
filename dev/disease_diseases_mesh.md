@@ -51,7 +51,7 @@ PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 PREFIX tree: <http://id.nlm.nih.gov/mesh/>
 
-SELECT ?tree ?id ?parent ?label SAMPLE(?tree_child) AS ?tree_child
+SELECT DISTINCT ?tree ?id ?parent ?label SAMPLE(?tree_child) AS ?tree_child
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH TreeのRoot(Diseases[C]) のURI もラベルもないので、その下の階層(Infections[C01],...)のDescriptor(D007239)を列挙する

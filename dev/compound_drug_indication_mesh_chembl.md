@@ -1,4 +1,4 @@
-# chembl mesh（山本, 守屋、信定）
+# chembl mesh（山本、守屋、信定）
 Server対応済み
 
 ## Description
@@ -19,64 +19,51 @@ Server対応済み
 
 https://integbio.jp/togosite/sparql
 
-## `leaf`
-- ChEMBL molecule - mesh D番号の対応
+## `chemblHasMesh`
 ```sparql
-PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#> 
+PREFIX chembl: <http://rdf.ebi.ac.uk/terms/chembl#> 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX tree: <http://id.nlm.nih.gov/mesh/>
-PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-SELECT DISTINCT?child ?child_label ?parent 
+
+SELECT DISTINCT ?chembl_id ?chembl_label ?mesh
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
-FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
-  ?molecule cco:chemblId ?child ;
-            rdfs:label ?child_label ;
-            cco:hasDrugIndication [
-    a cco:DrugIndication ;
-    cco:hasMesh ?parent_ori
-  ] .
-  BIND(IRI(REPLACE(STR(?parent_ori), "http://identifiers.org/mesh/","http://id.nlm.nih.gov/mesh/")) AS ?parent)
-  ?parent meshv:treeNumber/meshv:parentTreeNumber* ?tree .
+  ?molecule chembl:chemblId ?chembl_id ;
+      rdfs:label ?chembl_label ;
+      chembl:hasDrugIndication/chembl:hasMesh ?mesh .
 }
 ```
-## `graph`
-- Mesh の親子関係
+
+## `meshTree`
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-PREFIX tree: <http://id.nlm.nih.gov/mesh/>
 
-SELECT ?tree ?id ?parent ?label SAMPLE(?tree_child) AS ?tree_child
+SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH TreeのRoot(Diseases[C]) のURI もラベルもないので、その下の階層(Infections[C01],...)のDescriptor(D007239)を列挙する
   # See https://meshb.nlm.nih.gov/treeView
-  VALUES ?diseases_root { mesh:D007239 mesh:D009369 mesh:D009140 mesh:D004066 mesh:D009057 mesh:D012140 mesh:D010038 mesh:D009422 mesh:D005128 mesh:D052801 mesh:D005261 mesh:D002318 mesh:D006425 mesh:D009358 mesh:D017437 mesh:D009750 mesh:D004700 mesh:D0071154 mesh:D007280 mesh:D000820 mesh:D013568 mesh:D009784 }
- 
-  ?diseases_root meshv:treeNumber/^meshv:parentTreeNumber* ?tree.
-  ?tree ^meshv:treeNumber ?id.
-  ?id rdfs:label ?label .
-  
-  # ?diseases_rootのエントリにはparentが存在しないのでOPTIONALが必要
+  VALUES ?diseases { mesh:D007239 mesh:D009369 mesh:D009140 mesh:D004066 mesh:D009057 mesh:D012140 mesh:D010038 mesh:D009422 mesh:D005128 mesh:D052801 mesh:D005261 mesh:D002318 mesh:D006425 mesh:D009358 mesh:D017437 mesh:D009750 mesh:D004700 mesh:D007154 mesh:D007280 mesh:D000820 mesh:D013568 mesh:D009784 }
+  ?diseases meshv:treeNumber ?tree .
+
+  ?node meshv:parentTreeNumber* ?tree .
   OPTIONAL {
-    ?tree meshv:parentTreeNumber/^meshv:treeNumber ?parent.
+    ?node meshv:parentTreeNumber ?parent  .
+    ?parent_mesh_id meshv:treeNumber ?parent .
   }
-  
-  # 中間ノードの場合は?tree_childに値が存在し、leafノードの場合は?tree_childは存在しないのでOPTIONALが必要
-  OPTIONAL {
-    ?tree ^meshv:parentTreeNumber ?tree_child.
-  }
-  FILTER(lang(?label) = "en")
+
+  ?mesh_id meshv:treeNumber ?node ;
+      rdfs:label ?mesh_label .
+  FILTER(lang(?mesh_label) = "en")
 }
-GROUP BY ?tree ?id ?parent ?label
 ```
 
 # `return`
 ```javascript
-({leaf, graph}) => {
+({ chemblHasMesh, meshTree }) => {
   const idPrefix = "http://id.nlm.nih.gov/mesh/";
+
   let tree = [
     {
       id: "root",
@@ -84,24 +71,24 @@ GROUP BY ?tree ?id ?parent ?label
       root: true
     }
   ];
-  // Mesh親子関係
-    graph.results.bindings.forEach(d => {
+
+  meshTree.results.bindings.forEach((d) => {
     tree.push({
-      id: d.id.value.replace(idPrefix, ""),
-      label: d.label.value,
-      leaf: (d.tree_child == undefined ? true : false),
-      parent: (d.parent == undefined ? "root" :  d.parent.value.replace(idPrefix, ""))
+      id: d.mesh_id.value.replace(idPrefix, ""),
+      label: d.mesh_label.value,
+      parent: d.parent_mesh_id ? d.parent_mesh_id.value.replace(idPrefix, "") : "root"
     });
   });
-  // アノテーション関係
-  leaf.results.bindings.map(d => {
+
+  chemblHasMesh.results.bindings.map((d) => {
     tree.push({
-      id: d.child.value,
-      label: d.child_label.value,
+      id: d.chembl_id.value,
+      label: d.chembl_label.value,
       leaf: true,
-      parent: d.parent.value.replace(idPrefix, "")
-    })
-  })
-  return tree;	
+      parent: d.mesh.value.replace('http://identifiers.org/mesh/', '')
+    });
+  });
+
+  return tree;
 }
 ```
