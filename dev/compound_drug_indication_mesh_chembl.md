@@ -42,11 +42,9 @@ PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
-  # MeSH TreeのRoot(Diseases[C]) のURI もラベルもないので、その下の階層(Infections[C01],...)のDescriptor(D007239)を列挙する
+  # MeSH Treeの Diseases[C] 以下を取得
   # See https://meshb.nlm.nih.gov/treeView
-  VALUES ?diseases { mesh:D007239 mesh:D009369 mesh:D009140 mesh:D004066 mesh:D009057 mesh:D012140 mesh:D010038 mesh:D009422 mesh:D005128 mesh:D052801 mesh:D005261 mesh:D002318 mesh:D006425 mesh:D009358 mesh:D017437 mesh:D009750 mesh:D004700 mesh:D007154 mesh:D007280 mesh:D000820 mesh:D013568 mesh:D009784 }
-  ?diseases meshv:treeNumber ?tree .
-
+  FILTER (regex(str(?tree), "C"))
   ?node meshv:parentTreeNumber* ?tree .
   OPTIONAL {
     ?node meshv:parentTreeNumber ?parent  .
