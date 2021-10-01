@@ -71,7 +71,7 @@ WHERE {
         label = label.substr(0, cap) + "...";
       }
     } else if (d.sbsmpt?.value) {
-      label = "(" + d.sbsmpt.value + ")";
+      label = "(" + d.sbsmpt.value.replace("http://www.glycoinfo.org/glyco/owl/relation#", "").replace(/_/g, " ") + ")";
     }
     tree.push({
       id: d.glytoucan.value.replace(idPrefix, ""),
