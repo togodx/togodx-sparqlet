@@ -54,9 +54,14 @@ WHERE {
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX refexo:  <http://purl.jp/bio/01/refexo#>
 
 SELECT DISTINCT ?child ?child_label
 WHERE {
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/refex_gtex_v8_summary> {
+    ?refex a refexo:RefExEntry ;
+           refexo:isMeasurementOf ?child .
+  }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
     ?child a ?type ;
            rdfs:label ?child_label .

@@ -51,12 +51,14 @@ PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 PREFIX tree: <http://id.nlm.nih.gov/mesh/>
 
-SELECT DISTINCT ?tree ?id ?parent ?label SAMPLE(?tree_child) AS ?tree_child
+SELECT DISTINCT ?id ?parent ?label SAMPLE(?tree_child) AS ?tree_child
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH TreeのRoot(Diseases[C]) のURI もラベルもないので、その下の階層(Infections[C01],...)のDescriptor(D007239)を列挙する
   # See https://meshb.nlm.nih.gov/treeView
-  VALUES ?diseases_root { mesh:D007239 mesh:D009369 mesh:D009140 mesh:D004066 mesh:D009057 mesh:D012140 mesh:D010038 mesh:D009422 mesh:D005128 mesh:D052801 mesh:D005261 mesh:D002318 mesh:D006425 mesh:D009358 mesh:D017437 mesh:D009750 mesh:D004700 mesh:D0071154 mesh:D007280 mesh:D000820 mesh:D013568 mesh:D009784 }
+  VALUES ?diseases_root { mesh:D007239 mesh:D009369 mesh:D009140 mesh:D004066 mesh:D009057 mesh:D012140 mesh:D010038 mesh:D009422 mesh:D005128 mesh:D052801 
+                          mesh:D005261 mesh:D002318 mesh:D006425 mesh:D009358 mesh:D017437 mesh:D009750 mesh:D004700 mesh:D007154 mesh:D007280 mesh:D000820 
+                          mesh:D013568 mesh:D009784 }
  
   ?diseases_root meshv:treeNumber/^meshv:parentTreeNumber* ?tree.
   ?tree ^meshv:treeNumber ?id.
@@ -73,7 +75,7 @@ WHERE {
   }
   FILTER(lang(?label) = "en")
 }
-GROUP BY ?tree ?id ?parent ?label 
+GROUP BY ?id ?parent ?label 
 ```
 
 ## `return`
