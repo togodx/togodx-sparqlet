@@ -49,7 +49,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 
-SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id SAMPLE(?tree_child) AS ?tree_child
+SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id SAMPLE(?child) AS ?child
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH Treeの Diseases[C] 以下を取得
@@ -66,7 +66,7 @@ WHERE {
   FILTER(lang(?mesh_label) = "en")
   
   OPTIONAL {
-    ?node meshv:treeNumber/^meshv:parentTreeNumber ?tree_child.
+    ?child meshv:parentTreeNumber ?node.
   }
 }
 GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id
