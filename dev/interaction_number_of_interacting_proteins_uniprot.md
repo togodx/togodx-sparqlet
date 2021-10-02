@@ -58,13 +58,12 @@ WHERE {
   } UNION { # non-interaction
     SELECT ?leaf ?label ?value
     WHERE {
-      VALUES ?interact_type { up:Self_Interaction up:Non_Self_Interaction }
       ?leaf a up:Protein ;
              up:mnemonic ?label ;
              up:organism taxon:9606 ;
              up:proteome ?proteome .
       FILTER(REGEX(STR(?proteome), "UP000005640"))    
-      MINUS { ?leaf up:interaction [ a ?interact_type ] . }   
+      MINUS { ?leaf up:interaction [] . }   
       BIND (0 AS ?value)
     }
   }
