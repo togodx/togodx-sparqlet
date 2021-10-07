@@ -44,36 +44,32 @@ https://integbio.jp/togosite/sparql
 ```
 
 ## `data`
-
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-PREFIX tree: <http://id.nlm.nih.gov/mesh/>
 
-SELECT ?tree ?id ?parent ?label SAMPLE(?tree_child) AS ?tree_child
+SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id SAMPLE(?child) AS ?tree_child
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
-  # MeSH TreeのRoot(Diseases[C]) のURI もラベルもないので、その下の階層(Infections[C01],...)のDescriptor(D007239)を列挙する
+  # MeSH Treeの Diseases[C] 以下を取得
   # See https://meshb.nlm.nih.gov/treeView
-  VALUES ?diseases_root { mesh:D007239 mesh:D009369 mesh:D009140 mesh:D004066 mesh:D009057 mesh:D012140 mesh:D010038 mesh:D009422 mesh:D005128 mesh:D052801 mesh:D005261 mesh:D002318 mesh:D006425 mesh:D009358 mesh:D017437 mesh:D009750 mesh:D004700 mesh:D0071154 mesh:D007280 mesh:D000820 mesh:D013568 mesh:D009784 }
- 
-  ?diseases_root meshv:treeNumber/^meshv:parentTreeNumber* ?tree.
-  ?tree ^meshv:treeNumber ?id.
-  ?id rdfs:label ?label .
-  
-  # ?diseases_rootのエントリにはparentが存在しないのでOPTIONALが必要
+  FILTER (regex(str(?node), "C"))
+  ?node meshv:parentTreeNumber* ?tree .
   OPTIONAL {
-    ?tree meshv:parentTreeNumber/^meshv:treeNumber ?parent.
+    ?node meshv:parentTreeNumber ?parent  .
+    ?parent_mesh_id meshv:treeNumber ?parent .
   }
+
+  ?mesh_id meshv:treeNumber ?node ;
+      rdfs:label ?mesh_label .
+  FILTER(lang(?mesh_label) = "en")
   
-  # 中間ノードの場合は?tree_childに値が存在し、leafノードの場合は?tree_childは存在しないのでOPTIONALが必要
   OPTIONAL {
-    ?tree ^meshv:parentTreeNumber ?tree_child.
+    ?child meshv:parentTreeNumber ?node.
   }
-  FILTER(lang(?label) = "en")
 }
-GROUP BY ?tree ?id ?parent ?label 
+GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id
 ```
 
 ## `return`
@@ -90,10 +86,10 @@ GROUP BY ?tree ?id ?parent ?label
   ];
   data.results.bindings.forEach(d => {
     tree.push({
-      id: d.id.value.replace(idPrefix, ""),
-      label: d.label.value,
+      id: d.mesh_id.value.replace(idPrefix, ""),
+      label: d.mesh_label.value,
       leaf: (d.tree_child == undefined ? true : false),
-      parent: (d.parent == undefined ? "root" :  d.parent.value.replace(idPrefix, ""))
+      parent: (d.parent_mesh_id == undefined ? "root" :  d.parent_mesh_id.value.replace(idPrefix, ""))
     });
   });
   return tree;
