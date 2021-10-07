@@ -44,17 +44,17 @@ https://integbio.jp/togosite/sparql
 ```
 
 ## `data`
-```
+```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 
-SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id SAMPLE(?child) AS ?child
+SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id SAMPLE(?child) AS ?tree_child
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH Treeの Diseases[C] 以下を取得
   # See https://meshb.nlm.nih.gov/treeView
-  FILTER (regex(str(?tree), "C"))
+  FILTER (regex(str(?node), "C"))
   ?node meshv:parentTreeNumber* ?tree .
   OPTIONAL {
     ?node meshv:parentTreeNumber ?parent  .
@@ -86,7 +86,7 @@ GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id
   ];
   data.results.bindings.forEach(d => {
     tree.push({
-      id: d.parent_mesh_id.value.replace(idPrefix, ""),
+      id: d.mesh_id.value.replace(idPrefix, ""),
       label: d.mesh_label.value,
       leaf: (d.tree_child == undefined ? true : false),
       parent: (d.parent_mesh_id == undefined ? "root" :  d.parent_mesh_id.value.replace(idPrefix, ""))
