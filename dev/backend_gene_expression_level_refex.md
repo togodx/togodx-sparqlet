@@ -23,7 +23,7 @@ FROM <http://rdf.integbio.jp/dataset/togosite/refex_tissue_specific_genechip_hum
 FROM <http://rdf.integbio.jp/dataset/togosite/homo_sapiens_gene_info>
 WHERE {
   ?child refexo:affyProbeset ?affy ;
-         hop:fullName ?child_label .
+         rdfs:label ?child_label .
 {{#if negatively}}
   ?affy refexo:isNegativelySpecificTo ?parent .
 {{else}}
