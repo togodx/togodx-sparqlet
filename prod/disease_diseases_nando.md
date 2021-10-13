@@ -22,7 +22,7 @@ https://integbio.jp/togosite/sparql
 PREFIX nando: <http://nanbyodata.jp/ontology/NANDO_>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?id ?parent ?label SAMPLE(?child) AS ?child
+SELECT DISTINCT ?id ?parent ?label SAMPLE(?child) AS ?child
 FROM <http://rdf.integbio.jp/dataset/togosite/nando>
 WHERE {
   # ルートノードは、NANDO:0000001（Intractable disease）

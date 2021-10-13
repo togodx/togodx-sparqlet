@@ -1,4 +1,4 @@
-# Diseaseカテゴリフィルタ(HPO階層利用)(三橋・高月)(作業中）
+# Diseaseカテゴリフィルタ(HPO階層利用)(三橋・高月)
 
 ## Description
 
@@ -23,7 +23,7 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT ?hp ?label ?parent SAMPLE(?child) AS ?child
+SELECT DISTINCT ?hp ?label ?parent SAMPLE(?child) AS ?child
 FROM <http://rdf.integbio.jp/dataset/togosite/hpo>
 WHERE {
   #root nodeはHP_000118
@@ -40,7 +40,6 @@ WHERE {
   }
  } 
  GROUP BY ?hp ?parent ?label
- Limit 100
              
 ```
 ## `return`
