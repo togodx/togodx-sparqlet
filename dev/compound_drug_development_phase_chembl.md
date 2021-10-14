@@ -1,4 +1,5 @@
 # ChEMBLを薬の開発フェーズで分類する（信定） 
+development_phase=0を除いたもの
 
 ## Description
 
@@ -14,23 +15,29 @@
         
  ## Endpoint
 
-http://sparql-proxy-togodx-1:3000/sparql
+https://integbio.jp/togosite/sparql
 
 ## `main`
 
 ```sparql
 PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-SELECT DISTINCT?development_phase
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?chembl_id ?chembl_label ?development_phase
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
 WHERE 
 {
-  ?chembl cco:highestDevelopmentPhase ?development_phase .
+  ?chembl cco:chemblId ?chembl_id ;
+            rdfs:label ?chembl_label ;
+            cco:highestDevelopmentPhase ?development_phase .
+  filter not exists { ?chembl a cco:DrugIndication }
+  filter  (?development_phase != 0 )
 }
 ```
+
 ## `return`
 
 ```javascript
-async ({ main }) => {  
+({main}) => {
   let tree = [
     {
       id: "root",
@@ -39,49 +46,36 @@ async ({ main }) => {
     }
   ];
 
+  let edge = {};
   main.results.bindings.map(d => {
   // development_phase にラベルをつける
     let parent_label = d.development_phase.value;
-    if (parent_label  == 0) parent_label = "0: No description";
-    else if (parent_label  == 1) parent_label = "1: PK tolerability";
+    if (parent_label  == 1) parent_label = "1: PK tolerability";
     else if (parent_label  == 2) parent_label = "2: Efficacy";
     else if (parent_label  == 3) parent_label = "3: Safety & Efficacy";
     else if  (parent_label  == 4) parent_label = "4: Indication Discovery & expansion";
   
     tree.push({
-      id: d.development_phase.value,
-      label: parent_label,
-      parent: 'root'
-    });
-  });
-
-  let errors = [];
-  for (let i = 1; i <= 9; i++) {
-    const results = await fetch('backend_compound_drug_development_phase_chembl',　{
-      method: 'POST',
-      body: `i=${i}`,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      } else {
-        errors.push(`CHEMBL${i}`);
-      }
-    });
+      id: d.chembl_id.value,
+      label: d.chembl_label.value,
+      leaf: true,
+      parent: d.development_phase.value
+    })
     
-    if (results) {
-      results.forEach((elem) => {
-        tree.push(elem);
-      });
+     // root との親子関係を追加
+    if (!edge[d.development_phase.value]) {
+      edge[d.development_phase.value] = true;
+      tree.push({   
+        id: d.development_phase.value,
+        label: parent_label,
+        leaf: false,
+        parent: "root"
+      })
     }
-  }
-
-  if (errors.length) {
-    tree.push({ errors: errors });
-  }
+  });
+  
   return tree;
 };
+    
+
 ```
