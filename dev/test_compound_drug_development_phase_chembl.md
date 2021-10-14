@@ -29,7 +29,7 @@ WHERE
             rdfs:label ?chembl_label ;
             cco:highestDevelopmentPhase ?development_phase .
   filter not exists { ?chembl a cco:DrugIndication }
-  filter  (?development_phase !="0" )
+  filter  (?development_phase != 0 )
 }
 ```
 
