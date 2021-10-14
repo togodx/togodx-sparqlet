@@ -1,5 +1,5 @@
-# test_ChEMBLを薬の開発フェーズで分類する（信定） 
-テスト
+# ChEMBLを薬の開発フェーズで分類する（信定） 
+development_phase=0を対象から外したもの
 ## Description
 
 - Data sources
