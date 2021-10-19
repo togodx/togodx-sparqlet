@@ -25,19 +25,20 @@ PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
-SELECT COUNT(?resolution_index) AS ?count ?resolution_index #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor ?Rfactor_free ?resolution
+SELECT ?PDBentry ?resolution_index #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor ?Rfactor_free ?resolution
   WHERE {
           ?PDBentry          rdf:type	                pdbo:datablock .
           ?PDBentry          dc:title  	                ?title .
           ?PDBentry          pdbo:has_refineCategory	?refineCategory .
           ?refineCategory    pdbo:has_refine	        ?refine .
-           optional{?refine           pdbo:refine.ls_R_factor_obs ?Rfactor .}
+          # optional{?refine  pdbo:refine.ls_R_factor_obs ?Rfactor .}
            ?refine           pdbo:refine.ls_d_res_high  ?resolution .
            optional{?refine  pdbo:refine.ls_R_factor_R_free ?Rfactor_free .}
            #BIND(IF(?Rfactor_free = "", "100", ?Rfactor_free) AS ?Rfactor_temp)
            BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?resolution_index)
          }
 ORDER BY ?resolution_index
+limit 100
 ```
 
 
