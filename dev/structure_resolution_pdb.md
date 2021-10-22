@@ -25,19 +25,19 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
-SELECT ?PDBentry ?resolution_index #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor ?Rfactor_free ?resolution
+SELECT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor ?Rfactor_free ?resolution
   WHERE {
-          ?PDBentry          rdf:type	                pdbo:datablock .
-          ?PDBentry          dc:title  	                ?title .
-          ?PDBentry          pdbo:has_refineCategory	?refineCategory .
+          ?leaf          rdf:type	                pdbo:datablock .
+          ?leaf          dc:title  	                ?label .
+          ?leaf          pdbo:has_refineCategory	?refineCategory .
           ?refineCategory    pdbo:has_refine	        ?refine .
           # optional{?refine  pdbo:refine.ls_R_factor_obs ?Rfactor .}
            ?refine           pdbo:refine.ls_d_res_high  ?resolution .
            optional{?refine  pdbo:refine.ls_R_factor_R_free ?Rfactor_free .}
            #BIND(IF(?Rfactor_free = "", "100", ?Rfactor_free) AS ?Rfactor_temp)
-           BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?resolution_index)
+           BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?value)
          }
-ORDER BY ?resolution_index
+ORDER BY ?value
 limit 100
 ```
 
@@ -50,11 +50,11 @@ limit 100
   
   return withAnnotation.results.bindings.map(d => {
     return {
-      id: d.PDBentry.value.replace(idPrefix, ""),
-      'label: d.label.value,
-      'value: Number(d.value.value),
-      'binId: Number(d.value.value) + 1,
-      'binLabel: d.value.value
+      id: d.leaf.value.replace(idPrefix, ""),
+      label: d.label.value,
+      value: Number(d.value.value),
+      binId: Number(d.value.value) + 1,
+      binLabel: d.value.value
     }
   });
 }
