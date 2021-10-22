@@ -19,8 +19,8 @@ https://integbio.jp/togosite/sparql
 ## `withAnnotation`
 
 ```sparql
-PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
-PREFIX pdbo: <https://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX pdbr: <http://rdf.wwpdb.org/pdb/>
+PREFIX pdbo: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
@@ -33,13 +33,13 @@ WHERE {
                  pdbo:has_struct_confCategory ?helix .
       ?helix pdbo:has_struct_conf ?helix_each .
       ?leaf  dc:title ?label .  
-      {
-        SELECT DISTINCT ?leaf {
-          ?leaf pdbo:has_entityCategory
-                  / pdbo:has_entity
-                  / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
-        }
-      }
+#      {
+#        SELECT DISTINCT ?leaf {
+#          ?leaf pdbo:has_entityCategory
+#                  / pdbo:has_entity
+#                  / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
+#        }
+#      }
 }
 ```
 
