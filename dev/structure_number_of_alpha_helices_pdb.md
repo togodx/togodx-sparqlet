@@ -27,6 +27,7 @@ PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT DISTINCT ?leaf ?label (COUNT(?helix) AS ?value) 
+FROM <http://rdf.integbio.jp/dataset/pdbj>
 WHERE {
       ?leaf  a pdbo:datablock ;
                  pdbo:has_struct_confCategory ?helix .
