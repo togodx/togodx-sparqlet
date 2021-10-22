@@ -19,10 +19,10 @@ https://integbio.jp/togosite/sparql
 ## `withAnnotation`
 
 ```sparql
-PREFIX pdbo: <https://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX pdbo: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX pdbr: <http://rdf.wwpdb.org/pdb/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
-PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
 SELECT ?PDBentry ?resolution_index #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor ?Rfactor_free ?resolution
@@ -46,15 +46,15 @@ limit 100
 
 ```javascript
 ({withAnnotation})=>{
-  const idPrefix = "https://rdf.wwpdb.org/pdb/";
+  const idPrefix = "http://rdf.wwpdb.org/pdb/";
   
   return withAnnotation.results.bindings.map(d => {
     return {
-      id: d.leaf.value.replace(idPrefix, ""),
-      label: d.label.value,
-      value: Number(d.value.value),
-      binId: Number(d.value.value) + 1,
-      binLabel: d.value.value
+      id: d.PDBentry.value.replace(idPrefix, ""),
+      'label: d.label.value,
+      'value: Number(d.value.value),
+      'binId: Number(d.value.value) + 1,
+      'binLabel: d.value.value
     }
   });
 }
