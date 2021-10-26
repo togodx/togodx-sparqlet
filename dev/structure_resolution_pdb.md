@@ -70,9 +70,18 @@ limit 5
 ```javascript
 ({withAnnotation, binIDgen })=>{
   const idPrefix = "http://rdf.wwpdb.org/pdb/";
-  let valarray;
+  let valarray=[];
   let valrank = [ 1, 2 ];
+  let length = Object.keys(binIDgen.results.bindings).length;
+  console.log(length);
+  
+  for (let step = 1; step < length+1; step++) {
+  valrank=[step, 3];  
   console.log(valrank);
+  }; 
+  
+  valarray.push(valrank);
+  console.log(valarray);
   console.log(binIDgen.results.bindings);
   console.log(Object.keys(binIDgen.results.bindings).length);
   binIDgen.results.bindings.map(bin => {
