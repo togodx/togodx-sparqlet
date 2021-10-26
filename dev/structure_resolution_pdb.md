@@ -25,7 +25,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
-SELECT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor ?Rfactor_free ?resolution
+SELECT DISTINCT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor ?Rfactor_free ?resolution
   WHERE {
           ?leaf          rdf:type	                pdbo:datablock .
           ?leaf          dc:title  	                ?label .
@@ -33,7 +33,7 @@ SELECT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor
           ?refineCategory    pdbo:has_refine	        ?refine .
           # optional{?refine  pdbo:refine.ls_R_factor_obs ?Rfactor .}
            ?refine           pdbo:refine.ls_d_res_high  ?resolution .
-           optional{?refine  pdbo:refine.ls_R_factor_R_free ?Rfactor_free .}
+           #optional{?refine  pdbo:refine.ls_R_factor_R_free ?Rfactor_free .}
            #BIND(IF(?Rfactor_free = "", "100", ?Rfactor_free) AS ?Rfactor_temp)
            BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?value)
          }
@@ -41,6 +41,29 @@ ORDER BY ?value
 limit 10
 ```
 
+## `binIDgen`
+
+```sparql
+PREFIX pdbo: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX pdbr: <http://rdf.wwpdb.org/pdb/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+
+SELECT DISTINCT ?labelseq #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor ?Rfactor_free ?resolution
+  WHERE {
+          ?leaf          rdf:type	                pdbo:datablock .
+          ?leaf          dc:title  	                ?label .
+          ?leaf          pdbo:has_refineCategory	?refineCategory .
+          ?refineCategory    pdbo:has_refine	        ?refine .
+          ?refine           pdbo:refine.ls_d_res_high  ?resolution .
+           #optional{?refine  pdbo:refine.ls_R_factor_R_free ?Rfactor_free .}
+           #BIND(IF(?Rfactor_free = "", "100", ?Rfactor_free) AS ?Rfactor_temp)
+           BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?labelseq)
+         }
+ORDER BY ?labelseq
+limit 10
+```
 
 ## `results`
 
