@@ -71,11 +71,11 @@ limit 5
 ({withAnnotation, binIDgen })=>{
   const idPrefix = "http://rdf.wwpdb.org/pdb/";
   console.log(binIDgen.results.bindings);
-
+  console.log(Object.keys(binIDgen.results.bindings).length);
   binIDgen.results.bindings.map(bin => {
     console.log(bin.labelseq.value);
-    console.log(Object.keys(bin).length); 
   });
+
   return withAnnotation.results.bindings.map(d => {
     return {
       id: d.leaf.value.replace(idPrefix, ""),
