@@ -78,27 +78,28 @@ limit 5
   console.log(Object.keys(binIDgen.results.bindings).length);
   let i =1;
   binIDgen.results.bindings.map(bin => {							//binID,解像度の数値を持つ２次元配列を作成
-    valrank=[ i, bin.labelseq.value];
+    valrank=[ i, Number(bin.labelseq.value)];
     valarray.push(valrank);
     i++;
   });
   console.log(valarray);     //解像度からbinIDを導き出す関数を作成する
-  
-  let targetRes = '0.55';
-  let target = valarray.filter( e => e[1] === targetRes );
-  console.log(target[0][0]);
-  
-  
   
   return withAnnotation.results.bindings.map(d => {
     return {
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       value: Number(d.value.value),
-      binId: Number(d.value.value) + 1,
+      binId: binidgen(Number(d.value.value)),
       binLabel: d.value.value
     }
   });
+    function binidgen(s) {
+    console.log(s);
+    //let targetRes = s;
+    let target = valarray.filter( e => e[1] === s );
+    return target[0][0];
+   //return;
+    }
 }
 ```
 
