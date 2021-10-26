@@ -38,7 +38,7 @@ SELECT DISTINCT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index #
            BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?value)
          }
 ORDER BY ?value
-limit 10
+limit 5
 ```
 
 ## `binIDgen`
@@ -55,14 +55,14 @@ SELECT DISTINCT ?labelseq #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor 
           ?leaf          rdf:type	                pdbo:datablock .
           ?leaf          dc:title  	                ?label .
           ?leaf          pdbo:has_refineCategory	?refineCategory .
-          ?refineCategory    pdbo:has_refine	        ?refine .
+          ?refineCategory   pdbo:has_refine	        ?refine .
           ?refine           pdbo:refine.ls_d_res_high  ?resolution .
            #optional{?refine  pdbo:refine.ls_R_factor_R_free ?Rfactor_free .}
            #BIND(IF(?Rfactor_free = "", "100", ?Rfactor_free) AS ?Rfactor_temp)
            BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?labelseq)
          }
 ORDER BY ?labelseq
-limit 10
+limit 5
 ```
 
 ## `results`
@@ -70,11 +70,12 @@ limit 10
 ```javascript
 ({withAnnotation, binIDgen })=>{
   const idPrefix = "http://rdf.wwpdb.org/pdb/";
-  
-  binIDgen.results.bindings.map(bin =>{
-    console.log( bin.labelseq);
+  console.log(binIDgen.results.bindings);
+
+  binIDgen.results.bindings.map(bin => {
+    console.log(bin.labelseq.value);
+    console.log(Object.keys(bin).length); 
   });
-  
   return withAnnotation.results.bindings.map(d => {
     return {
       id: d.leaf.value.replace(idPrefix, ""),
