@@ -68,8 +68,12 @@ limit 10
 ## `results`
 
 ```javascript
-({withAnnotation})=>{
+({withAnnotation, binIDgen })=>{
   const idPrefix = "http://rdf.wwpdb.org/pdb/";
+  
+  binIDgen.results.bindings.map(bin =>{
+    console.log( bin.labelseq);
+  });
   
   return withAnnotation.results.bindings.map(d => {
     return {
