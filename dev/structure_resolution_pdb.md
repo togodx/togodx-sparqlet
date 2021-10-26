@@ -84,6 +84,12 @@ limit 5
   });
   console.log(valarray);     //解像度からbinIDを導き出す関数を作成する
   
+  let targetRes = '0.55';
+  let target = valarray.filter( e => e[1] === targetRes );
+  console.log(target[0][0]);
+  
+  
+  
   return withAnnotation.results.bindings.map(d => {
     return {
       id: d.leaf.value.replace(idPrefix, ""),
