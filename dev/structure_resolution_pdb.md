@@ -71,23 +71,19 @@ limit 5
 ({withAnnotation, binIDgen })=>{
   const idPrefix = "http://rdf.wwpdb.org/pdb/";
   let valarray=[];
-  let valrank = [ 1, 2 ];
-  let length = Object.keys(binIDgen.results.bindings).length;
-  console.log(length);
-  
-  for (let step = 1; step < length+1; step++) {
-  valrank=[step, 3];  
-  console.log(valrank);
-  }; 
-  
-  valarray.push(valrank);
-  console.log(valarray);
-  console.log(binIDgen.results.bindings);
+  let valrank = [];
+  let length = Object.keys(binIDgen.results.bindings).length;  //配列の長さをlengthに代入
+  //console.log(length);
+  //console.log(binIDgen.results.bindings);
   console.log(Object.keys(binIDgen.results.bindings).length);
-  binIDgen.results.bindings.map(bin => {
-    console.log(bin.labelseq.value);
+  let i =1;
+  binIDgen.results.bindings.map(bin => {							//binID,解像度の数値を持つ２次元配列を作成
+    valrank=[ i, bin.labelseq.value];
+    valarray.push(valrank);
+    i++;
   });
-
+  console.log(valarray);     //解像度からbinIDを導き出す関数を作成する
+  
   return withAnnotation.results.bindings.map(d => {
     return {
       id: d.leaf.value.replace(idPrefix, ""),
