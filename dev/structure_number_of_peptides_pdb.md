@@ -14,15 +14,15 @@
 
 ## Endpoint
 
-https://integbio.jp/rdf/pdb/sparql
+https://integbio.jp/togosite/sparql
 
 ## `withAnnotation`
 
 ```sparql
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX pdbo: <https://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
+PREFIX pdbo: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX pdbr: <http://rdf.wwpdb.org/pdb/>
 
 SELECT (COUNT(?polypeptide) AS ?value) ?leaf ?label
    WHERE {
@@ -30,7 +30,7 @@ SELECT (COUNT(?polypeptide) AS ?value) ?leaf ?label
           dc:title ?label ;
           pdbo:has_entity_polyCategory ?polypeptideEntity .
       ?polypeptideEntity pdbo:has_entity_poly ?polypeptide .
-      ?polypeptide rdfs:seeAlso ?uniprot_link . #DNAのentryを排除
+      ?polypeptide pdbo:entity_poly.type "polypeptide(L)" . #DNAのentryを排除
     }
 
 ```
