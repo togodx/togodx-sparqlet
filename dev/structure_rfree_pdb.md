@@ -3,7 +3,7 @@
 ## Description
 
 - Data sources
-    - The resolution of the PDB entry.
+    - The rfree of the PDB entry.
     - This item based on the data of January 20, 2021 of PDBj. 
         - The latest data can be obtained from the URL below. https://data.pdbj.org/pdbjplus/data/pdb/rdf/
 - Query
@@ -30,12 +30,12 @@ SELECT DISTINCT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index #
           ?leaf          rdf:type	                pdbo:datablock .
           ?leaf          dc:title  	                ?label .
           ?leaf          pdbo:has_refineCategory	?refineCategory .
-          ?refineCategory    pdbo:has_refine	        ?refine .
+          ?refineCategory    pdbo:has_refine	     ?refine .
           # optional{?refine  pdbo:refine.ls_R_factor_obs ?Rfactor .}
-           ?refine           pdbo:refine.ls_d_res_high  ?resolution .
-           #optional{?refine  pdbo:refine.ls_R_factor_R_free ?Rfactor_free .}
+          # ?refine           pdbo:refine.ls_d_res_high  ?resolution .
+          ?refine  pdbo:refine.ls_R_factor_R_free ?Rfree .
            #BIND(IF(?Rfactor_free = "", "100", ?Rfactor_free) AS ?Rfactor_temp)
-           BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?value)
+          BIND((Round(100*(xsd:decimal(?Rfree)))/100) AS ?value)
          }
 ORDER BY ?value
 limit 10
