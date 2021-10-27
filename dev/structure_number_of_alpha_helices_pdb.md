@@ -42,6 +42,7 @@ WHERE {
         }
       }
 }
+
 ```
 
 ## `withoutAnnotation`
@@ -58,16 +59,17 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       ?leaf a pdbo:datablock ;
                  dc:title ?label .
       MINUS {?leaf pdbo:has_struct_confCategory ?helix . }
-#      {
-#        SELECT DISTINCT ?leaf {
-#          ?leaf pdbo:has_entityCategory
-#                  / pdbo:has_entity
-#                  / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
-#        }
-#      }
+      {
+        SELECT DISTINCT ?leaf {
+           ?leaf ( (pdbo:has_entity_src_genCategory /
+                       pdbo:has_entity_src_gen ) | 
+                      (pdbo:has_entity_src_natCategory /
+                       pdbo:has_entity_src_nat ) )
+                  / rdfs:seeAlso <http://identifiers.org/taxonomy:9606> .  
+        }
+      }
       BIND ("0" AS ?value)
       }
-
 
 ```
 
