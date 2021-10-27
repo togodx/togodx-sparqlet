@@ -35,10 +35,10 @@ SELECT DISTINCT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index #
           # ?refine           pdbo:refine.ls_d_res_high  ?resolution .
           ?refine  pdbo:refine.ls_R_factor_R_free ?Rfree .
            #BIND(IF(?Rfactor_free = "", "100", ?Rfactor_free) AS ?Rfactor_temp)
-          BIND((Round(100*(xsd:decimal(?Rfree)))/100) AS ?value)
+          BIND((Round(1000*(xsd:decimal(?Rfree)))/1000) AS ?value)
          }
 ORDER BY ?value
-limit 10
+limit 1000
 ```
 
 ## `binIDgen`
@@ -60,10 +60,9 @@ SELECT DISTINCT ?labelseq #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor 
           ?refine           pdbo:refine.ls_R_factor_R_free ?Rfree .
            #optional{?refine  pdbo:refine.ls_R_factor_R_free ?Rfactor_free .}
            #BIND(IF(?Rfactor_free = "", "100", ?Rfactor_free) AS ?Rfactor_temp)
-           BIND((Round(100*(xsd:decimal(?Rfree)))/100) AS ?labelseq)
+           BIND((Round(1000*(xsd:decimal(?Rfree)))/1000) AS ?labelseq)
          }
 ORDER BY ?labelseq
-limit 10
 ```
 
 ## `results`
@@ -83,7 +82,7 @@ limit 10
     valarray.push(valrank);
     i++;
   });
-  //console.log(valarray);     
+  console.log(valarray);     
   
   return withAnnotation.results.bindings.map(d => {
     return {
