@@ -38,7 +38,6 @@ SELECT DISTINCT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index #
            BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?value)
          }
 ORDER BY ?value
-limit 5
 ```
 
 ## `binIDgen`
@@ -62,7 +61,6 @@ SELECT DISTINCT ?labelseq #COUNT(?PDBentry) AS ?count ?Rfactor_index # ?Rfactor 
            BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?labelseq)
          }
 ORDER BY ?labelseq
-limit 5
 ```
 
 ## `results`
@@ -72,17 +70,17 @@ limit 5
   const idPrefix = "http://rdf.wwpdb.org/pdb/";
   let valarray=[];
   let valrank = [];
-  let length = Object.keys(binIDgen.results.bindings).length;  //配列の長さをlengthに代入
+  let length = Object.keys(binIDgen.results.bindings).length;    //解像度の数値を持つ配列の長さをlengthに代入
   //console.log(length);
   //console.log(binIDgen.results.bindings);
-  console.log(Object.keys(binIDgen.results.bindings).length);
+  //console.log(Object.keys(binIDgen.results.bindings).length);
   let i =1;
-  binIDgen.results.bindings.map(bin => {							//binID,解像度の数値を持つ２次元配列を作成
-    valrank=[ i, Number(bin.labelseq.value)];
+  binIDgen.results.bindings.map(b => {							//binId,解像度の数値を持つ２次元配列を作成
+    valrank=[ i, Number(b.labelseq.value)];
     valarray.push(valrank);
     i++;
   });
-  console.log(valarray);     //解像度からbinIDを導き出す関数を作成する
+  //console.log(valarray);     
   
   return withAnnotation.results.bindings.map(d => {
     return {
@@ -93,18 +91,9 @@ limit 5
       binLabel: d.value.value
     }
   });
-    function binidgen(s) {
-    console.log(s);
-    //let targetRes = s;
+    function binidgen(s) {                                   //解像度からbinIdを導き出す関数を作成する関数
     let target = valarray.filter( e => e[1] === s );
     return target[0][0];
-   //return;
     }
 }
 ```
-
-
-
-
-
-
