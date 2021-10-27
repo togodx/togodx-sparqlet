@@ -1,4 +1,4 @@
-# PDB alpha_helix distribution (井手, 守屋）
+# PDB alpha_helix distribution (井手, 守屋）(10/27-pdb更新版)
 
 ## Description
 
@@ -14,13 +14,13 @@
 
 ## Endpoint
 
-https://integbio.jp/rdf/pdb/sparql
+https://integbio.jp/togosite/sparql
 
 ## `withAnnotation`
 
 ```sparql
-PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
-PREFIX pdbo: <https://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX pdbr: <http://rdf.wwpdb.org/pdb/>
+PREFIX pdbo: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
@@ -34,9 +34,11 @@ WHERE {
       ?leaf  dc:title ?label .  
       {
         SELECT DISTINCT ?leaf {
-          ?leaf pdbo:has_entityCategory
-                  / pdbo:has_entity
-                  / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
+           ?leaf ( (pdbo:has_entity_src_genCategory /
+                       pdbo:has_entity_src_gen ) | 
+                      (pdbo:has_entity_src_natCategory /
+                       pdbo:has_entity_src_nat ) )
+                  / rdfs:seeAlso <http://identifiers.org/taxonomy:9606> .  
         }
       }
 }
