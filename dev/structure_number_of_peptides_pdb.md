@@ -1,4 +1,4 @@
-# PDB # of polypeptide distribution (井手)
+# PDB # of polypeptide distribution (井手) (10/27-pdb更新版)
 
 ## Description
  
@@ -30,7 +30,8 @@ SELECT (COUNT(?polypeptide) AS ?value) ?leaf ?label
           dc:title ?label ;
           pdbo:has_entity_polyCategory ?polypeptideEntity .
       ?polypeptideEntity pdbo:has_entity_poly ?polypeptide .
-      ?polypeptide pdbo:entity_poly.type "polypeptide(L)" . #DNAのentryを排除
+      VALUES ?parm { "polypeptide(L)"  "polypeptide(D)" }
+      ?polypeptide pdbo:entity_poly.type ?parm . #DNAのentryを排除
     }
 
 ```
