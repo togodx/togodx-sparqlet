@@ -10,7 +10,7 @@
     - Input
         - PDB ID
     - Output
-        - The alpha-helix value contained in each entry.
+        - The Rfree value contained in each entry.
 
 ## Endpoint
 
@@ -94,7 +94,7 @@ ORDER BY ?labelseq
   });
     function binidgen(s) {                                   //解像度からbinIdを導き出す関数を作成する関数
     let target = valarray.filter( e => e[1] === s );
-    return target[0][0];
+    return String(target[0][0]);
     }
 }
 ```
