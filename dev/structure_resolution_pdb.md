@@ -70,18 +70,14 @@ ORDER BY ?labelseq
   const idPrefix = "http://rdf.wwpdb.org/pdb/";
   let valarray=[];
   let valrank = [];
-  let length = Object.keys(binIDgen.results.bindings).length;    //解像度の数値を持つ配列の長さをlengthに代入
-  //console.log(length);
-  //console.log(binIDgen.results.bindings);
-  //console.log(Object.keys(binIDgen.results.bindings).length);
+  let length = Object.keys(binIDgen.results.bindings).length;    //length of resolution
   let i =1;
-  binIDgen.results.bindings.map(b => {							//binId,解像度の数値を持つ２次元配列を作成
+  binIDgen.results.bindings.map(b => {							//[binId, resolution]
     valrank=[ i, Number(b.labelseq.value)];
     valarray.push(valrank);
     i++;
   });
-  //console.log(valarray);     
-  
+    
   return withAnnotation.results.bindings.map(d => {
     return {
       id: d.leaf.value.replace(idPrefix, ""),
@@ -91,9 +87,9 @@ ORDER BY ?labelseq
       binLabel: d.value.value
     }
   });
-    function binidgen(s) {                                   //解像度からbinIdを導き出す関数を作成する関数
+    function binidgen(s) {                                   //generate binId from resolution
     let target = valarray.filter( e => e[1] === s );
-    return String(target[0][0]);
+    return target[0][0];
     }
 }
 ```
