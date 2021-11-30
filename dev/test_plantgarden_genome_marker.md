@@ -58,7 +58,38 @@ FILTER (lang(?top_subspecies_label) = "en" )
 
 ## `return`
 ```javascript
-
-
+({root, leaf, marker_genome, genome_subspecies}) => {
+  
+ let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+  
+let withAnnotation = {};
+  // 親子関係
+  graph.results.bindings.map(d => {
+    tree.push({
+      id: d.child.value.replace(categoryPrefix, ""),
+      label: d.child_label.value,
+      parent: d.parent.value.replace(categoryPrefix, "")
+    })
+    if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
+  })
+  // アノテーション関係
+  leaf.results.bindings.map(d => {
+    withAnnotation[d.child.value] = true;
+    tree.push({
+      id: d.child.value.replace(idPrefix, ""),
+      label: d.child_label.value,
+      leaf: true,
+      parent: d.parent.value.replace(categoryPrefix, "")
+    })
+  })
+   
+  return tree;	
+}
 
 ```
