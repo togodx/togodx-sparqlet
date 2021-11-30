@@ -1,4 +1,6 @@
 # PlantGarden taxonomy-genome-chr-marker (信定)
+- 生物種ごとのmarkerの分類 
+- 生物種ーゲノムーchromosomeーmarker　で treeになっている
 
 ## Endpoint
 https://mb2.ddbj.nig.ac.jp/sparql
@@ -16,16 +18,15 @@ dcterms:identifier ?leaf_marker_id ;
 rdfs:label ?leaf_marker_label ;
 pg_ns:chr ?parent_chr .
 } 
-limit 10000
 ```
 
-## `chr_genome`
+## `graph_a`
 - 親子関係
 ```sparql
 prefix pg_ns: <https://plantgardden.jp/ns/>
 prefix dcterms: <http://purl.org/dc/terms/>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select distinct ?s ?parent_chr   ?parent_genome_identifier ?parent_genome_label
+select distinct  ?parent_chr   ?parent_genome_identifier ?parent_genome_label
 where {
 ?s a  pg_ns:Marker ;
 pg_ns:genome ?parent_genome ;
@@ -34,34 +35,31 @@ pg_ns:chr ?parent_chr .
 dcterms:identifier ?parent_genome_identifier ;
 rdfs:label ?parent_genome_label .
 }
-limit 10000
 ```
-
-## `genome_subspecies`
+## `graph_b`
 - 親子関係
 ```sparql
 prefix pg_ns: <https://plantgardden.jp/ns/>
 prefix dcterms: <http://purl.org/dc/terms/>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select distinct ?s ?parent_genome_identifier ?parent_genome_label  ?top_subspecies_identifier  ?top_subspecies_label 
+select distinct  ?parent_genome_identifier ?parent_genome_label  ?top_subspecies_identifier  ?top_subspecies_label 
 where {
 ?s a  pg_ns:Marker ;
-pg_ns:genome ?parent_genome  .
+pg_ns:genome ?parent_genome .
 ?parent_genome a  pg_ns:Genome ;
 dcterms:identifier ?parent_genome_identifier ;
 rdfs:label ?parent_genome_label ;
-pg_ns:subspecies ?top_genome_subspecies .
+ pg_ns:subspecies ?top_genome_subspecies .
  ?top_genome_subspecies  a   pg_ns:Subspecies  ;
 dcterms:identifier ?top_subspecies_identifier ;
 rdfs:label ?top_subspecies_label .
-FILTER (lang(?top_subspecies_label) = "en" )
+FILTER (lang(?top_subspecies_label) = "en" )  
 }
-limit 10000
 ```
 
 ## `return`
 ```javascript
-({ leaf, chr_genome, genome_subspecies}) => {
+({ leaf, graph_a, graph_b}) => {
   
  let tree = [
     {
@@ -79,17 +77,32 @@ limit 10000
       leaf: true,
       parent: d.parent_chr.value
     })
-   // genome_subspeciesの親子関係を追加
-    if (!edge[d.parent_chr.value]) {
-      edge[d.parent_chr.value] = true;
-      tree.push({   
-        id: d.parent_chr.value,
-        label: d.parent_chr.value,
-        leaf: false,
-        parent: d.top_subspecies_identifier.value
-      })
-    }
-  });
+      });
+    let graph1 = {};
+  // 親子関係
+  graph_a.results.bindings.map(d => {
+    tree.push({
+      id: d.parent_chr.value,
+      label: d.parent_chr.value,
+      parent: d.parent_genome_identifier.value
+    })
+  }) ;
+graph_b.results.bindings.map(d => {
+    tree.push({
+      id: d.parent_genome_identifier.value,
+      label: d.parent_genome_label.value,
+      parent: d.top_subspecies_identifier.value
+    })
+  }) ;
+graph_b.results.bindings.map(d => {
+    tree.push({
+      id: d.top_subspecies_identifier.value,
+      label: d.top_subspecies_label.value,
+      parent: "root"
+    })
+  }) ;
+
   return tree;
-};
+}
+
 ```
