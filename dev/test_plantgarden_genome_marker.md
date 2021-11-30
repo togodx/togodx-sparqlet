@@ -16,6 +16,7 @@ dcterms:identifier ?leaf_marker_id ;
 rdfs:label ?leaf_marker_label ;
 pg_ns:chr ?parent_chr .
 } 
+limit 10000
 ```
 
 ## `chr_genome`
@@ -33,6 +34,7 @@ pg_ns:chr ?parent_chr .
 dcterms:identifier ?parent_genome_identifier ;
 rdfs:label ?parent_genome_label .
 }
+limit 10000
 ```
 
 ## `genome_subspecies`
@@ -54,6 +56,7 @@ dcterms:identifier ?top_subspecies_identifier ;
 rdfs:label ?top_subspecies_label .
 FILTER (lang(?top_subspecies_label) = "en" )
 }
+limit 10000
 ```
 
 ## `return`
@@ -76,7 +79,7 @@ FILTER (lang(?top_subspecies_label) = "en" )
       leaf: true,
       parent: d.parent_chr.value
     })
-  // genome_subspeciesの親子関係を追加
+   // genome_subspeciesの親子関係を追加
     if (!edge[d.parent_chr.value]) {
       edge[d.parent_chr.value] = true;
       tree.push({   
@@ -87,7 +90,6 @@ FILTER (lang(?top_subspecies_label) = "en" )
       })
     }
   });
- 
   return tree;
 };
 ```
