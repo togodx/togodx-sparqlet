@@ -18,7 +18,7 @@ pg_ns:chr ?parent_chr .
 } 
 ```
 
-## `marker_genome`
+## `chr_genome`
 - 親子関係
 ```sparql
 prefix pg_ns: <https://plantgardden.jp/ns/>
@@ -58,7 +58,7 @@ FILTER (lang(?top_subspecies_label) = "en" )
 
 ## `return`
 ```javascript
-({root, leaf, marker_genome, genome_subspecies}) => {
+({ leaf, chr_genome, genome_subspecies}) => {
   
  let tree = [
     {
@@ -68,28 +68,26 @@ FILTER (lang(?top_subspecies_label) = "en" )
     }
   ];
   
-let withAnnotation = {};
-  // 親子関係
-  graph.results.bindings.map(d => {
-    tree.push({
-      id: d.child.value.replace(categoryPrefix, ""),
-      label: d.child_label.value,
-      parent: d.parent.value.replace(categoryPrefix, "")
-    })
-    if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
-  })
-  // アノテーション関係
+  let edge = {};
   leaf.results.bindings.map(d => {
-    withAnnotation[d.child.value] = true;
     tree.push({
-      id: d.child.value.replace(idPrefix, ""),
-      label: d.child_label.value,
+      id: d.leaf_marker_id.value,
+      label: d.leaf_marker_label.value,
       leaf: true,
-      parent: d.parent.value.replace(categoryPrefix, "")
+      parent: d.parent_chr.value
     })
-  })
-   
-  return tree;	
-}
-
+  // genome_subspeciesの親子関係を追加
+    if (!edge[d.parent_chr.value]) {
+      edge[d.parent_chr.value] = true;
+      tree.push({   
+        id: d.parent_chr.value,
+        label: d.parent_chr.value,
+        leaf: false,
+        parent: d.top_subspecies_identifier.value
+      })
+    }
+  });
+ 
+  return tree;
+};
 ```
