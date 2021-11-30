@@ -1,7 +1,4 @@
 # PlantGarden taxonomy-genome-chr-marker (信定)
-taxonomy genomeのpg_ns:subspecies
-genome identifier, label
-
 
 ## Endpoint
 https://mb2.ddbj.nig.ac.jp/sparql
@@ -21,8 +18,47 @@ pg_ns:chr ?parent_chr .
 } 
 ```
 
-## `graph`
+## `marker_genome`
 - 親子関係
 ```sparql
+prefix pg_ns: <https://plantgardden.jp/ns/>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select distinct ?s ?parent_chr   ?parent_genome_identifier ?parent_genome_label
+where {
+?s a  pg_ns:Marker ;
+pg_ns:genome ?parent_genome ;
+pg_ns:chr ?parent_chr .
+?parent_genome a  pg_ns:Genome ;
+dcterms:identifier ?parent_genome_identifier ;
+rdfs:label ?parent_genome_label .
+}
+```
+
+## `genome_subspecies`
+- 親子関係
+```sparql
+prefix pg_ns: <https://plantgardden.jp/ns/>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select distinct ?s ?parent_genome_identifier ?parent_genome_label  ?top_subspecies_identifier  ?top_subspecies_label 
+where {
+?s a  pg_ns:Marker ;
+pg_ns:genome ?parent_genome  .
+?parent_genome a  pg_ns:Genome ;
+dcterms:identifier ?parent_genome_identifier ;
+rdfs:label ?parent_genome_label ;
+pg_ns:subspecies ?top_genome_subspecies .
+ ?top_genome_subspecies  a   pg_ns:Subspecies  ;
+dcterms:identifier ?top_subspecies_identifier ;
+rdfs:label ?top_subspecies_label .
+FILTER (lang(?top_subspecies_label) = "en" )
+}
+```
+
+## `return`
+```javascript
+
+
 
 ```
