@@ -93,22 +93,26 @@ graph_b.results.bindings.map(d => {
       parent: d.top_subspecies_identifier.value
     })
   }) ;
+     let subtree = [];
+  
 graph_b.results.bindings.map(d => {
-    tree.push({
+    subtree.push({
       id: d.top_subspecies_identifier.value,
       label: d.top_subspecies_label.value,
       parent: "root"
     })
   }) ;
 
-   const result = tree.filter((element, index, self) => 
+   const result = subtree.filter((element, index, self) => 
                             self.findIndex(e => 
                                            e.id === element.id &&
                                            e.label === element.label
                                           ) === index
                             );
   
-  return result;
+  tree.push(result) ;
+  
+  return tree;
 }
 
 ```
