@@ -18,7 +18,6 @@ dcterms:identifier ?leaf_marker_id ;
 rdfs:label ?leaf_marker_label ;
 pg_ns:chr ?parent_chr .
 } 
-limit 10
 ```
 
 ## `graph_a`
@@ -36,7 +35,6 @@ pg_ns:chr ?parent_chr .
 dcterms:identifier ?parent_genome_identifier ;
 rdfs:label ?parent_genome_label .
 }
-limit 10
 ```
 ## `graph_b`
 - 親子関係
@@ -57,7 +55,6 @@ dcterms:identifier ?top_subspecies_identifier ;
 rdfs:label ?top_subspecies_label .
 FILTER (lang(?top_subspecies_label) = "en" )  
 }
-limit 10
 ```
 
 ## `return`
