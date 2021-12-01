@@ -101,7 +101,14 @@ graph_b.results.bindings.map(d => {
     })
   }) ;
 
-  return tree;
+   const result = tree.filter((element, index, self) => 
+                            self.findIndex(e => 
+                                           e.id === element.id &&
+                                           e.label === element.label
+                                          ) === index
+                            );
+  
+  return result;
 }
 
 ```
