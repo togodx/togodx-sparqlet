@@ -42,7 +42,7 @@ WHERE {
         }
       }
 }
-
+Limit 100
 ```
 
 ## `withoutAnnotation`
@@ -70,7 +70,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       }
       BIND ("0" AS ?value)
       }
-
+Limit 100
 ```
 
 ## `results`
