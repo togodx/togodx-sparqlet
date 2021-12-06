@@ -37,7 +37,7 @@ WHERE {
                        pdbo:has_entity_src_gen ) | 
                       (pdbo:has_entity_src_natCategory /
                        pdbo:has_entity_src_nat ) )
-                  / rdfs:seeAlso <http://identifiers.org/taxonomy:9606> .  
+                  / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .  
         }
       }
 }
@@ -64,7 +64,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                        pdbo:has_entity_src_gen ) | 
                       (pdbo:has_entity_src_natCategory /
                        pdbo:has_entity_src_nat ) )
-                  / rdfs:seeAlso <http://identifiers.org/taxonomy:9606> .  
+                  / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .  
         }
       }
       BIND ("0" AS ?value)
