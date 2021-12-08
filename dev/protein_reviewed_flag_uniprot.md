@@ -1,5 +1,16 @@
 # Reviewed flag classification in the UniProt reference proteome（守屋）
 
+## Description
+
+- Data sources
+    - [UniProt](https://www.uniprot.org/)
+
+- Query
+    - Input
+        - UniProt ID
+    - Output
+        - Reviewd flag (Swiss-Prot/TrEMBL)
+
 ## Endpoint
 https://integbio.jp/togosite/sparql
 
