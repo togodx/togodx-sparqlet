@@ -2,6 +2,7 @@
 
 - background
 
+- human にある annotation (
 core:Absorption_Annotation
 core:Active_Site_Annotation
 core:Activity_Regulation_Annotation
@@ -78,7 +79,8 @@ core:Transit_Peptide_Annotation
 core:Transmembrane_Annotation
 *core:Turn_Annotation
 core:Zinc_Finger_Annotation
-
+ )
+ 
 ## Parameters
 
 * `type`
