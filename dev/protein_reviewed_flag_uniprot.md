@@ -38,7 +38,7 @@ WHERE {
         up:mnemonic ?leaf_label ;
         up:proteome ?proteome .
   FILTER(REGEX(STR(?proteome), "UP000005640"))
-  MINUS { ?child up:reviewed 1 .}
+  MINUS { ?leaf up:reviewed 1 .}
 }
 ```
 
