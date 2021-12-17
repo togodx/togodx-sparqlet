@@ -85,6 +85,19 @@ core:Zinc_Finger_Annotation
 
 * `type`
   * default: Helix_Annotation
+* `region_annotation`
+  * example: Disordered
+
+## `query_code`
+```javascript
+({type, region_annotation}) => {
+  if (type == "Region_Annotation" && region_annotation) {
+    return "rdfs:comment \"" + region_annotation + "\" ;";
+  } else {
+    return "";
+  }
+}
+```
 
 ## Endpoint
 https://integbio.jp/togosite/sparql
@@ -101,7 +114,8 @@ WHERE
          core:mnemonic ?label ;
          core:proteome ?proteome ;
          core:annotation ?annotation .
-  ?annotation a core:{{type}} .
+  ?annotation {{queey_code}}
+              a core:{{type}} .
   FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
 ```
@@ -118,7 +132,10 @@ WHERE {
            core:proteome ?proteome .
   FILTER(REGEX(STR(?proteome), "UP000005640"))
   MINUS {
-    ?leaf core:annotation [ a core:{{type}} ] .
+    ?leaf core:annotation [ 
+      {{queey_code}} 
+      a core:{{type}}
+    ] .
   }
   BIND ("0" AS ?value)
 }
