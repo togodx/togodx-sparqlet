@@ -114,7 +114,7 @@ WHERE
          core:mnemonic ?label ;
          core:proteome ?proteome ;
          core:annotation ?annotation .
-  ?annotation {{queey_code}}
+  ?annotation {{query_code}}
               a core:{{type}} .
   FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
@@ -133,7 +133,7 @@ WHERE {
   FILTER(REGEX(STR(?proteome), "UP000005640"))
   MINUS {
     ?leaf core:annotation [ 
-      {{queey_code}} 
+      {{query_code}} 
       a core:{{type}}
     ] .
   }
