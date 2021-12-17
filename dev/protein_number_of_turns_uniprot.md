@@ -15,7 +15,7 @@
 
 ```javascript
 async ({})=>{
-  let url = "background_protein_number_of_uniprot_annotation_uniprot"; // parent SPARQLet relative path
+  let url = "backend_protein_number_of_uniprot_annotation_uniprot"; // parent SPARQLet relative path
   let options = {
     method: 'POST',
     body: 'type=Turn_Annotation',

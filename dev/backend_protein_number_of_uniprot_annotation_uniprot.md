@@ -1,6 +1,6 @@
 # UniProt annotation count distribution（守屋）
 
-- background
+- backend
 
 - human にある annotation (
 core:Absorption_Annotation
