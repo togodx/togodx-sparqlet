@@ -38,6 +38,7 @@ SELECT DISTINCT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index #
            BIND((Round(100*(xsd:decimal(?resolution)))/100) AS ?value)
          }
 ORDER BY ?value
+limit 10
 
 ```
 
