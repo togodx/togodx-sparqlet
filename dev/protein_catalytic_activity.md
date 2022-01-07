@@ -22,13 +22,13 @@ PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT DISTINCT ?leaf ?value ?label ?bin #?mnemonic ?ecclass_name ?ecclass ?eccode ?annotation  ?comment
+SELECT DISTINCT ?leaf ?value ?binLabel ?bin ?label#?mnemonic ?ecclass_name ?ecclass ?eccode ?annotation  ?comment
 #SELECT DISTINCT COUNT(?ecclass) AS ?count ?ecclass 
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
    #VALUES ?leaf{ upid:Q96DA6 }
    ?leaf a up:Protein .
-   ?leaf up:mnemonic ?mnemonic.
+   ?leaf up:mnemonic ?label.
 
    ?leaf up:annotation ?annotation .
    ?annotation a up:Catalytic_Activity_Annotation .
@@ -40,7 +40,7 @@ SELECT DISTINCT ?leaf ?value ?label ?bin #?mnemonic ?ecclass_name ?ecclass ?ecco
   BIND(SUBSTR(STR(?eccode),32,1) AS ?bin ) 
   BIND(SUBSTR(STR(?eccode),32,100) AS ?value ) 
   
-  BIND(IF(?bin = "1","Oxidoreductases" , "") AS ?label)
+  BIND(IF(?bin = "1","Oxidoreductases" , "") AS ?binLabel)
   FILTER(REGEX(STR(?bin), "1"))
    
   #{BIND(IF((SUBSTR(?eccode_STR,1,1)) = "2","Transferases" , "") AS ?ecclass)
