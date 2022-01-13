@@ -1,4 +1,4 @@
-# UniProt catalytic_activity（井手）* 220107-作業中
+# UniProt catalytic_activity（井手）* 220113作業完了
 
 ## Description
 
@@ -23,27 +23,24 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
-SELECT DISTINCT ?uniprot ?mnemonic ?ecclass ?ecclass1 ?ecclass2 ?ec_sub ?parent #?eccode ?annotation
+SELECT DISTINCT ?leaf ?label ?parent #?ecclass ?ecclass1 ?ecclass2 ?ec_sub  #?eccode ?annotation
        #SELECT DISTINCT COUNT(?ec_sub) AS ?count ?ec_sub
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-   ?uniprot a up:Protein ;
-            up:mnemonic ?mnemonic;
+   ?leaf a up:Protein ;
+            up:mnemonic ?label;
             up:proteome ?proteome;
             up:annotation ?annotation .
    ?annotation a up:Catalytic_Activity_Annotation;
             up:catalyticActivity/up:enzymeClass ?eccode .
    BIND(SUBSTR(STR(?eccode),32,99) AS ?ecclass) 
    BIND(SUBSTR(?ecclass, 1, STRLEN(?ecclass)-STRLEN(STRAFTER(STRAFTER(?ecclass ,"."),"."))-1) AS ?ec_sub)
-   
    BIND(xsd:INTEGER(SUBSTR(?ecclass,1,1))*100 AS ?ecclass1)
    BIND(xsd:INTEGER(STRAFTER(?ec_sub,".")) AS ?ecclass2)
    BIND((?ecclass1+?ecclass2) AS ?parent)
-
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
-#Order by ?ec_sub
-limit 10
+#limit 10
 ```
 
 ## `results`
@@ -51,7 +48,6 @@ limit 10
 ```javascript
 ({withAnnotation})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-
   let tree = [
     {
       id: "root",
