@@ -16,26 +16,28 @@ https://integbio.jp/togosite/sparql
 
 ## `withAnnotation`
 ```sparql
+## https://integbio.jp/togosite/sparql
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX upid: <http://purl.uniprot.org/uniprot/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT DISTINCT ?leaf ?parent ?label 
+SELECT DISTINCT ?uniprot ?mnemonic ?ecclass ?ec_sub #?eccode ?annotation
+          #SELECT DISTINCT COUNT(?ec_sub) AS ?count ?ec_sub
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-   ?leaf a up:Protein;
-   		up:mnemonic ?label;
-   		up:annotation ?annotation .
+   ?uniprot a up:Protein ;
+            up:mnemonic ?mnemonic;
+            up:proteome ?proteome;
+            up:annotation ?annotation .
    ?annotation a up:Catalytic_Activity_Annotation;
-   			up:catalyticActivity ?activity .
-   ?activity up:enzymeClass ?eccode .
-   BIND(SUBSTR(STR(?eccode),32,1) AS ?parent ) 
-  #BIND(SUBSTR(STR(?eccode),32,100) AS ?value ) 
-  ?leaf up:proteome ?proteome.
-  FILTER(REGEX(STR(?proteome), "UP000005640"))
+            up:catalyticActivity/up:enzymeClass ?eccode .
+   BIND(SUBSTR(STR(?eccode),32,99) AS ?ecclass) 
+   BIND(SUBSTR(?ecclass, 1, STRLEN(?ecclass)-STRLEN(STRAFTER(STRAFTER(?ecclass ,"."),"."))-1) AS ?ec_sub)
+   FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
+#Order by ?ec_sub
 limit 10
 ```
 
