@@ -124,6 +124,8 @@ limit 10
      i++;
   });
   console.log(tree[1].label);
+  console.log(tree[id]);
+  console.log(parentgen(2));
   return tree;
   
 //  main.results.bindings.map(e => {
@@ -135,8 +137,9 @@ limit 10
 //      })
 //  });
 //  return tree;
-//  function parentgen(s){
-//    
-//  }
+   function parentgen(s){
+     let target = tree.filter( f => f[id] === s)
+     return target ;
+   }
 }
 ```
