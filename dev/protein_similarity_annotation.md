@@ -42,7 +42,7 @@ WHERE{
   }
 }}
 ORDER BY DESC(?count)
-limit 10
+limit 200
 ```
 
 ## `main`
@@ -71,7 +71,7 @@ SELECT DISTINCT ?leaf ?label ?family #?uniprot
      BIND(SUBSTR(?comment,16,150)AS ?family )
      FILTER(REGEX(STR(?proteome), "UP000005640"))
   }
-limit 10
+limit 2
 #}}
 #ORDER BY DESC(?count)
 ```
@@ -131,8 +131,8 @@ limit 10
     tree.push({
         id: e.leaf.value.replace(idPrefix, ""),
         label: e.label.value,
-        leaf: true,
-//        parent: String(parentgen(e.family.value))
+        leaf: "true",
+        parent: String(parentgen(e.family.value))
       })
   });
   return tree;
