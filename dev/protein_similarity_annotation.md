@@ -82,7 +82,7 @@ limit 100
 ```javascript
 ({familygen,main})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-  let other_num = 50;  //フロントに表示される数は50にする。
+  let other_num = 10;  //フロントに表示される数は50にする。
   let length = Object.keys(familygen.results.bindings).length;    //length of rfree
   let i =1;
   let tree = [
@@ -93,13 +93,35 @@ limit 100
     }
   ];
   familygen.results.bindings.map(d => {
-    tree.push({
-      id: "i",
-      label: d.family.value,
-      leaf: "false",
-      parent: "root"
-    })
-    i++;
+    if (i < other_num ){ 
+    	tree.push({
+      		id: String(i),
+      		label: d.family.value,
+      		leaf: "false",
+      		parent: "root"
+    	})
+    }else if (i == other_num){
+    	tree.push({
+      		id: String(other_num),
+      		label: "Other",
+      		leaf: "false",
+      		parent: "root"
+    	})
+        tree.push({
+      		id: String(i+1),
+      		label: d.family.value,
+      		leaf: "false",
+      		parent: String(other_num)
+    	})
+     }else {
+    	tree.push({
+      		id: String(i+1),
+      		label: d.family.value,
+      		leaf: "false",
+      		parent: String(other_num)
+    	})
+     }
+     i++;
   });
   return tree;
   
