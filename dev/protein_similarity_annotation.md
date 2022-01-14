@@ -42,7 +42,7 @@ WHERE{
   }
 }}
 ORDER BY DESC(?count)
-limit 100
+limit 10
 ```
 
 ## `main`
@@ -71,7 +71,7 @@ SELECT DISTINCT ?leaf ?label ?family #?uniprot
      BIND(SUBSTR(?comment,16,150)AS ?family )
      FILTER(REGEX(STR(?proteome), "UP000005640"))
   }
-limit 100
+limit 10
 #}}
 #ORDER BY DESC(?count)
 ```
@@ -82,7 +82,7 @@ limit 100
 ```javascript
 ({familygen,main})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-  let other_num = 10;  //フロントに表示される数は50にする。
+  let other_num = 5;  //フロントに表示される数は50にする。
   let length = Object.keys(familygen.results.bindings).length;    //length of rfree
   let i =1;
   let tree = [
@@ -123,17 +123,20 @@ limit 100
      }
      i++;
   });
+  console.log(tree[1].label);
   return tree;
-  
   
 //  main.results.bindings.map(e => {
 //    tree.push({
-//      id: e.leaf.value.replace(idPrefix, ""),
-//      label: e.label.value,
-//      leaf: true,
-//      parent: e.parent.value
-//    })
+//        id: e.leaf.value.replace(idPrefix, ""),
+//        label: e.label.value,
+//        leaf: true,
+//        parent: String(parentgen(e.family.value))
+//      })
 //  });
 //  return tree;
+//  function parentgen(s){
+//    
+//  }
 }
 ```
