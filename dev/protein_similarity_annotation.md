@@ -124,22 +124,21 @@ limit 10
      i++;
   });
   console.log(tree[1].label);
-  console.log(tree[id]);
-  console.log(parentgen(2));
-  return tree;
-  
-//  main.results.bindings.map(e => {
-//    tree.push({
-//        id: e.leaf.value.replace(idPrefix, ""),
-//        label: e.label.value,
-//        leaf: true,
-//        parent: String(parentgen(e.family.value))
-//      })
-//  });
+  console.log(parentgen("G-protein coupled receptor 1 family."));
 //  return tree;
+  
+  main.results.bindings.map(e => {
+    tree.push({
+        id: e.leaf.value.replace(idPrefix, ""),
+        label: e.label.value,
+        leaf: true,
+//        parent: String(parentgen(e.family.value))
+      })
+  });
+  return tree;
    function parentgen(s){
-     let target = tree.filter( f => f[id] === s)
-     return target ;
+     let target = tree.filter( f => f["label"] === s)
+     return target[0].id ;
    }
 }
 ```
