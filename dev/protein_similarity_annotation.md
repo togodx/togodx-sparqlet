@@ -22,34 +22,27 @@ PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-#SELECT DISTINCT ?uniprot ?mnemonic ?annotation  ?comment
-SELECT  ?count ?family 
-WHERE{ 
-  FILTER(?count>3)
-  {SELECT DISTINCT COUNT(?comment) AS ?count ?comment ?family #?uniprot
-# FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
- WHERE {
-   #VALUES ?uniprot{ upid:Q96DA6 }
-   ?uniprot a up:Protein .
-   ?uniprot up:mnemonic ?mnemonic.
-   ?uniprot up:reviewed true .
+# SELECT ?count ?family  WHERE{ FILTER(?count>2) {
 
-   ?uniprot up:annotation ?annotation .
-   ?annotation 	a up:Similarity_Annotation .
-   OPTIONAL {?annotation rdfs:comment ?comment .}
-   #?annotation rdfs:comment "Belongs to the G-protein coupled receptor 1 family." .
-  
-   BIND(SUBSTR(?comment,16,99)AS ?family )
-  ?uniprot up:proteome ?proteome.
-  FILTER(REGEX(STR(?proteome), "UP000005640"))
+#SELECT DISTINCT COUNT(?comment) AS ?count ?comment ?family #?uniprot  
+SELECT DISTINCT ?leaf ?label ?family #?uniprot  
+    FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+  WHERE {
+     ?leaf a up:Protein;
+            up:mnemonic ?label;
+            up:reviewed true;
+            up:proteome ?proteome;
+            up:annotation ?annotation .
+     ?annotation a up:Similarity_Annotation;
+                 rdfs:comment ?comment .
+     BIND(SUBSTR(?comment,16,99)AS ?family )
+     FILTER(REGEX(STR(?proteome), "UP000005640"))
   }
-#(FILTER (?count > 1))
-Order by DESC(?count)
-#Limit 100
+#Order by DESC(?count)
+Limit 101
 #limit 3400 #全体で5161 count=1を抜くと3400ぐらい。
- }
-}
-ORDER BY DESC(?count)
+# }}
+#ORDER BY DESC(?count)
 ```
 
 ## `results`
