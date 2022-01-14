@@ -132,7 +132,8 @@ limit 2
         id: e.leaf.value.replace(idPrefix, ""),
         label: e.label.value,
         leaf: "true",
-        parent: String(parentgen(e.family.value))
+        console.log(e.family.value)
+        //parent: String(parentgen(e.family.value))
       })
   });
   return tree;
