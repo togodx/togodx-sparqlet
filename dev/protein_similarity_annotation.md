@@ -24,7 +24,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?family
 WHERE{ 
-  FILTER(?count>1) 
+  #FILTER(?count>1) 
   {
   SELECT DISTINCT COUNT(?family) AS ?count ?family ?length#?uniprot  
   #SELECT DISTINCT ?leaf ?label ?family #?uniprot  
@@ -42,7 +42,7 @@ WHERE{
   }
 }}
 ORDER BY DESC(?count)
-limit 10
+#limit 10
 ```
 
 ## `main`
@@ -71,8 +71,7 @@ SELECT DISTINCT ?leaf ?label ?family #?uniprot
      BIND(SUBSTR(?comment,16,150)AS ?family )
      FILTER(REGEX(STR(?proteome), "UP000005640"))
   }
-limit 1
-offset 8
+#limit 10 # offset 8
 #}}
 #ORDER BY DESC(?count)
 ```
@@ -83,8 +82,8 @@ offset 8
 ```javascript
 ({familygen,main})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-  let other_num = 5;  //フロントに表示される数を指定。
-  let length = Object.keys(familygen.results.bindings).length;    //length of rfree
+  let other_num = 100;  //フロントに表示される数を指定。
+  let length = Object.keys(familygen.results.bindings).length;
   let i =1;
   let tree = [
     {
@@ -124,8 +123,8 @@ offset 8
      }
      i++;
   });
-  console.log(tree[1].label);
-  console.log(parentgen("G-protein coupled receptor 1 family."));
+//  console.log(tree[1].label);
+//  console.log(parentgen("G-protein coupled receptor 1 family."));
 //  return tree;
   
   main.results.bindings.map(e => {
