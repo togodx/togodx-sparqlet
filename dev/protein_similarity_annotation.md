@@ -25,6 +25,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ?family
 WHERE{ 
   #FILTER(?count>1) 
+  			#count>1 のみにしたいが、Result部分で配列内に無い、count=1の値を入れるとエラーを吐く。
   {
   SELECT DISTINCT COUNT(?family) AS ?count ?family ?length#?uniprot  
   #SELECT DISTINCT ?leaf ?label ?family #?uniprot  
