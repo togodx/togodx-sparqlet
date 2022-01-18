@@ -1,4 +1,4 @@
-# UniProt pathway_Annotation（井手）* 220117 作業中
+# UniProt pathway_annotation（井手）* 220117 作業中
 
 ## Description
 
@@ -80,10 +80,10 @@ SELECT DISTINCT ?leaf ?label ?family #?uniprot
 ## `results`
 
 ```javascript
-({pathway,main})=>{
+({pathway})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let other_num = 100;  //フロントに表示される数を指定。
-  let length = Object.keys(familygen.results.bindings).length;
+//  let length = Object.keys(familygen.results.bindings).length;
   let i =1;
   let tree = [
     {
@@ -92,54 +92,34 @@ SELECT DISTINCT ?leaf ?label ?family #?uniprot
       root: true
     }
   ];
-  familygen.results.bindings.map(d => {
-    if (i < other_num ){ 
-    	tree.push({
-      		id: String(i),
-      		label: d.family.value,
-      		leaf: "false",
-      		parent: "root"
-    	})
-    }else if (i == other_num){
-    	tree.push({
-      		id: String(other_num),
-      		label: "Other",
-      		leaf: "false",
-      		parent: "root"
-    	})
-        tree.push({
-      		id: String(i+1),
-      		label: d.family.value,
-      		leaf: "false",
-      		parent: String(other_num)
-    	})
-     }else {
-    	tree.push({
-      		id: String(i+1),
-      		label: d.family.value,
-      		leaf: "false",
-      		parent: String(other_num)
-    	})
-     }
-     i++;
-  });
-//  console.log(tree[1].label);
+  
+  var x = new XMLHttpRequest();
+	x.open("GET", "https://raw.githubusercontent.com/geneontology/unipathway/master/upa.owl", true);
+	x.onreadystatechange = function () {
+  if (x.readyState == 4 && x.status == 200)
+  {
+    var doc = x.responseXML;
+    // …
+  }
+};
+
+  console.log(doc);
 //  console.log(parentgen("G-protein coupled receptor 1 family."));
 //  return tree;
   
-  main.results.bindings.map(e => {
-    tree.push({
-        id: e.leaf.value.replace(idPrefix, ""),
-        label: e.label.value,
-        leaf: "true",
+//  main.results.bindings.map(e => {
+//    tree.push({
+//        id: e.leaf.value.replace(idPrefix, ""),
+//        label: e.label.value,
+//        leaf: "true",
         //parent: e.family.value
-        parent: parentgen(e.family.value)
-      })
-  });
-  return tree;
-   function parentgen(s){
-     let target = tree.filter( f => f["label"] === s)
-     return target[0].id ;
-   }
+//       parent: parentgen(e.family.value)
+//      })
+//  });
+//  return tree;
+//   function parentgen(s){
+//     let target = tree.filter( f => f["label"] === s)
+//     return target[0].id ;
+//   }
 }
 ```
