@@ -93,18 +93,18 @@ SELECT DISTINCT ?leaf ?label ?family #?uniprot
     }
   ];
   var x = new XMLHttpRequest();
-  x.open("GET", "https://raw.githubusercontent.com/geneontology/unipathway/master/upa.owl", true);
-//	x.onreadystatechange = function () {
-//  if (x.readyState == 4 && x.status == 200)
-//      {
+
+  x.onreadystatechange = function () {
+  if (x.readyState == 4 && x.status == 200)
+      {
        console.log("log1");
-       // var doc = x.responseXML;
+       console.log(x.responseText); // var doc = x.responseXML;
        // …
-//      }
-//  };
+      }
+  };
+  x.open("GET", "https://raw.githubusercontent.com/geneontology/unipathway/master/upa.owl", true);
   x.send();
   console.log("log2");
-  return;
 
 //  console.log(doc);
 //  console.log(parentgen("G-protein coupled receptor 1 family."));
