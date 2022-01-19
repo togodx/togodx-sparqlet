@@ -24,12 +24,11 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 
-#SELECT DISTINCT COUNT (?length) AS ?count ?length  
-SELECT DISTINCT ?uniprot ?mnemonic ?annotation ?length # ?begin_position ?end_position
+SELECT DISTINCT ?leaf ?label ?value
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-   ?uniprot a up:Protein ;
-            up:mnemonic ?mnemonic;
+   ?leaf a up:Protein ;
+            up:mnemonic ?label;
             up:annotation ?annotation .
    ?annotation a up:Region_Annotation;
                rdfs:comment "Disordered";
@@ -37,16 +36,10 @@ SELECT DISTINCT ?uniprot ?mnemonic ?annotation ?length # ?begin_position ?end_po
    ?range rdf:type faldo:Region;
           faldo:begin/faldo:position ?begin_position;
           faldo:end/faldo:position ?end_position .
-   BIND ((?end_position-?begin_position) AS ?length) .   
- 
-   #?begin faldo:reference ?begin_reference_seq .
-   #?begin_reference_seq rdf:value ?value .
-   #BIND ((substr(str(?value),?begin_position,?end_position-?begin_position)) AS ?seq) .
-   
-   ?uniprot up:proteome ?proteome.
+   BIND ((?end_position-?begin_position) AS ?value)
+   ?leaf up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
-Order by (?length)
 limit 100
 ```
 
@@ -60,7 +53,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 
-SELECT DISTINCT ?length 
+SELECT DISTINCT ?length_label 
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
    ?uniprot a up:Protein ;
@@ -72,11 +65,11 @@ SELECT DISTINCT ?length
    ?range rdf:type faldo:Region;
           faldo:begin/faldo:position ?begin_position;
           faldo:end/faldo:position ?end_position .
-   BIND ((?end_position-?begin_position) AS ?length) .   
+   BIND ((?end_position-?begin_position) AS ?length_label) .   
    ?uniprot up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
-Order by (?length)
+Order by (?length_label)
 #limit 100
 ```
 
@@ -84,66 +77,29 @@ Order by (?length)
 ## `results`
 
 ```javascript
-({familygen,main})=>{
+({disorder,binIDgen})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-  let other_num = 100;  //フロントに表示される数を指定。
-  let length = Object.keys(familygen.results.bindings).length;
+  let valrank = []; 
+  let valarray=[];
+  let length = Object.keys(binIDgen.results.bindings).length;    //length of length_label
   let i =1;
-  let tree = [
-    {
-      id: "root",
-      label: "root node",
-      root: true
+  binIDgen.results.bindings.map(b => {							 //[binId, length_label]
+    valrank=[ i, Number(b.length_label.value)];
+    valarray.push(valrank);
+    i++;
+  });
+  return disorder.results.bindings.map(d => {
+    return {
+      id: d.leaf.value.replace(idPrefix, ""),
+      label: d.label.value,
+      value: Number(d.value.value),
+      binId: binidgen(Number(d.value.value)),
+      binLabel: d.value.value
     }
-  ];
-  familygen.results.bindings.map(d => {
-    if (i < other_num ){ 
-    	tree.push({
-      		id: String(i),
-      		label: d.family.value,
-      		leaf: "false",
-      		parent: "root"
-    	})
-    }else if (i == other_num){
-    	tree.push({
-      		id: String(other_num),
-      		label: "Other",
-      		leaf: "false",
-      		parent: "root"
-    	})
-        tree.push({
-      		id: String(i+1),
-      		label: d.family.value,
-      		leaf: "false",
-      		parent: String(other_num)
-    	})
-     }else {
-    	tree.push({
-      		id: String(i+1),
-      		label: d.family.value,
-      		leaf: "false",
-      		parent: String(other_num)
-    	})
-     }
-     i++;
   });
-//  console.log(tree[1].label);
-//  console.log(parentgen("G-protein coupled receptor 1 family."));
-//  return tree;
-  
-  main.results.bindings.map(e => {
-    tree.push({
-        id: e.leaf.value.replace(idPrefix, ""),
-        label: e.label.value,
-        leaf: "true",
-        //parent: e.family.value
-        parent: parentgen(e.family.value)
-      })
-  });
-  return tree;
-   function parentgen(s){
-     let target = tree.filter( f => f["label"] === s)
-     return target[0].id ;
-   }
+    function binidgen(s) {                                   //generate binId from length_label value
+    let target = valarray.filter( e => e[1] === s );
+    return target[0][0];
+    }
 }
 ```
