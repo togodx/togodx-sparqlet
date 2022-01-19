@@ -43,6 +43,33 @@ SELECT DISTINCT ?leaf ?label ?value
 limit 100
 ```
 
+## `withoutdisorder`
+```sparql
+PREFIX up: <http://purl.uniprot.org/core/>
+PREFIX upid: <http://purl.uniprot.org/uniprot/>
+PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+
+SELECT DISTINCT ?leaf ?label ?value
+ FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+ WHERE {
+   ?leaf a up:Protein ;
+         up:mnemonic ?label ;
+   		 up:proteome ?proteome.
+   FILTER(REGEX(STR(?proteome), "UP000005640"))
+   MINUS {
+    ?leaf up:annotation ?annotation .
+    ?annotation  a up:Region_Annotation ;
+                 rdfs:comment "Disordered".
+   }
+  BIND ("0" AS ?value)
+}
+limit 100
+```
+
 ## `binIDgen`
 ```sparql
 PREFIX up: <http://purl.uniprot.org/core/>
@@ -77,26 +104,38 @@ Order by (?length_label)
 ## `results`
 
 ```javascript
-({disorder,binIDgen})=>{
+({disorder,withoutdisorder,binIDgen})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let valrank = []; 
-  let valarray=[];
+  let valarray=[[1,0]];
   let length = Object.keys(binIDgen.results.bindings).length;    //length of length_label
-  let i =1;
+  let i =2;
+  let tree = [];
   binIDgen.results.bindings.map(b => {							 //[binId, length_label]
     valrank=[ i, Number(b.length_label.value)];
     valarray.push(valrank);
     i++;
   });
-  return disorder.results.bindings.map(d => {
-    return {
+  console.log(valarray);
+  disorder.results.bindings.map(d => {
+    tree.push({
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       value: Number(d.value.value),
       binId: binidgen(Number(d.value.value)),
       binLabel: d.value.value
-    }
-  });
+    })
+   });
+   withoutdisorder.results.bindings.map(f => {
+    tree.push({
+      id: f.leaf.value.replace(idPrefix, ""),
+      label: f.label.value,
+      value: Number(f.value.value),
+      binId: binidgen(Number(f.value.value)),
+      binLabel: f.value.value
+    })
+   });
+    return tree;
     function binidgen(s) {                                   //generate binId from length_label value
     let target = valarray.filter( e => e[1] === s );
     return target[0][0];
