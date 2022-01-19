@@ -36,7 +36,7 @@ SELECT DISTINCT ?leaf ?label ?value
                up:range/faldo:end/faldo:position ?value .
 }
 Order by ?value
-limit 100
+#limit 100
 ```
 
 ## `withoutannotation`
@@ -64,7 +64,7 @@ SELECT DISTINCT ?leaf ?label ?value
    BIND ("0" AS ?value)
  }
 Order by ?value
-limit 100
+#limit 100
 
 ```
 
@@ -88,7 +88,7 @@ SELECT DISTINCT ?length_label
    ?annotation a up:Signal_Peptide_Annotation;
                up:range/faldo:end/faldo:position ?length_label .
 }
-Order by ?value
+Order by ?length_label
 ```
 
 
