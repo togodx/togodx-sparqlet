@@ -167,9 +167,10 @@ WHERE {
   })
   // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
-    if (!withAnnotation[d.leaf.value]) {
+    let id = d.leaf.value.replace(idPrefix, "");
+    if (!withAnnotation[id]) {
       tree.push({
-        id: d.leaf.value.replace(idPrefix, ""),
+        id: id,
         label: d.leaf_label.value,
         leaf: true,
         parent: withoutId
