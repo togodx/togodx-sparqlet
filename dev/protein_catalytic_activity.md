@@ -1,4 +1,4 @@
-# UniProt catalytic_activity（井手）* 220113作業完了
+# UniProt catalytic_activity（井手）* 220125 EC番号をラベルに変更
 
 ## Description
 
@@ -23,14 +23,15 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
-SELECT DISTINCT ?leaf ?label ?parent ?value ?ecclass1 ?ecclass2 ?ecclass3 ?ecclass4 #?ec_sub ?ec_sub2?eccode ?annotation
-#SELECT DISTINCT COUNT(?ecclass3) AS ?count ?ecclass3
+SELECT DISTINCT ?leaf ?label ?parent 
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
    ?leaf a up:Protein ;
             up:mnemonic ?label;
             up:proteome ?proteome;
             up:annotation ?annotation .
+   FILTER(REGEX(STR(?proteome), "UP000005640"))
+   {
    ?annotation a up:Catalytic_Activity_Annotation;
             up:catalyticActivity/up:enzymeClass ?eccode .
    BIND(SUBSTR(STR(?eccode),32,99) AS ?value) 
@@ -40,8 +41,22 @@ SELECT DISTINCT ?leaf ?label ?parent ?value ?ecclass1 ?ecclass2 ?ecclass3 ?eccla
    BIND(xsd:INTEGER(STRAFTER(?ec_sub,"."))*100000 AS ?ecclass2)
    BIND(xsd:INTEGER(STRBEFORE(?ec_sub2,"."))*1000 AS ?ecclass3)
    BIND(xsd:INTEGER(STRAFTER(?ec_sub2,".")) AS ?ecclass4)
-   BIND((?ecclass1+?ecclass2+?ecclass3+?ecclass4) AS ?parent)
-   FILTER(REGEX(STR(?proteome), "UP000005640"))
+   Filter(isNumeric(?ecclass4))
+   BIND((?ecclass1+?ecclass2+?ecclass3+?ecclass4) AS ?parent1)
+   }UNION{
+   ?annotation a up:Catalytic_Activity_Annotation;
+            up:catalyticActivity/up:enzymeClass ?eccoden .
+   BIND(SUBSTR(STR(?eccoden),32,99) AS ?valuen) 
+   BIND(SUBSTR(?valuen, 1, STRLEN(?valuen)-STRLEN(STRAFTER(STRAFTER(?valuen ,"."),"."))-1) AS ?ec_subn)
+   BIND(SUBSTR(?valuen, STRLEN(?ec_subn)+2,99) AS ?ec_sub2n)
+   BIND(xsd:INTEGER(SUBSTR(?valuen,1,1))*10000000 AS ?ecclass1n)
+   BIND(xsd:INTEGER(STRAFTER(?ec_subn,"."))*100000 AS ?ecclass2n)
+   BIND(xsd:INTEGER(STRBEFORE(?ec_sub2n,"."))*1000 AS ?ecclass3n)
+   BIND((STRAFTER(?ec_sub2n,".")) AS ?ecclass4n)
+   Filter(CONTAINS(?ecclass4n,"n"))
+   BIND((CONCAT(?ecclass1n+?ecclass2n+?ecclass3n,STR(?ecclass4n))) AS ?parent2)
+   }
+   BIND(CONCAT(?parent1,?parent2) AS ?parent)
 }
 limit 10
 ```
@@ -141,7 +156,6 @@ SELECT DISTINCT ?child ?value ?parent
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
 Order by ?child
-limit 50
 ```
 
 ## `results`
@@ -205,7 +219,7 @@ limit 50
     tree.push({
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
-      leaf: true,
+      leaf: false,
       parent: d.parent.value
     })
   });
