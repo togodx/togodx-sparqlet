@@ -46,10 +46,42 @@ SELECT DISTINCT ?leaf ?label ?parent ?value ?ecclass1 ?ecclass2 ?ecclass3 ?eccla
 limit 10
 ```
 
+## `SecondClass`
+```sparql
+PREFIX up: <http://purl.uniprot.org/core/>
+PREFIX upid: <http://purl.uniprot.org/uniprot/>
+PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+
+SELECT DISTINCT ?child ?label ?ecclass1
+ FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+ WHERE {
+   ?leaf a up:Protein ;
+           up:proteome ?proteome;
+           up:annotation ?annotation .
+   ?annotation a up:Catalytic_Activity_Annotation;
+               up:catalyticActivity/up:enzymeClass ?eccode .
+   BIND(SUBSTR(STR(?eccode),32,99) AS ?value) 
+   BIND(SUBSTR(?value, 1, STRLEN(?value)-STRLEN(STRAFTER(STRAFTER(?value ,"."),"."))-1) AS ?ec_sub)
+   #BIND(SUBSTR(?value, STRLEN(?ec_sub)+2,99) AS ?ec_sub2)
+   BIND(xsd:INTEGER(SUBSTR(?value,1,1))*10000000 AS ?ecclass1)
+   BIND(xsd:INTEGER(STRAFTER(?ec_sub,"."))*100000 AS ?ecclass2)
+   BIND(xsd:INTEGER(STRBEFORE(?ec_sub2,"."))*1000 AS ?ecclass3)
+   #BIND(xsd:INTEGER(STRAFTER(?ec_sub2,".")) AS ?ecclass4)
+   #BIND((?ecclass1+?ecclass2+?ecclass3+?ecclass4) AS ?parent)
+   BIND(CONCAT( STR(?ec_sub),".-.-") AS ?label)
+   BIND((?ecclass1+?ecclass2) AS ?child)
+   FILTER(REGEX(STR(?proteome), "UP000005640"))
+}
+Order by ?child
+```
+
 ## `results`
 
 ```javascript
-({withAnnotation})=>{
+({withAnnotation,SecondClass})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let tree = [
     {id: "root", label: "root node", root: true},  
@@ -61,6 +93,15 @@ limit 10
     {id: "60000000", label: "Ligase",          leaf: false, parent: "root"},
     {id: "70000000", label: "Translocase",     leaf: false, parent: "root"}
   ];
+  
+  SecondClass.results.bindings.map(e => {
+    tree.push({
+      id: e.child.value,
+      label: e.label.value,
+      leaf: true,
+      parent: e.ecclass1.value
+    })
+  });
   
   withAnnotation.results.bindings.map(d => {
     tree.push({
