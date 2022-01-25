@@ -135,6 +135,7 @@ SELECT DISTINCT ?child ?value ?parent
    BIND(xsd:INTEGER(STRAFTER(?ec_sub,"."))*100000 AS ?ecclass2)
    BIND(xsd:INTEGER(STRBEFORE(?ec_sub2,"."))*1000 AS ?ecclass3)
    BIND(xsd:INTEGER(STRAFTER(?ec_sub2,".")) AS ?ecclass4)
+   FILTER(isNumeric(?ecclass4))
    BIND((?ecclass1+?ecclass2+?ecclass3+?ecclass4) AS ?child)
    BIND((?ecclass1+?ecclass2+?ecclass3) AS ?parent)
    FILTER(REGEX(STR(?proteome), "UP000005640"))
@@ -146,7 +147,7 @@ limit 50
 ## `results`
 
 ```javascript
-({withAnnotation,SecondClass,ThirdClass})=>{
+({withAnnotation,SecondClass,ThirdClass,FourthClass})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let tree = [
     {id: "root", label: "root node", root: true},  
@@ -180,7 +181,7 @@ limit 50
   FourthClass.results.bindings.map(g => {
     tree.push({
       id: g.child.value,
-      label: g.label.value,
+      label: g.value.value,
       leaf: true,
       parent: g.parent.value
     })
