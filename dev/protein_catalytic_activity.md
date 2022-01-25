@@ -157,7 +157,21 @@ limit 50
     {id: "40000000", label: "Lyases",          leaf: false, parent: "root"},
     {id: "50000000", label: "Isomerases",      leaf: false, parent: "root"},
     {id: "60000000", label: "Ligase",          leaf: false, parent: "root"},
-    {id: "70000000", label: "Translocase",     leaf: false, parent: "root"}
+    {id: "70000000", label: "Translocase",     leaf: false, parent: "root"},
+    {id: "114110n4", label: "1.14.11.n4",      leaf: false, parent: "11411000"},
+    {id: "10101n12", label: "1.1.1.n12",       leaf: false, parent: "10101000"},
+    {id: "301260n2", label: "3.1.26.n2",       leaf: false, parent: "30126000"},
+    {id: "203010n6", label: "2.3.1.n6",        leaf: false, parent: "20301000"},
+    {id: "203010n7", label: "2.3.1.n7",        leaf: false, parent: "20301000"},
+    {id: "208020n2", label: "2.8.2.n2",        leaf: false, parent: "20802000"},
+    {id: "207070n1", label: "2.7.7.n1",        leaf: false, parent: "20707000"},
+    {id: "201010n8", label: "2.1.1.n8",        leaf: false, parent: "20101000"},
+    {id: "114110n2", label: "1.14.11.n2",      leaf: false, parent: "11411000"},
+    {id: "602010n3", label: "6.2.1.n3",        leaf: false, parent: "60201000"},
+    {id: "114130n7", label: "1.14.13.n7",      leaf: false, parent: "11413000"},
+    {id: "10101n11", label: "1.1.1.n11",       leaf: false, parent: "10101000"},
+    {id: "603020n3", label: "6.3.2.n3",        leaf: false, parent: "60302000"},
+    {id: "401020n2", label: "4.1.2.n2",        leaf: false, parent: "40102000"}   
   ];
   
   SecondClass.results.bindings.map(e => {
