@@ -58,7 +58,7 @@ SELECT DISTINCT ?leaf ?label ?parent
    }
    BIND(CONCAT(?parent1,?parent2) AS ?parent)
 }
-limit 10
+#limit 10
 ```
 
 ## `SecondClass`
@@ -192,7 +192,7 @@ Order by ?child
     tree.push({
       id: e.child.value,
       label: e.label.value,
-      leaf: true,
+      leaf: false,
       parent: e.ecclass1.value
     })
   });
@@ -201,7 +201,7 @@ Order by ?child
     tree.push({
       id: f.child.value,
       label: f.label.value,
-      leaf: true,
+      leaf: false,
       parent: f.parent.value
     })
   });
@@ -210,7 +210,7 @@ Order by ?child
     tree.push({
       id: g.child.value,
       label: g.value.value,
-      leaf: true,
+      leaf: false,
       parent: g.parent.value
     })
   });
@@ -219,7 +219,7 @@ Order by ?child
     tree.push({
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
-      leaf: false,
+      leaf: true,
       parent: d.parent.value
     })
   });
