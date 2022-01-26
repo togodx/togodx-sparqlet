@@ -70,52 +70,21 @@ SELECT DISTINCT ?leaf ?label ?value
 limit 100
 ```
 
-## `binIDgen`
-```sparql
-PREFIX up: <http://purl.uniprot.org/core/>
-PREFIX upid: <http://purl.uniprot.org/uniprot/>
-PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-PREFIX faldo: <http://biohackathon.org/resource/faldo#>
-
-SELECT DISTINCT ?length_label 
- FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
- WHERE {
-   ?uniprot a up:Protein ;
-            up:mnemonic ?mnemonic;
-            up:annotation ?annotation .
-   ?annotation a up:Region_Annotation;
-               rdfs:comment "Disordered";
-               up:range ?range .
-   ?range rdf:type faldo:Region;
-          faldo:begin/faldo:position ?begin_position;
-          faldo:end/faldo:position ?end_position .
-   BIND ((?end_position-?begin_position) AS ?length_label) .   
-   ?uniprot up:proteome ?proteome.
-   FILTER(REGEX(STR(?proteome), "UP000005640"))
-}
-Order by (?length_label)
-#limit 100
-```
-
-
 ## `results`
 
 ```javascript
-({disorder,withoutdisorder,binIDgen})=>{
+({disorder,withoutdisorder})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let tree = [];
-  console.log("");
+  //console.log("");
   disorder.results.bindings.map(d => {
     tree.push({
-      //const num = parseInt(Number(d.value.value) / 100);
-      //console.log(num);
+      let num = Number(d.value.value); //parseInt(Number(d.value.value) / 100);
+      console.log(num);
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       value: Number(d.value.value),
-      binId: num + 1,
+      //binId: num + 1,
       binLabel: d.value.value
     })
    });
