@@ -106,35 +106,28 @@ Order by (?length_label)
 ```javascript
 ({disorder,withoutdisorder,binIDgen})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
-  let valrank = []; 
-  let valarray=[[1,0]];
-  let length = Object.keys(binIDgen.results.bindings).length;    //length of length_label
-  let i =2;
   let tree = [];
-  binIDgen.results.bindings.map(b => {							 //[binId, length_label]
-    valrank=[ i, Number(b.length_label.value)];
-    valarray.push(valrank);
-    i++;
-  });
-  console.log(valarray);
+  console.log("");
   disorder.results.bindings.map(d => {
     tree.push({
+      //const num = parseInt(Number(d.value.value) / 100);
+      //console.log(num);
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       value: Number(d.value.value),
-      binId: binidgen(Number(d.value.value)),
+      binId: num + 1,
       binLabel: d.value.value
     })
    });
-   withoutdisorder.results.bindings.map(f => {
-    tree.push({
-      id: f.leaf.value.replace(idPrefix, ""),
-      label: f.label.value,
-      value: Number(f.value.value),
-      binId: binidgen(Number(f.value.value)),
-      binLabel: f.value.value
-    })
-   });
+//   withoutdisorder.results.bindings.map(f => {
+//    tree.push({
+//      id: f.leaf.value.replace(idPrefix, ""),
+//      label: f.label.value,
+//      value: Number(f.value.value),
+//      binId: binidgen(Number(f.value.value)),
+//      binLabel: f.value.value
+//    })
+//   });
     return tree;
     function binidgen(s) {                                   //generate binId from length_label value
     let target = valarray.filter( e => e[1] === s );
