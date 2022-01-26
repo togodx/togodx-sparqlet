@@ -1,4 +1,4 @@
-# UniProt disorder_annotation（井手）* 220119作業中
+# UniProt disorder_annotation（井手）* Disorderの長さを0,1-100,101-200,201-300,,,,でbinning
 
 ## Description
 
@@ -40,7 +40,7 @@ SELECT DISTINCT ?leaf ?label ?value
    ?leaf up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
-limit 100
+#limit 10
 ```
 
 ## `withoutdisorder`
@@ -67,7 +67,7 @@ SELECT DISTINCT ?leaf ?label ?value
    }
   BIND ("0" AS ?value)
 }
-limit 100
+#limit 10
 ```
 
 ## `results`
@@ -76,31 +76,26 @@ limit 100
 ({disorder,withoutdisorder})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let tree = [];
-  //console.log("");
   disorder.results.bindings.map(d => {
+    const num = parseInt(Number(d.value.value) / 100);
+    //console.log(num);
     tree.push({
-      let num = Number(d.value.value); //parseInt(Number(d.value.value) / 100);
-      console.log(num);
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
       value: Number(d.value.value),
-      //binId: num + 1,
+      binId: num + 2,
       binLabel: d.value.value
     })
    });
-//   withoutdisorder.results.bindings.map(f => {
-//    tree.push({
-//      id: f.leaf.value.replace(idPrefix, ""),
-//      label: f.label.value,
-//      value: Number(f.value.value),
-//      binId: binidgen(Number(f.value.value)),
-//      binLabel: f.value.value
-//    })
-//   });
+   withoutdisorder.results.bindings.map(f => {
+    tree.push({
+      id: f.leaf.value.replace(idPrefix, ""),
+      label: f.label.value,
+      value: Number(f.value.value),
+      binId: 1,
+      binLabel: f.value.value
+    })
+   });
     return tree;
-    function binidgen(s) {                                   //generate binId from length_label value
-    let target = valarray.filter( e => e[1] === s );
-    return target[0][0];
-    }
 }
 ```
