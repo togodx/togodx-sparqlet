@@ -1,4 +1,4 @@
-# UniProt disorder_annotation（井手）* Disorderの長さをタンパク質全長における割合で示す。
+# UniProt disorder_annotation（井手）* Disorderの長さを0,1-100,101-200,201-300,,,,でbinning
 
 ## Description
 
@@ -24,10 +24,9 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 
-SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position #?range 
+SELECT DISTINCT ?leaf ?label ?value
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-   VALUES ?leaf {upid:A6NJT0}
    ?leaf a up:Protein ;
             up:mnemonic ?label;
             up:annotation ?annotation .
@@ -37,8 +36,6 @@ SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position #?range
    ?range rdf:type faldo:Region;
           faldo:begin/faldo:position ?begin_position;
           faldo:end/faldo:position ?end_position .
-   ?range faldo:begin/faldo:reference/rdf:value ?seq_value .
-   BIND (STRLEN(?seq_value) AS ?seq_length)
    BIND ((?end_position-?begin_position) AS ?value)
    ?leaf up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
