@@ -27,7 +27,7 @@ PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position #?range 
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-   VALUES ?leaf {upid:A6NJT0}
+  # VALUES ?leaf {upid:A6NJT0}
    ?leaf a up:Protein ;
             up:mnemonic ?label;
             up:annotation ?annotation .
@@ -43,7 +43,8 @@ SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position #?range
    ?leaf up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
-#limit 10
+ORDER BY ?leaf
+limit 50
 ```
 
 ## `withoutdisorder`
@@ -70,7 +71,7 @@ SELECT DISTINCT ?leaf ?label ?value
    }
   BIND ("0" AS ?value)
 }
-#limit 10
+limit 10
 ```
 
 ## `results`
@@ -79,15 +80,25 @@ SELECT DISTINCT ?leaf ?label ?value
 ({disorder,withoutdisorder})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let tree = [];
+  let id_match;
+  let total_length = 0 ;
   disorder.results.bindings.map(d => {
-    const num = parseInt(Number(d.value.value) / 100);
-    //console.log(num);
+    if (id_match == d.leaf.value){
+      console.log(id_match);
+      total_length = total_length + Number(d.value.value);
+      tree.pop();
+    }else{  
+      id_match = d.leaf.value;
+      total_length = Number(d.value.value);
+    }
+    const num = parseInt( 100* total_length/Number(d.seq_length.value));
+    console.log(num);
     tree.push({
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
-      value: Number(d.value.value),
-      binId: num + 2,
-      binLabel: d.value.value
+      value: num ,
+      binId: num + 1 ,
+      binLabel: num + "%"
     })
    });
    withoutdisorder.results.bindings.map(f => {
