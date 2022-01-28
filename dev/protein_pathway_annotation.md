@@ -12,7 +12,7 @@
         - The pathway annotation in Uniprot (unipathway)
 
 ## Endpoint
-https://integbio.jp/togosite/sparql
+https://integbio.jp/togosite_dev/sparql
 
 ## `pathway`
 ```sparql
@@ -47,33 +47,19 @@ limit 50
 
 ## `main`
 ```sparql
+PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX upid: <http://purl.uniprot.org/uniprot/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-#SELECT ?family
-#WHERE{ 
-#  FILTER(?count>1) 
-#  {
-#  SELECT DISTINCT COUNT(?family) AS ?count ?family ?length#?uniprot  
-SELECT DISTINCT ?leaf ?label ?family #?uniprot  
-  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
-  WHERE {
-     ?leaf a up:Protein;
-            up:mnemonic ?label;
-            up:reviewed true;        #reviewのみに絞った。
-            up:proteome ?proteome;
-            up:annotation ?annotation .
-     ?annotation a up:Similarity_Annotation;
-                 rdfs:comment ?comment .
-     BIND(SUBSTR(?comment,16,150)AS ?family )
-     FILTER(REGEX(STR(?proteome), "UP000005640"))
-  }
-#limit 10 # offset 8
-#}}
-#ORDER BY DESC(?count)
+SELECT DISTINCT *
+#FROM <http://graph/unipathway>
+WHERE {
+obo:UPa_UPA00026 ?p ?o .
+}
+LIMIT 100
 ```
 
 
