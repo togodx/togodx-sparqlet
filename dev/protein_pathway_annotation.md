@@ -53,13 +53,19 @@ PREFIX upid: <http://purl.uniprot.org/uniprot/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX oboin: <http://www.geneontology.org/formats/oboInOwl#>
 
-SELECT DISTINCT *
+SELECT DISTINCT ?s ?label ?o2
 #FROM <http://graph/unipathway>
 WHERE {
-obo:UPa_UPA00026 ?p ?o .
-}
-LIMIT 100
+  #VALUES ?s { obo:UPa_UPA00026 }
+  #VALUES ?o2 { "pathway" }
+  ?s ?p ?o .
+  ?s rdfs:label ?label .
+  ?s oboin:hasOBONamespace ?o2 .
+  Filter(REGEX(STR(?o2),"pathway"))
+} 
+LIMIT 1000
 ```
 
 
