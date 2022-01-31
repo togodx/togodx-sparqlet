@@ -39,12 +39,12 @@ SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position #?range
           faldo:end/faldo:position ?end_position .
    ?range faldo:begin/faldo:reference/rdf:value ?seq_value .
    BIND (STRLEN(?seq_value) AS ?seq_length)
-   BIND ((?end_position-?begin_position) AS ?value)
+   BIND ((?end_position-?begin_position+1) AS ?value)
    ?leaf up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
 ORDER BY ?leaf
-limit 50
+#limit 50
 ```
 
 ## `withoutdisorder`
@@ -71,7 +71,7 @@ SELECT DISTINCT ?leaf ?label ?value
    }
   BIND ("0" AS ?value)
 }
-limit 10
+#limit 10
 ```
 
 ## `results`
