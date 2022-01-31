@@ -8,7 +8,7 @@ https://integbio.jp/togosite/sparql
 PREFIX : <http://nextprot.org/rdf#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX core: <http://purl.uniprot.org/core/>
-SELECT ?np
+SELECT ?np ?label
 FROM <http://rdf.integbio.jp/dataset/togosite/nextprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {
@@ -25,14 +25,17 @@ WHERE {
 ```sparql
 PREFIX : <http://nextprot.org/rdf#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-SELECT ?np
+PREFIX core: <http://purl.uniprot.org/core/>
+SELECT ?np ?label
 WHERE {
   {
-    SELECT DISTINCT ?np (COUNT (?iso) AS ?iso_count) 
+    SELECT DISTINCT ?np ?label (COUNT (?iso) AS ?iso_count) 
     FROM <http://rdf.integbio.jp/dataset/togosite/nextprot>
+    FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
     WHERE {
       ?np a :Entry ;
-          :isoform ?iso
+          skos:exactMatch/core:mnemonic ?label ;
+          :isoform ?iso .
     }
   }
   FILTER (?iso_count > 1)
@@ -49,18 +52,19 @@ WHERE {
   
   let tree = [
     {
-      id: root,
+      id: "root",
       root: true
     },{
       id: withId,
       label: "With isoform specifcity",
-      parent: root
+      parent: "root"
     },{
       id: withoutId,
       label: "Unknown",
-      parent: root
+      parent: "root"
     }
   ];
+
   let specific = {};
   hasSpecific.results.bindings.map(d => {
     specific[d.np.value] = true;
@@ -70,7 +74,7 @@ WHERE {
       parent: withId,
       leaf: true
     });
-  );
+  });
   hasIsoform.results.bindings.map(d => {
     if (!specific[d.np.value]) {
       tree.push({
@@ -80,7 +84,7 @@ WHERE {
         leaf: true
       });
     }
-  );
+  });
 
   return tree;
 }
