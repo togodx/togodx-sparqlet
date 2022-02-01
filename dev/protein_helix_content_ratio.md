@@ -60,7 +60,7 @@ SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position ?end_position
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
 ORDER BY ?leaf ?begin_position
-limit 50
+#limit 50
 ```
 
 ## `withoutAnnotation`
@@ -87,7 +87,7 @@ SELECT DISTINCT ?leaf ?label ?value
    }
   BIND ("0" AS ?value)
 }
-limit 10
+#limit 10
 ```
 
 ## `results`
