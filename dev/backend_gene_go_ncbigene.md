@@ -93,6 +93,10 @@ WHERE {
   })
   // アノテーション関係
   leaf.results.bindings.forEach(d => {
+    //leaf が root を直接指している場合、evidence code が ND (No biological Data available)
+    //unclassfied と区別したほうがよいかもしれないが、とりあえず同じ扱いにしておく
+    if (d.parent.value.replace(categoryPrefix, "") == root)
+      return;
     withAnnotation[d.child.value] = true;
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
