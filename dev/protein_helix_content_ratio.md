@@ -14,7 +14,7 @@
 ## Endpoint
 https://integbio.jp/togosite/sparql
 
-## `disorder`
+## `withAnnotation`
 ```sparql
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX upid: <http://purl.uniprot.org/uniprot/>
@@ -24,16 +24,16 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 
-SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position #?range 
+SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position ?end_position
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-  # VALUES ?leaf {upid:A6NJT0}
+   VALUES ?leaf {upid:A0FGR8}
+   VALUES ?annotation_type { up:Helix_Annotation }    # up:Beta_Strand_Annotation
    ?leaf a up:Protein ;
             up:mnemonic ?label;
             up:annotation ?annotation .
-   ?annotation a up:Region_Annotation;
-               rdfs:comment "Disordered";
-               up:range ?range .
+   ?annotation a ?annotation_type;
+   			   up:range ?range .
    ?range rdf:type faldo:Region;
           faldo:begin/faldo:position ?begin_position;
           faldo:end/faldo:position ?end_position .
@@ -43,11 +43,11 @@ SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position #?range
    ?leaf up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
-ORDER BY ?leaf
-#limit 50
+ORDER BY ?leaf ?begin_position
+limit 50
 ```
 
-## `withoutdisorder`
+## `withoutAnnotation`
 ```sparql
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX upid: <http://purl.uniprot.org/uniprot/>
@@ -60,29 +60,29 @@ PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 SELECT DISTINCT ?leaf ?label ?value
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
+   VALUES ?annotation_type { up:Helix_Annotation }    # up:Beta_Strand_Annotation
    ?leaf a up:Protein ;
          up:mnemonic ?label ;
    		 up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
    MINUS {
     ?leaf up:annotation ?annotation .
-    ?annotation  a up:Region_Annotation ;
-                 rdfs:comment "Disordered".
+    ?annotation  a ?annotation_type.
    }
   BIND ("0" AS ?value)
 }
-#limit 10
+limit 10
 ```
 
 ## `results`
 
 ```javascript
-({disorder,withoutdisorder})=>{
+({withAnnotation,withoutAnnotation})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let tree = [];
   let id_match;
   let total_length = 0 ;
-  disorder.results.bindings.map(d => {
+  withAnnotation.results.bindings.map(d => {
     if (id_match == d.leaf.value){
       console.log(id_match);
       total_length = total_length + Number(d.value.value);
@@ -90,6 +90,7 @@ SELECT DISTINCT ?leaf ?label ?value
     }else{  
       id_match = d.leaf.value;
       total_length = Number(d.value.value);
+      console.log(total_length);
     }
     const num = parseInt( 100* total_length/Number(d.seq_length.value));
     console.log(num);
@@ -101,7 +102,7 @@ SELECT DISTINCT ?leaf ?label ?value
       binLabel: num + "%"
     })
    });
-   withoutdisorder.results.bindings.map(f => {
+   withoutAnnotation.results.bindings.map(f => {
     tree.push({
       id: f.leaf.value.replace(idPrefix, ""),
       label: f.label.value,
