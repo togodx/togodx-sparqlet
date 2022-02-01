@@ -1,4 +1,4 @@
-# UniProt helix content ratio（井手）* alpha helixの合計長をタンパク質全長における割合で示す
+# UniProt helix content ratio（井手）* alpha helix/beta strandの合計長をタンパク質全長における割合で示す
 
 ## Description
 
@@ -43,7 +43,7 @@ PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position ?end_position
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-   VALUES ?leaf {upid:A0FGR8}
+   #VALUES ?leaf {upid:A0FGR8}
    VALUES ?annotation_type { {{#each annotation_list}} up:{{this}} {{/each}} } 
    ?leaf a up:Protein ;
             up:mnemonic ?label;
