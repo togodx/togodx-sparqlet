@@ -10,6 +10,22 @@
         - UniProt ID
     - Output
         - The disorder annotation in Region_Annotation of Uniprot
+        
+## Parameters
+
+* `categoryIds` -(type:Annotation)
+  * default: Helix_Annotation
+  * example: Beta_Strand_Annotation
+
+## `annotation_list`
+- annotation 選択
+```javascript
+({categoryIds}) => {
+  categoryIds = categoryIds.replace(/,/g," ")
+  if (categoryIds.match(/[^\s]/)) return categoryIds.split(/\s+/);
+  return false;
+}
+```
 
 ## Endpoint
 https://integbio.jp/togosite/sparql
@@ -28,7 +44,7 @@ SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position ?end_position
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
    VALUES ?leaf {upid:A0FGR8}
-   VALUES ?annotation_type { up:Helix_Annotation }    # up:Beta_Strand_Annotation
+   VALUES ?annotation_type { {{#each annotation_list}} up:{{this}} {{/each}} } 
    ?leaf a up:Protein ;
             up:mnemonic ?label;
             up:annotation ?annotation .
@@ -60,7 +76,7 @@ PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 SELECT DISTINCT ?leaf ?label ?value
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-   VALUES ?annotation_type { up:Helix_Annotation }    # up:Beta_Strand_Annotation
+   VALUES ?annotation_type { {{#each annotation_list}} up:{{this}} {{/each}} } 
    ?leaf a up:Protein ;
          up:mnemonic ?label ;
    		 up:proteome ?proteome.
@@ -84,16 +100,13 @@ limit 10
   let total_length = 0 ;
   withAnnotation.results.bindings.map(d => {
     if (id_match == d.leaf.value){
-      console.log(id_match);
       total_length = total_length + Number(d.value.value);
       tree.pop();
     }else{  
       id_match = d.leaf.value;
       total_length = Number(d.value.value);
-      console.log(total_length);
     }
     const num = parseInt( 100* total_length/Number(d.seq_length.value));
-    console.log(num);
     tree.push({
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
