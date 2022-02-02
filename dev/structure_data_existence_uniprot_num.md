@@ -21,43 +21,39 @@ PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX db: <http://purl.uniprot.org/database/>
-SELECT DISTINCT  COUNT(?child2) AS ?count ?child #?child ?child2 ?child_label
+SELECT DISTINCT COUNT(?pdb_link) AS ?count ?child ?child_label
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
   ?child a up:Protein ;
-         up:mnemonic ?child_label ;
-         up:organism taxon:9606 .
-   ?child up:proteome ?proteome .
-   ?child rdfs:seeAlso ?child2 .
-   ?child2 up:database db:PDB .
+         up:mnemonic ?child_label;
+         up:organism taxon:9606;
+         up:proteome ?proteome;
+         rdfs:seeAlso ?pdb_link .
+  ?pdb_link up:database db:PDB .
   FILTER(REGEX(STR(?proteome), "UP000005640"))
  }
-
 ORDER BY DESC(?count)
-limit 100
+#limit 10
 ```
 
 ## `binIDgen`
 ```sparql
 PREFIX up: <http://purl.uniprot.org/core/>
-PREFIX upid: <http://purl.uniprot.org/uniprot/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX faldo:  <http://biohackathon.org/resource/faldo#>
-
-SELECT DISTINCT ?length_label
+PREFIX db: <http://purl.uniprot.org/database/>
+SELECT DISTINCT ?count_label 
+{SELECT DISTINCT  COUNT(?pdb_link) AS ?count_label ?child
  FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
  WHERE {
-   ?leaf a up:Protein;
-         up:mnemonic ?label;
-         up:annotation ?annotation;
-         up:proteome ?proteome.
-   FILTER(REGEX(STR(?proteome), "UP000005640"))
-   ?annotation a up:Signal_Peptide_Annotation;
-               up:range/faldo:end/faldo:position ?length_label .
-}
-Order by ?length_label
+  ?child a up:Protein ;
+         up:organism taxon:9606;
+         up:proteome ?proteome;
+         rdfs:seeAlso ?pdb_link .
+  ?pdb_link up:database db:PDB .
+  FILTER(REGEX(STR(?proteome), "UP000005640"))
+ }}
+ORDER BY DESC(?count_label)
 ```
 
 
@@ -80,11 +76,12 @@ WHERE {
     ?child rdfs:seeAlso/up:database db:PDB . 
   }
 }
+#limit 5
 ```
 
 ## `return`
 ```javascript
-({withAnnotation, withoutAnnotation})=>{
+({withAnnotation, binIDgen, withoutAnnotation})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   const withoutId = "unclassified";
   
@@ -94,23 +91,28 @@ WHERE {
       label: "root node",
       root: true
     },{
-      id: "1",
-      label: "Proteins with structure data",
-      parent: "root"
-    },{
       id: withoutId,
       label: "Proteins without structure data",
       parent: "root"
     }
   ];  
+
+  binIDgen.results.bindings.map(d => {
+    tree.push({
+      id: d.count_label.value,
+      label: d.count_label.value + " Link(s)",
+      parent: "root"
+    })
+  })
   
   withAnnotation.results.bindings.map(d => {
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
       label: d.child_label.value,
-      parent: "1",
+      parent: d.count.value,
       leaf: true
     })
+    
   })
   withoutAnnotation.results.bindings.map(d => {
     tree.push({
