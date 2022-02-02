@@ -21,17 +21,45 @@ PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX db: <http://purl.uniprot.org/database/>
-SELECT DISTINCT ?child ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
-WHERE {
+SELECT DISTINCT  COUNT(?child2) AS ?count ?child #?child ?child2 ?child_label
+ FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+ WHERE {
   ?child a up:Protein ;
          up:mnemonic ?child_label ;
-         up:organism taxon:9606 ;
-         up:proteome ?proteome ;
-         rdfs:seeAlso/up:database db:PDB .
+         up:organism taxon:9606 .
+   ?child up:proteome ?proteome .
+   ?child rdfs:seeAlso ?child2 .
+   ?child2 up:database db:PDB .
   FILTER(REGEX(STR(?proteome), "UP000005640"))
-}
+ }
+
+ORDER BY DESC(?count)
+limit 100
 ```
+
+## `binIDgen`
+```sparql
+PREFIX up: <http://purl.uniprot.org/core/>
+PREFIX upid: <http://purl.uniprot.org/uniprot/>
+PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX faldo:  <http://biohackathon.org/resource/faldo#>
+
+SELECT DISTINCT ?length_label
+ FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+ WHERE {
+   ?leaf a up:Protein;
+         up:mnemonic ?label;
+         up:annotation ?annotation;
+         up:proteome ?proteome.
+   FILTER(REGEX(STR(?proteome), "UP000005640"))
+   ?annotation a up:Signal_Peptide_Annotation;
+               up:range/faldo:end/faldo:position ?length_label .
+}
+Order by ?length_label
+```
+
 
 ## `withoutAnnotation`
 ```sparql
