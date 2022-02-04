@@ -1,4 +1,4 @@
-# UniProt pathway_annotation（井手）* 220117 作業中
+# UniProt pathway_annotation（井手）* 220204完成
 
 ## Description
 
@@ -82,8 +82,6 @@ WHERE {
 ({getpathway1, getpathway2, main})=>{
   const idPrefix_unipathway= "http://purl.uniprot.org/unipathway/";
   const idPrefix_uniprot="http://purl.uniprot.org/uniprot/";
-//  let length = Object.keys(familygen.results.bindings).length;
-  let i =1;
   let tree = [
     {
       id: "root",
@@ -91,7 +89,6 @@ WHERE {
       root: true
     }
   ];
-//  console.log(doc);
   getpathway1.results.bindings.map(d => {
     tree.push({
         id: d.parent.value.replace(idPrefix_unipathway, ""),
@@ -117,10 +114,5 @@ WHERE {
       })
   });
   return tree;
-//  return tree;
-//   function parentgen(s){
-//     let target = tree.filter( f => f["label"] === s)
-//     return target[0].id ;
-//   }
 }
 ```
