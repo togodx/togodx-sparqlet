@@ -45,7 +45,7 @@ SELECT DISTINCT ?leaf ?label ?Diorder_seq ?value ?seq_length ?begin_position #?r
    ?leaf up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
-ORDER BY ?leaf
+#ORDER BY ?leaf  #Order入れると、Sortの上限を超えるらしい。
 #limit 50
 ```
 
