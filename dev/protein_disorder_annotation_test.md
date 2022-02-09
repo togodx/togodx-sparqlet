@@ -1,4 +1,4 @@
-# UniProt disorder_annotation（井手）* Disorderの配列取得(テスト用) 
+# UniProt disorder_annotation_test（井手）* Disorderの配列取得(テスト用) 
 
 ## Description
 
