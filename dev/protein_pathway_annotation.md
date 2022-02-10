@@ -93,7 +93,6 @@ WHERE {
     tree.push({
         id: d.parent.value.replace(idPrefix_unipathway, ""),
         label: d.parent_label.value,
-        leaf: "false",
         parent: "root"
       })
   });
@@ -101,7 +100,6 @@ WHERE {
     tree.push({
         id: d.child.value.replace(idPrefix_unipathway, ""),
         label: d.child_label.value,
-        leaf: "false",
         parent: d.parent.value.replace(idPrefix_unipathway, "")
       })
   });
@@ -109,7 +107,7 @@ WHERE {
     tree.push({
         id: d.leaf.value.replace(idPrefix_uniprot, ""),
         label: d.label.value,
-        leaf: "true",
+        leaf: true,
         parent: d.parent.value.replace(idPrefix_unipathway, "")
       })
   });
