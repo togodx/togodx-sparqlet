@@ -7,7 +7,8 @@ https://mb2.ddbj.nig.ac.jp/sparql
 ## `main`
 ```sparql
 PREFIX ont_pubtator: <http://togodb.org/ontology/pg_pubtator#>
-select distinct ?organism ?chemical
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select distinct ?organism ?taxid ?chemical ?mesh
 from <http://plantgarden.jp/resource/pubtator>
 where {
 values ?concepts {"Chemical"}
@@ -15,7 +16,9 @@ values ?concepts {"Chemical"}
 rdfs:label ?label ;
 ont_pubtator:bio_concepts ?concepts  ;
 ont_pubtator:organism ?organism ;
-ont_pubtator:term ?chemical .
+ont_pubtator:taxonomy_id ?taxid ;
+ont_pubtator:term ?chemical ;
+rdfs:label ?mesh .
 }
 ```
 ## `return`
@@ -36,14 +39,14 @@ ont_pubtator:term ?chemical .
       id: d.chemical.value,
       label: d.chemical.value,
       leaf: true,
-      parent: d.organism.value
+      parent: d.taxid.value
     })
     
      // root との親子関係を追加
-    if (!edge[d.organism.value]) {
-      edge[d.organism.value] = true;
+    if (!edge[d.taxid.value]) {
+      edge[d.taxid.value] = true;
       tree.push({   
-        id: d.organism.value,
+        id: d.taxid.value,
         label: d.organism.value,
         leaf: false,
         parent: "root"
