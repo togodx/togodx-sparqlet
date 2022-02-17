@@ -39,12 +39,10 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX meo: <http://purl.jp/bio/11/meo/>
 SELECT DISTINCT ?child ?child_label ?parent ?parent_label
 WHERE {
-  ?child rdfs:isDefinedBy meo: ;
-       rdfs:subClassOf* meo:{{root}} ;
-       rdfs:label ?child_label .
-  ?child rdfs:subClassOf ?parent .
-  ?parent rdfs:isDefinedBy meo: ;
+  ?parent rdfs:subClassOf* meo:{{root}} ;
           rdfs:label ?parent_label .
+  ?child rdfs:subClassOf ?parent ;
+       rdfs:label ?child_label .
 }
 ```
 
