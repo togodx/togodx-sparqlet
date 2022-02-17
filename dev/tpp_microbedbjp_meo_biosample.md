@@ -2,7 +2,7 @@
 
 ## Parameters
 
-* `meoRoot`
+* `root`
   * default: MEO_0001240
   * example: MEO_0001240, MEO_0000817 (component, environment)
 
@@ -27,8 +27,8 @@ WHERE {
             a mdbv:EnvAnnotation ;
             sio:SIO_000671 ?parent
           ] .
-  ?parent rdfs:isDefinedBy	meo: ;
-          rdfs:subClassOf* meo:{{meoRoot}} .
+  ?parent rdfs:isDefinedBy meo: ;
+          rdfs:subClassOf* meo:{{root}} .
   ?taxon rdfs:label ?child_label .
 }
 ```
@@ -40,23 +40,25 @@ PREFIX meo: <http://purl.jp/bio/11/meo/>
 SELECT DISTINCT ?child ?child_label ?parent ?parent_label
 WHERE {
   ?child rdfs:isDefinedBy meo: ;
-       rdfs:subClassOf* meo:{{meoRoot}} ;
+       rdfs:subClassOf* meo:{{root}} ;
        rdfs:label ?child_label .
   ?child rdfs:subClassOf ?parent .
-  ?parent rdfs:label ?parent_label .
+  ?parent rdfs:isDefinedBy meo: ;
+          rdfs:label ?parent_label .
 }
 ```
 
 ## `return`
 ```javascript
-({meoRoot, leaf, graph}) => {
+({root, leaf, graph}) => {
   const idPrefix = "http://identifiers.org/biosample/";
   const categoryPrefix = "http://purl.jp/bio/11/meo/";
   
   let tree = [
     {
-      id: meoRoot,
+      id: root,
       root: true
+    }
   ];
 
   // 親子関係
@@ -78,6 +80,6 @@ WHERE {
     })
   })
   
-  return tree;	
+  return tree;
 }
 ```
