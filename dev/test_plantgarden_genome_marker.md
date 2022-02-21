@@ -26,3 +26,28 @@ BIND ( CONCAT(?genome_id, ".", ?chr) as ?chr_id)
 } 
 
 ```
+## `return`
+```javascript
+({main}) => {
+  
+ let tree = [
+    {
+      id: "root",
+      label: "root node",
+      root: true
+    }
+  ];
+  
+  let edge = {};
+ main.results.bindings.map(d => {
+    tree.push({
+      id: d.marker_id.value,
+      label: d.marker_label.value,
+      leaf: true,
+      parent: d.chr_id.value
+    })
+      });
+  
+    return tree;
+}
+```
