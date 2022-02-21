@@ -1,4 +1,4 @@
-#  Taxonomy of human-hosted microbe from MicrobeDB.jp
+#  Taxonomy of human-hosted microbes from MicrobeDB.jp
 
 ## Endpoint
 
