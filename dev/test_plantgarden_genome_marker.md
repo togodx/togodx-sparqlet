@@ -24,37 +24,5 @@ pg_ns:chr ?chr  .
 dcterms:identifier ?genome_id .
 BIND ( CONCAT(?genome_id, ".", ?chr) as ?chr_id)
 } 
-limit 100000
-```
 
-## `return`
-```javascript
-({main, main2}) => {
-  
- let tree = [
-    {
-      id: "root",
-      label: "root node",
-      root: true
-    }
-  ];
-  
-  let edge = {};
- main.results.bindings.map(d => {
-    tree.push({
-      id: d.marker_id.value,
-      label: d.marker_label.value,
-      leaf: true,
-      parent: d.chr_id.value
-    })
-      });
-
-
-
- const uniqueTree1 = Array.from(
-  new Map(tree.map((tree3) => [tree3.id, tree3])).values()
-)
-
-  return uniqueTree1;
-}
 ```

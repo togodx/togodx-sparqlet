@@ -28,7 +28,7 @@ WHERE {
   ?parent rdfs:isDefinedBy	meo: ;
        rdfs:subClassOf* meo:MEO_0000175 . # foundamental organ
   ?child rdfs:label ?child_label_pre .
-  BIND(STR(?child_label_pre) AS ?child_label)
+  BIND(STR(?child_label_pre) AS ?child_label) # uniform with/without xsd:string datatype
   MINUS { ?child rdfs:subClassOf* <http://identifiers.org/taxonomy/408169> } # w/o metagenome
 }
 ```
