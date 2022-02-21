@@ -12,7 +12,6 @@ PREFIX meo: <http://purl.jp/bio/11/meo/>
 PREFIX mdbv: <http://purl.jp/bio/11/mdbv#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-PREFIX : <http://rdf.jpostdb.org/entry/>
 SELECT DISTINCT ?child ?child_label ?parent
 WHERE {
   [] a sio:SIO_001050 ;
@@ -67,8 +66,6 @@ WHERE {
       parent: d.parent.value.replace(categoryPrefix, "")
     })
   })
-  return tree;
-  /*
   // アノテーション関係
   leaf.results.bindings.map(d => {
     tree.push({
@@ -79,6 +76,6 @@ WHERE {
     })
   })
   
-  return tree; */
+  return tree;
 }
 ```
