@@ -33,7 +33,7 @@ WHERE {
           rdfs:subClassOf* ?domain .
   ?domain tax:rank tax:Superkingdom ;
           rdfs:label ?domain_label .
-  FILTER (! ?domain = idtax:2759 ) # prokaryotes (not eukaryotes)
+  FILTER ( ?domain != idtax:2759 ) # prokaryotes (not eukaryotes)
   MINUS { ?species rdfs:subClassOf* idtax:408169 } # w/o metagenome
   BIND(STR(?species_label_pre) AS ?species_label) # uniform with/without xsd:string datatype
 }
@@ -89,56 +89,57 @@ WHERE {
       root: true
     }
   ];
-  
+
   let checked = {};
   // prokaryotes
-  prokaryotes.forEach(d => {
-    if (!checked[d.species]) {
-      checked[d.species] = true;
+  prokaryotes.results.bindings.forEach(d => {
+    if (!checked[d.species.value]) {
+      checked[d.species.value] = true;
       tree.push({
         id: d.species.value.replace(idPrefix, ""),
         label: d.species_label.value,
         parent: d.genus.value.replace(idPrefix, ""),
         leaf: true
-      })
+      }) 
     }
-    if (!checked[d.genus]) {
-      checked[d.genus] = true;
+    if (!checked[d.genus.value]) {
+      checked[d.genus.value] = true;
       tree.push({
         id: d.genus.value.replace(idPrefix, ""),
         label: d.genus_label.value,
         parent: d.order.value.replace(idPrefix, "")
       })
     }
-    if (!checked[d.order]) {
-      checked[d.order] = true;
+    if (!checked[d.order.value]) {
+      checked[d.order.value] = true;
       tree.push({
         id: d.order.value.replace(idPrefix, ""),
         label: d.order_label.value,
         parent: d.phylum.value.replace(idPrefix, "")
       })
     }
-    if (!checked[d.phylum]) {
-      checked[d.phylum] = true;
+    if (!checked[d.phylum.value]) {
+      checked[d.phylum.value] = true;
       tree.push({
         id: d.phylum.value.replace(idPrefix, ""),
         label: d.phylum_label.value,
         parent: d.domain.value.replace(idPrefix, "")
       })
     }
-    if (!checked[d.domain]) {
-      checked[d.domain] = true;
+    if (!checked[d.domain.value]) {
+      checked[d.domain.value] = true;
       tree.push({
         id: d.domain.value.replace(idPrefix, ""),
         label: d.domain_label.value,
         parent: "root"
       })
-    }
+    } 
   })
+  
   // eukaryotes
-  eukaryotes.forEach(d => {
-    if (!checked[d.species]) {
-      checked[d.species] = true;
+  eukaryotes.results.bindings.forEach(d => {
+    if (!checked[d.species.value]) {
+      checked[d.species.value] = true;
       tree.push({
         id: d.species.value.replace(idPrefix, ""),
         label: d.species_label.value,
@@ -146,40 +147,40 @@ WHERE {
         leaf: true
       })
     }
-    if (!checked[d.genus]) {
-      checked[d.genus] = true;
+    if (!checked[d.genus.value]) {
+      checked[d.genus.value] = true;
       tree.push({
         id: d.genus.value.replace(idPrefix, ""),
         label: d.genus_label.value,
         parent: d.order.value.replace(idPrefix, "")
       })
     }
-    if (!checked[d.order]) {
-      checked[d.order] = true;
+    if (!checked[d.order.value]) {
+      checked[d.order.value] = true;
       tree.push({
         id: d.order.value.replace(idPrefix, ""),
         label: d.order_label.value,
         parent: d.phylum.value.replace(idPrefix, "")
       })
     }
-    if (!checked[d.phylum]) {
-      checked[d.phylum] = true;
+    if (!checked[d.phylum.value]) {
+      checked[d.phylum.value] = true;
       tree.push({
         id: d.phylum.value.replace(idPrefix, ""),
         label: d.phylum_label.value,
         parent: d.kingdom.value.replace(idPrefix, "")
       })
     }
-    if (!checked[d.kingdom]) {
-      checked[d.kingdom] = true;
+    if (!checked[d.kingdom.value]) {
+      checked[d.kingdom.value] = true;
       tree.push({
         id: d.kingdom.value.replace(idPrefix, ""),
         label: d.kingdom_label.value,
         parent: d.domain.value.replace(idPrefix, "")
       })
     }
-    if (!checked[d.domain]) {
-      checked[d.domain] = true;
+    if (!checked[d.domain.value]) {
+      checked[d.domain.value] = true;
       tree.push({
         id: d.domain.value.replace(idPrefix, ""),
         label: d.domain_label.value,
