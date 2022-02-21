@@ -1,4 +1,4 @@
-# Symbiotic organ of microbe from MicrobeDB.jp
+#  Organ of human-hosted microbe from MicrobeDB.jp
 
 ## Endpoint
 
@@ -15,20 +15,20 @@ PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
 PREFIX : <http://rdf.jpostdb.org/entry/>
 SELECT DISTINCT ?child ?child_label ?parent
 WHERE {
-  VALUES ?root { meo:MEO_0000175 } #foundamental organ
-  ?sample a sio:SIO_001050 ;
-          sio:SIO_000008 [
-            a mdbv:HostName;
-            sio:SIO_000300 "Homo sapiens"
-          ] ;
-          obo:RO_0002162 ?chile ;
-          sio:SIO_000255/sio:SIO_000255 [
-            a mdbv:EnvAnnotation ; 
-            sio:SIO_000671 ?parent
-          ] .
+  [] a sio:SIO_001050 ;
+     sio:SIO_000008 [
+       a mdbv:HostName;
+       sio:SIO_000300 "Homo sapiens"
+     ] ;
+     obo:RO_0002162 ?child ;
+     sio:SIO_000255/sio:SIO_000255 [
+       a mdbv:EnvAnnotation ; 
+       sio:SIO_000671 ?parent
+     ] .
   ?parent rdfs:isDefinedBy	meo: ;
-       rdfs:subClassOf* ?root .
-  ?child rdfs:label ?child_label .
+       rdfs:subClassOf* meo:MEO_0000175 . # foundamental organ
+  ?child rdfs:label ?child_label_pre .
+  BIND(STR(?child_label_pre) AS ?child_label)
   MINUS { ?child rdfs:subClassOf* <http://identifiers.org/taxonomy/408169> } # w/o metagenome
 }
 ```
@@ -39,8 +39,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX meo: <http://purl.jp/bio/11/meo/>
 SELECT DISTINCT ?child ?child_label ?parent ?parent_label
 WHERE {
-  ?parent rdfs:subClassOf* meo:MEO_0000175 ;
-          rdfs:label ?parent_label .
+  ?parent rdfs:subClassOf* meo:MEO_0000175 .
   ?child rdfs:subClassOf ?parent ;
        rdfs:label ?child_label .
 }
@@ -49,7 +48,7 @@ WHERE {
 ## `return`
 ```javascript
 ({leaf, graph}) => {
-  const idPrefix = "http://identifiers.org/biosample/";
+  const idPrefix = "http://identifiers.org/taxonomy/";
   const categoryPrefix = "http://purl.jp/bio/11/meo/";
 
   let tree = [
@@ -59,7 +58,7 @@ WHERE {
       root: true
     }
   ];
-
+  
   // 親子関係
   graph.results.bindings.map(d => {
     tree.push({
@@ -67,8 +66,9 @@ WHERE {
       label: d.child_label.value,
       parent: d.parent.value.replace(categoryPrefix, "")
     })
-  //  if (d.parent.value.replace(categoryPrefix, "") == root && !tree[0].label) tree[0].label = d.parent_label.value; // root の label 挿入
   })
+  return tree;
+  /*
   // アノテーション関係
   leaf.results.bindings.map(d => {
     tree.push({
@@ -79,6 +79,6 @@ WHERE {
     })
   })
   
-  return tree;
+  return tree; */
 }
 ```
