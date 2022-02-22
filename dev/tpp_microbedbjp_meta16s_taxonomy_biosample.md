@@ -12,50 +12,46 @@ PREFIX meo: <http://purl.jp/bio/11/meo/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX mdbv: <http://purl.jp/bio/11/mdbv#>
 PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-SELECT DISTINCT ?rank0 ?rank0_label ?rank1 ?rank1_label ?rank2 ?rank2_label
-                ?rank3 ?rank3_label ?rank4 ?rank4_label ?rank5 ?rank5_label 
-                ?rank6 ?rank6_label ?rank7 ?rank7_label
+SELECT DISTINCT ?rank1 ?rank1_label ?rank2 ?rank2_label ?rank3 ?rank3_label
+                ?rank4 ?rank4_label ?rank5 ?rank5_label ?rank6 ?rank6_label
+                ?rank7 ?rank7_label
 WHERE {
   [] a sio:SIO_001050 ;
      mdbv:has_analysis [
        a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
        sio:SIO_000216 [
-         mdbv:has_key ?rank0
+         mdbv:has_key ?rank1
        ] 
      ] .
-  ?rank0 rdfs:label ?rank0_label .
+  ?rank1 rdfs:label ?rank1_label ;
+         tax:rank tax:Genus .
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank1 .
-    ?rank1 tax:rank tax:Genus ;
-           rdfs:label ?rank1_label .
-  }
-  OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank2.
+    ?rank1 rdfs:subClassOf+ ?rank2.
     ?rank2 tax:rank tax:Family ;
            rdfs:label ?rank2_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank3 .
+    ?rank1 rdfs:subClassOf+ ?rank3 .
     ?rank3 tax:rank tax:Order ;
            rdfs:label ?rank3_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank4 .
+    ?rank1 rdfs:subClassOf+ ?rank4 .
     ?rank4 tax:rank tax:Order ;
            rdfs:label ?rank4_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank5 .
+    ?rank1 rdfs:subClassOf+ ?rank5 .
     ?rank5 tax:rank tax:Phylum ;
             rdfs:label ?rank5_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank6 .
+    ?rank1 rdfs:subClassOf+ ?rank6 .
     ?rank6 tax:rank tax:Kingdom ;
             rdfs:label ?rank6_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank7 .
+    ?rank1 rdfs:subClassOf+ ?rank7 .
     ?rank7 tax:rank tax:Superkingdom ;
            rdfs:label ?rank7_label .
   }
@@ -101,7 +97,7 @@ WHERE {
   let checked = {};
   // 分類の階層
   graph.results.bindings.forEach(d => {
-    for (let i = 0; i <= 7; i++) {
+    for (let i = 1; i <= 7; i++) {
       let rank = "rank" + i;
       if (d[rank] && !checked[d[rank].value]) {
         checked[d[rank].value] = true;
