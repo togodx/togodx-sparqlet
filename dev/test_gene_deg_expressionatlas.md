@@ -58,7 +58,7 @@ async ({main}) => {
       tree.push({parent: type, id: datasetId, label: d.desc.value});
       datasetSet.add(datasetId);
     }
-    tree.push({parent: datasetId, id: analysisId, label: d.analysis_label.value});
+    tree.push({parent: datasetId, id: analysisId, label: d.analysis_label.value.replace("Analysis of ", "")});
     analysisIds.push(analysisId);
   });
   for (let i = 0; i <= analysisIds.length; i++) {

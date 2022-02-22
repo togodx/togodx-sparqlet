@@ -41,6 +41,7 @@ WHERE {
   ] .
   ?gene a gxaterms:EnsemblDatabaseReference ;
         rdfs:label ?label .
+  FILTER(STRSTARTS(STR(?gene), "http://identifiers.org/ensembl/"))
 }
 ```
 
@@ -49,7 +50,7 @@ WHERE {
 ({main}) => {
   return main.results.bindings.map((d) => {
     return {
-      id: d.gene.value.replace("http://rdf.ebi.ac.uk/resource/ensembl/", "") ,
+      id: d.gene.value.replace("http://identifiers.org/ensembl/", ""),
       label: d.label.value
     };
   });
