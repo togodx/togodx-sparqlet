@@ -24,8 +24,9 @@ https://integbio.jp/rdf/ebi/sparql
 ```sparql
 # Endpoint: https://integbio.jp/rdf/ebi/sparql
 PREFIX gxaterms: <http://rdf.ebi.ac.uk/terms/expressionatlas/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?gene
+SELECT DISTINCT ?gene ?label
 FROM <http://rdf.ebi.ac.uk/dataset/expressionatlas>
 WHERE {
   VALUES ?analysis { <http://rdf.ebi.ac.uk/resource/expressionatlas/{{analysisId}}> }
@@ -38,13 +39,19 @@ WHERE {
     gxaterms:refersTo ?gene ;
     a ?diff
   ] .
-  ?gene a gxaterms:EnsemblDatabaseReference .
+  ?gene a gxaterms:EnsemblDatabaseReference ;
+        rdfs:label ?label .
 }
 ```
 
 ## `return`
 ```javascript
 ({main}) => {
-  return main.results.bindings.map(d => d.gene.value.replace("http://rdf.ebi.ac.uk/resource/ensembl/", ""));
+  return main.results.bindings.map((d) => {
+    return {
+      id: d.gene.value.replace("http://rdf.ebi.ac.uk/resource/ensembl/", "") ,
+      label: d.label.value
+    };
+  });
 };
 ```
