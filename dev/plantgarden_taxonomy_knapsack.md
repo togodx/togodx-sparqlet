@@ -22,6 +22,8 @@ dc:identifier ?compound_id ;
 rdfs:label ?compound_label .
 }
 
+limit 1000
+
 ```
 ## `graph_a`
 ```sparql

@@ -28,7 +28,6 @@ pg_ns:scientific_name ?species_name .
 FILTER (lang(?subspecies_label) = "en" )
 }
 
-limit 100
 ```
 ## `return`
 ```javascript
