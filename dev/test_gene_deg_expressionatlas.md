@@ -39,26 +39,27 @@ WHERE {
   VALUES ?factor_type { "DISEASE" }
 }
 ORDER BY ?factor
-LIMIT 10
+#LIMIT 5
 ```
 
 ## `return`
 ```javascript
-({main}) => {
+async ({main}) => {
   let tree = [{id: "root", label: "root node", root: true},
               {id: "Microarray", label: "Microarray", parent: "root"},
               {id: "RNASeq", label: "RNA-seq", parent: "root"}];
   let datasetSet = new Set();
   let analysisIds = new Array();
   main.results.bindings.forEach((d) => {
-    let type = d.analysis_type.value.replace("http://rdf.ebi.ac.uk/terms/expressionatlas/", "").replace("DifferentialAnalysis", "");
-    let dataset = d.dataset.value.replace("http://rdf.ebi.ac.uk/resource/expressionatlas/", "");
-    if (!datasetSet.has(dataset)) {
-      tree.push({parent: type, id: dataset, label: d.desc.value});
-      datasetSet.add(dataset);
+    let type = d.analysis_type.value.replace("http://rdf.ebi.ac.uk/terms/expressionatlas/", "").replace(/Differential(Expression)?Analysis/g, "");
+    let datasetId = d.dataset.value.replace("http://rdf.ebi.ac.uk/resource/expressionatlas/", "");
+    let analysisId = d.analysis.value.replace("http://rdf.ebi.ac.uk/resource/expressionatlas/", "");
+    if (!datasetSet.has(datasetId)) {
+      tree.push({parent: type, id: datasetId, label: d.desc.value});
+      datasetSet.add(datasetId);
     }
-    tree.push({parent: dataset, id: d.analysis.value, label: d.analysis_label.value});
-    analysisIds.push(d.analysis.value.replace("http://rdf.ebi.ac.uk/resource/expressionatlas/", ""));
+    tree.push({parent: datasetId, id: analysisId, label: d.analysis_label.value});
+    analysisIds.push(analysisId);
   });
   for (let i = 0; i <= analysisIds.length; i++) {
     let analysisId = analysisIds[i];
@@ -76,8 +77,10 @@ LIMIT 10
         errors.push(analysisId);
       }
     });
-    //degs.forEach()
-  });
+    degs.forEach((deg) => {
+      tree.push({parent: analysisId, id: deg.id, label: deg.label, leaf: true});
+    });
+  }
   return tree;
 };
 ```

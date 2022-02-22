@@ -12,7 +12,7 @@ PREFIX meo: <http://purl.jp/bio/11/meo/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX mdbv: <http://purl.jp/bio/11/mdbv#>
 PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-SELECT DISTINCT ?taxon ?taxon_label ?rank1 ?rank1_label ?rank2 ?rank2_label
+SELECT DISTINCT ?rank0 ?rank0_label ?rank1 ?rank1_label ?rank2 ?rank2_label
                 ?rank3 ?rank3_label ?rank4 ?rank4_label ?rank5 ?rank5_label 
                 ?rank6 ?rank6_label ?rank7 ?rank7_label
 WHERE {
@@ -20,42 +20,42 @@ WHERE {
      mdbv:has_analysis [
        a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
        sio:SIO_000216 [
-         mdbv:has_key ?taxon
+         mdbv:has_key ?rank0
        ] 
      ] .
-  ?taxon rdfs:label ?taxon_label .
+  ?rank0 rdfs:label ?rank0_label .
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank1 .
+    ?rank0 rdfs:subClassOf+ ?rank1 .
     ?rank1 tax:rank tax:Genus ;
            rdfs:label ?rank1_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank2.
+    ?rank0 rdfs:subClassOf+ ?rank2.
     ?rank2 tax:rank tax:Family ;
            rdfs:label ?rank2_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank3 .
+    ?rank0 rdfs:subClassOf+ ?rank3 .
     ?rank3 tax:rank tax:Order ;
            rdfs:label ?rank3_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank4 .
+    ?rank0 rdfs:subClassOf+ ?rank4 .
     ?rank4 tax:rank tax:Order ;
            rdfs:label ?rank4_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank5 .
+    ?rank0 rdfs:subClassOf+ ?rank5 .
     ?rank5 tax:rank tax:Phylum ;
             rdfs:label ?rank5_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank6 .
+    ?rank0 rdfs:subClassOf+ ?rank6 .
     ?rank6 tax:rank tax:Kingdom ;
             rdfs:label ?rank6_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank7 .
+    ?rank0 rdfs:subClassOf+ ?rank7 .
     ?rank7 tax:rank tax:Superkingdom ;
            rdfs:label ?rank7_label .
   }
@@ -99,24 +99,9 @@ WHERE {
   ];
 
   let checked = {};
+  // 分類の階層
   graph.results.bindings.forEach(d => {
-    if (!checked[d.taxon.value]) {
-      checked[d.taxon.value] = true;
-      let parent = "root";
-      if (d.rank1) parent = d.rank1.value.replace(nodePrefix, "");
-      else if (d.rank2) parent = d.rank2.value.replace(nodePrefix, "");
-      else if (d.rank3) parent = d.rank3.value.replace(nodePrefix, "");
-      else if (d.rank4) parent = d.rank4.value.replace(nodePrefix, "");
-      else if (d.rank5) parent = d.rank5.value.replace(nodePrefix, "");
-      else if (d.rank6) parent = d.rank6.value.replace(nodePrefix, "");
-      else if (d.rank7) parent = d.rank7.value.replace(nodePrefix, "");
-      tree.push({
-        id: d.taxon.value.replace(idPrefix, ""),
-        label: d.taxon_label.value,
-        parent: parent
-      }) 
-    }
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 0; i <= 7; i++) {
       let rank = "rank" + i;
       if (d[rank] && !checked[d[rank].value]) {
         checked[d[rank].value] = true;
@@ -133,9 +118,12 @@ WHERE {
           label: label,
           parent: parent
         })
+      } else {
+        break;
       }
     }
   })
+  // leaf への分類アノテーション
   leaf.results.bindings.forEach(d => {
     tree.push({
       id: d.sample.value.replace(idPrefix, ""),
