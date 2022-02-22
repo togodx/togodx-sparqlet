@@ -12,18 +12,17 @@ PREFIX meo: <http://purl.jp/bio/11/meo/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX mdbv: <http://purl.jp/bio/11/mdbv#>
 PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-SELECT DISTINCT ?sample ?sample_labe ?taxon ?taxon_label ?rank1 ?rank1_label 
-                ?rank2 ?rank2_label ?rank3 ?rank3_label ?rank4 ?rank4_label 
-                ?rank5 ?rank5_label ?rank6 ?rank6_label ?rank7 ?rank7_label
+SELECT DISTINCT ?taxon ?taxon_label ?rank1 ?rank1_label ?rank2 ?rank2_label
+                ?rank3 ?rank3_label ?rank4 ?rank4_label ?rank5 ?rank5_label 
+                ?rank6 ?rank6_label ?rank7 ?rank7_label
 WHERE {
-  ?sample a sio:SIO_001050 ;
-          rdfs:label ?sample_labe ;
-          mdbv:has_analysis [
-            a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
-            sio:SIO_000216 [
-              mdbv:has_key ?taxon
-            ] 
-          ] .
+  [] a sio:SIO_001050 ;
+     mdbv:has_analysis [
+       a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
+       sio:SIO_000216 [
+         mdbv:has_key ?taxon
+       ] 
+     ] .
   ?taxon rdfs:label ?taxon_label .
   OPTIONAL {
     ?taxon rdfs:subClassOf+ ?rank1 .
@@ -51,21 +50,43 @@ WHERE {
             rdfs:label ?rank5_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank7 .
-    ?rank7 tax:rank tax:Kingdom ;
-            rdfs:label ?rank7_label .
+    ?taxon rdfs:subClassOf+ ?rank6 .
+    ?rank6 tax:rank tax:Kingdom ;
+            rdfs:label ?rank6_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank6 .
-    ?rank6 tax:rank tax:Superkingdom ;
-                rdfs:label ?rank6_label .
+    ?taxon rdfs:subClassOf+ ?rank7 .
+    ?rank7 tax:rank tax:Superkingdom ;
+           rdfs:label ?rank7_label .
   }
 }
 ```
 
+## `leaf`
+```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX meo: <http://purl.jp/bio/11/meo/>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX mdbv: <http://purl.jp/bio/11/mdbv#>
+PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+SELECT DISTINCT ?sample ?sample_label ?taxon
+WHERE {
+  ?sample a sio:SIO_001050 ;
+          rdfs:label ?sample_label ;
+          mdbv:has_analysis [
+            a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
+            sio:SIO_000216 [
+              mdbv:has_key ?taxon
+            ] 
+          ] .
+}
+```
+
+
 ## `return`
 ```javascript
-({graph}) => {
+({graph, leaf}) => {
   const idPrefix = "http://identifiers.org/biosample/";
   const nodePrefix = "http://identifiers.org/taxonomy/";
 
@@ -79,12 +100,6 @@ WHERE {
 
   let checked = {};
   graph.results.bindings.forEach(d => {
-    tree.push({
-      id: d.sample.value.replace(idPrefix, ""),
-      label: d.sample_label.value,
-      parent: d.taxon.value.replace(nodePrefix, ""),
-      leaf: true
-    }) 
     if (!checked[d.taxon.value]) {
       checked[d.taxon.value] = true;
       let parent = "root";
@@ -120,6 +135,14 @@ WHERE {
         })
       }
     }
+  })
+  leaf.results.bindings.forEach(d => {
+    tree.push({
+      id: d.sample.value.replace(idPrefix, ""),
+      label: d.sample_label.value,
+      parent: d.taxon.value.replace(nodePrefix, ""),
+      leaf: true
+    }) 
   })
 
   return tree;

@@ -40,7 +40,7 @@ WHERE {
   }
   OPTIONAL {
     ?taxon rdfs:subClassOf+ ?rank4 .
-    ?rank4 tax:rank tax:Order ;
+    ?rank4 tax:rank tax:Class ;
            rdfs:label ?rank4_label .
   }
   OPTIONAL {
@@ -49,14 +49,14 @@ WHERE {
             rdfs:label ?rank5_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank7 .
-    ?rank7 tax:rank tax:Kingdom ;
-            rdfs:label ?rank7_label .
+    ?taxon rdfs:subClassOf+ ?rank6 .
+    ?rank6 tax:rank tax:Kingdom ;
+            rdfs:label ?rank6_label .
   }
   OPTIONAL {
-    ?taxon rdfs:subClassOf+ ?rank6 .
-    ?rank6 tax:rank tax:Superkingdom ;
-                rdfs:label ?rank6_label .
+    ?taxon rdfs:subClassOf+ ?rank7 .
+    ?rank7 tax:rank tax:Superkingdom ;
+           rdfs:label ?rank7_label .
   }
   MINUS { ?taxon rdfs:subClassOf* idtax:408169 } # w/o metagenome
   BIND(STR(?taxon_label_pre) AS ?taxon_label) # uniform with/without xsd:string datatype
