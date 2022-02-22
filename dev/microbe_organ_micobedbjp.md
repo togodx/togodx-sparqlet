@@ -1,4 +1,4 @@
-# Detected organs of human-hosted microbes from MicrobeDB.jp
+# Detected organs of microbes in human from MicrobeDB.jp
 
 ## Endpoint
 
