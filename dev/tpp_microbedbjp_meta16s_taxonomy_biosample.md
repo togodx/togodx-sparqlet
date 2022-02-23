@@ -16,6 +16,7 @@ SELECT DISTINCT ?rank1 ?rank1_label ?rank2 ?rank2_label ?rank3 ?rank3_label
                 ?rank4 ?rank4_label ?rank5 ?rank5_label ?rank6 ?rank6_label
                 ?rank7 ?rank7_label
 WHERE {
+  VALUES ?rank { tax:Genus tax:NoRank }
   [] a sio:SIO_001050 ;
      mdbv:has_analysis [
        a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
@@ -24,7 +25,7 @@ WHERE {
        ] 
      ] .
   ?rank1 rdfs:label ?rank1_label ;
-         tax:rank tax:Genus .
+         tax:rank ?rank .
   OPTIONAL {
     ?rank1 rdfs:subClassOf+ ?rank2.
     ?rank2 tax:rank tax:Family ;
