@@ -15,8 +15,8 @@ pg_ns:genus_name ?genus ;
 pg_ns:scientific_name ?scientific_name ;
 pg_ns:common_name ?common_name ;
 dcterms:identifier ?species_id .
-FILTER (lang(?family) = "ja" )
-FILTER (lang(?genus) = "ja" )
+FILTER (lang(?family) = "en" )
+FILTER (lang(?genus) = "en" )
 }
 ```
 ## `return`
