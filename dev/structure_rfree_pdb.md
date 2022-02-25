@@ -38,6 +38,7 @@ SELECT DISTINCT ?leaf ?value ?label #COUNT(?PDBentry) AS ?count ?Rfactor_index #
           BIND((Round(1000*(xsd:decimal(?Rfree)))/1000) AS ?value)
          }
 ORDER BY ?value
+limit 10
 ```
 
 ## `binIDgen`
