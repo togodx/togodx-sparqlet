@@ -33,42 +33,23 @@ SELECT DISTINCT ?gene_id ?gene_name ?anat_entity ?anat_name {
 ## `return`
 
 ```javascript
-({data}) => {
-  const idPrefix = "http://rdf.ebi.ac.uk/resource/ensembl/";
-  
-  let tree = [
-    {
-      id: "root",
-      label: "root node",
-      root: true
-    }
-  ];
+({data}) => {  
+  let tree = [{id: "root", label: "root node", root: true}];
 
-  let edge = {};
-  // アノテーション関係
+  let anats = {};
   data.results.bindings.map(d => {
-    // 分類ノード id を sortable に
-    let parent_id = d.parent.value;
-    if (parent_id == "X") parent_id = "23";
-    else if (parent_id == "Y") parent_id = "24";
-    else if (parent_id == "MT") parent_id = "25";
-    else {
-      parent_id = ('00' + parent_id).slice(-2);
-      d.parent.value = "chr" + d.parent.value;
-    }
+    let anat_id = d.anat_entity.value.replace("http://purl.obolibrary.org/obo/", "");
     tree.push({
-      id: d.child.value.replace(idPrefix, ""),
-      label: d.child_label.value,
+      id: d.gene_id.value,
+      label: d.gene_name.value,
       leaf: true,
-      parent: parent_id
+      parent: anat_id
     })
-    // root との親子関係を追加
-    if (!edge[d.parent.value]) {
-      edge[d.parent.value] = true;
+    if (!anats[anat_id]) {
+      anats[anat_id] = true;
       tree.push({     
-        id: parent_id,
-        label: d.parent.value,
-        leaf: false,
+        id: anat_id,
+        label: d.anat_name.value,
         parent: "root"
       })
     }
