@@ -50,7 +50,9 @@ limit 10
     tree.push({
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
-      value: d.value.value
+      value: d.value.value,
+      binId: 1,
+      binLabel: "N/A"
     })
    });
     return tree;
