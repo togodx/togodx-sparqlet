@@ -2,6 +2,8 @@
 
 ## Description
 
+DEGs (up-regulated in test samples) in Expression Atlas analyses for disease factor.
+
 - Data sources
     - Expression Atlas RDF
 
