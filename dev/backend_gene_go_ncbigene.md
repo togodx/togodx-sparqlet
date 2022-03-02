@@ -16,15 +16,15 @@ https://integbio.jp/togosite/sparql
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX hop: <http://purl.org/net/orthordf/hOP/ontology#>
 
 SELECT DISTINCT ?parent ?child ?child_label # ?parent_label
 FROM <http://rdf.integbio.jp/dataset/togosite/homo_sapiens_gene_info>
-FROM <http://rdf.integbio.jp/dataset/togosite/togoid/ncbigene-go>
 FROM <http://rdf.integbio.jp/dataset/togosite/go>
 WHERE {
   ?child a <http://ddbj.nig.ac.jp/ontologies/nucleotide/Gene> ;
          rdfs:label ?child_label ;
-         obo:RO_0002328 ?parent .
+         hop:hasGO ?parent .
   ?parent rdfs:subClassOf* obo:{{root}} .
 }
 ```
