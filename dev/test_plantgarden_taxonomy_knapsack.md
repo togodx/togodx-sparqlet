@@ -25,7 +25,7 @@ dc:identifier ?compound_id ;
 rdfs:label ?compound_label .
 BIND(replace(str(?family), "-", "others" ) as ?family2)
 BIND(replace(str(?kingdom), "--", "others" ) as ?kingdom2)
-BIND(replace(str(?kingdom), "-", "others" ) as ?kingdom3)
+BIND(replace(str(?kingdom2), "-", "others" ) as ?kingdom3)
 }
 
 ```
