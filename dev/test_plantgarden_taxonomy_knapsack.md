@@ -10,7 +10,7 @@ https://mb2.ddbj.nig.ac.jp/sparql
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix metabo: <http://ddbj.nig.ac.jp/ontolofies/metabobank/>
 prefix dc: <http://purl.org/dc/elements/1.1/>
-select distinct  ?kingdom  ?family   ?tax_id   ?organism   ?compound_id ?compound_label    
+select distinct  ?kingdom3  ?family2   ?tax_id   ?organism   ?compound_id ?compound_label    
 from <http://mb-wiki.nig.ac.jp/resource>
 where {
 ?s  a metabo:KNApSAcKCoreAnnotations ;
@@ -23,6 +23,9 @@ BIND (strafter(str(?taxonomy), "http://identifiers.org/taxonomy/") AS ?tax_id)
 ?molecule a metabo:KNApSAcKCoreRecord ;
 dc:identifier ?compound_id ;
 rdfs:label ?compound_label .
+BIND(replace(str(?family), "-", "others" ) as ?family2)
+BIND(replace(str(?kingdom), "--", "others" ) as ?kingdom2)
+BIND(replace(str(?kingdom), "-", "others" ) as ?kingdom3)
 }
 
 ```
@@ -49,27 +52,26 @@ main.results.bindings.map(d => {
     })
       });
 main.results.bindings.map(d => {
-  //familyのないものはfamily="-", kingdom="-"が入っている
-  
+  //familyのないものはfamily="-", kingdom="-"が入っているのでSPARQLでothersに置換している
     tree.push({
       id: d.tax_id.value,
       label: d.organism.value,
-      parent: d.family.value
+      parent: d.family2.value
     })
   }) ;
 main.results.bindings.map(d => {
-    //kingdomのないものはkingdom="--"が入っている
+    //kingdomのないものはkingdom="--"が入っているのでSPARQLでothersに置換している
     tree.push({
-      id: d.family.value,
-      label: d.family.value,
-      parent: d.kingdom.value
+      id: d.family2.value,
+      label: d.family2.value,
+      parent: d.kingdom3.value
     })
   }) ;
 
 main.results.bindings.map(d => {
     tree.push({
-      id: d.kingdom.value,
-      label: d.kingdom.value,
+      id: d.kingdom3.value,
+      label: d.kingdom3.value,
       parent: "root"
    })
   }) ;
