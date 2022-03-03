@@ -40,6 +40,7 @@ rdfs:label ?compound_label .
   ];
   
 main.results.bindings.map(d => {
+//tax_idのないorganismはない
     tree.push({
       id: d.compound_id.value,
       label: d.compound_label.value,
@@ -48,6 +49,7 @@ main.results.bindings.map(d => {
     })
       });
 main.results.bindings.map(d => {
+  //familyのないものはfamily="-", kingdom="-"が入っている
     tree.push({
       id: d.tax_id.value,
       label: d.organism.value,
@@ -55,6 +57,7 @@ main.results.bindings.map(d => {
     })
   }) ;
 main.results.bindings.map(d => {
+    //kingdomのないものはkingdom="--"が入っている
     tree.push({
       id: d.family.value,
       label: d.family.value,
