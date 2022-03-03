@@ -50,6 +50,7 @@ main.results.bindings.map(d => {
       });
 main.results.bindings.map(d => {
   //familyのないものはfamily="-", kingdom="-"が入っている
+  
     tree.push({
       id: d.tax_id.value,
       label: d.organism.value,
