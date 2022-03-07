@@ -41,7 +41,7 @@ WHERE {
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX meo: <http://purl.jp/bio/11/meo/>
-SELECT DISTINCT ?child ?child_label ?parent ?parent_label
+SELECT DISTINCT ?child ?child_label ?parent
 WHERE {
   ?parent rdfs:subClassOf* meo:MEO_0000175 .
   ?child rdfs:subClassOf ?parent ;
