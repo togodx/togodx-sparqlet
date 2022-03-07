@@ -28,11 +28,12 @@ WHERE
       
   ?r a owl:Restriction ;
     owl:onProperty obo:RO_0000087 ;
-    owl:someValuesFrom ?child .
-  ?child rdfs:subClassOf* obo:CHEBI_{{root}} .
+    owl:someValuesFrom ?chebi_class .
+  ?parent rdfs:subClassOf* obo:CHEBI_{{root}} .
   ?child rdfs:subClassOf ?parent .
   ?child rdfs:label ?child_label .
   ?parent rdfs:label ?parent_label .
+  ?chebi_class rdfs:subClassOf* ?child .
   
 }
 ```
