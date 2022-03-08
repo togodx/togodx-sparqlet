@@ -38,7 +38,12 @@ PREFIX meo: <http://purl.jp/bio/11/meo/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX mdbv: <http://purl.jp/bio/11/mdbv#>
 PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-SELECT DISTINCT ?host
+SELECT DISTINCT ?rank1 ?rank1_label ?rank2 ?rank2_label ?rank3 ?rank3_label
+                ?rank4 ?rank4_label ?rank5 ?rank5_label ?rank6 ?rank6_label
+                ?rank7 ?rank7_label
+WHERE {
+  VALUES ?rank { tax:Genus tax:NoRank }
+  [] a sio:SIO_001050 ;
      mdbv:has_analysis [
        a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
        sio:SIO_000216 [
