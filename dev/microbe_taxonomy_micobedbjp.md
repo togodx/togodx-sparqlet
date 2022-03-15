@@ -24,37 +24,37 @@ WHERE {
      obo:RO_0002162 ?rank0 .
   ?rank0 rdfs:label ?rank0_label_pre .
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank1 .
+    ?rank0 rdfs:subClassOf/rdfs:subClassOf* ?rank1 .  # don't use 'rdfs:subClassOf+' for propeerty path bug
     ?rank1 tax:rank tax:Genus ;
            rdfs:label ?rank1_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank2.
+    ?rank0 rdfs:subClassOf/rdfs:subClassOf* ?rank2.
     ?rank2 tax:rank tax:Family ;
            rdfs:label ?rank2_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank3 .
+    ?rank0 rdfs:subClassOf/rdfs:subClassOf* ?rank3 .
     ?rank3 tax:rank tax:Order ;
            rdfs:label ?rank3_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank4 .
+    ?rank0 rdfs:subClassOf/rdfs:subClassOf* ?rank4 .
     ?rank4 tax:rank tax:Class ;
            rdfs:label ?rank4_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank5 .
+    ?rank0 rdfs:subClassOf/rdfs:subClassOf* ?rank5 .
     ?rank5 tax:rank tax:Phylum ;
             rdfs:label ?rank5_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank6 .
+    ?rank0 rdfs:subClassOf/rdfs:subClassOf* ?rank6 .
     ?rank6 tax:rank tax:Kingdom ;
             rdfs:label ?rank6_label .
   }
   OPTIONAL {
-    ?rank0 rdfs:subClassOf+ ?rank7 .
+    ?rank0 rdfs:subClassOf/rdfs:subClassOf* ?rank7 .
     ?rank7 tax:rank tax:Superkingdom ;
            rdfs:label ?rank7_label .
   }

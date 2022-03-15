@@ -47,40 +47,39 @@ WHERE {
          ] .
     }
   }
-  ?rank1 rdfs:label ?rank1_label ;
-         tax:rank ?rank .
+  ?rank1 rdfs:label ?rank1_label .
   OPTIONAL {
-    ?rank1 rdfs:subClassOf+ ?rank2.
+    ?rank1 rdfs:subClassOf/rdfs:subClassOf* ?rank2.  # don't use 'rdfs:subClassOf+' for propeerty path bug
     ?rank2 tax:rank tax:Genus ;
            rdfs:label ?rank2_label .
   }
   OPTIONAL {
-    ?rank1 rdfs:subClassOf+ ?rank3.
+    ?rank1 rdfs:subClassOf/rdfs:subClassOf* ?rank3.
     ?rank3 tax:rank tax:Family ;
            rdfs:label ?rank3_label .
   }
   OPTIONAL {
-    ?rank1 rdfs:subClassOf+ ?rank4 .
+    ?rank1 rdfs:subClassOf/rdfs:subClassOf* ?rank4 .
     ?rank4 tax:rank tax:Order ;
            rdfs:label ?rank4_label .
   }
   OPTIONAL {
-    ?rank1 rdfs:subClassOf+ ?rank5 .
+    ?rank1 rdfs:subClassOf/rdfs:subClassOf* ?rank5 .
     ?rank5 tax:rank tax:Class ;
            rdfs:label ?rank5_label .
   }
   OPTIONAL {
-    ?rank1 rdfs:subClassOf+ ?rank6 .
+    ?rank1 rdfs:subClassOf/rdfs:subClassOf* ?rank6 .
     ?rank6 tax:rank tax:Phylum ;
             rdfs:label ?rank6_label .
   }
   OPTIONAL {
-    ?rank1 rdfs:subClassOf+ ?rank7 .
+    ?rank1 rdfs:subClassOf/rdfs:subClassOf* ?rank7 .
     ?rank7 tax:rank tax:Kingdom ;
             rdfs:label ?rank7_label .
   }
   OPTIONAL {
-    ?rank1 rdfs:subClassOf+ ?rank8 .
+    ?rank1 rdfs:subClassOf/rdfs:subClassOf* ?rank8 .
     ?rank8 tax:rank tax:Superkingdom ;
            rdfs:label ?rank8_label .
   }
