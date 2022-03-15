@@ -12,15 +12,16 @@ PREFIX meo: <http://purl.jp/bio/11/meo/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX mdbv: <http://purl.jp/bio/11/mdbv#>
 PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+PREFIX idtax: <http://identifiers.org/taxonomy/>
 SELECT DISTINCT ?rank1 ?rank1_label ?rank2 ?rank2_label ?rank3 ?rank3_label
                 ?rank4 ?rank4_label ?rank5 ?rank5_label ?rank6 ?rank6_label
                 ?rank7 ?rank7_label
 WHERE {
   VALUES ?rank { tax:Genus tax:NoRank }
   [] a sio:SIO_001050 ;
-     sio:SIO_000008 [
-       a mdbv:HostName;
-       sio:SIO_000300 "Homo sapiens"
+     sio:SIO_000255/sio:SIO_000255 [
+       a mdbv:HostTaxonIDAnnotation ;
+       sio:SIO_000671 idtax:9606
      ] ;
      mdbv:has_analysis [
        a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
@@ -42,7 +43,7 @@ WHERE {
   }
   OPTIONAL {
     ?rank1 rdfs:subClassOf+ ?rank4 .
-    ?rank4 tax:rank tax:Order ;
+    ?rank4 tax:rank tax:Class ;
            rdfs:label ?rank4_label .
   }
   OPTIONAL {

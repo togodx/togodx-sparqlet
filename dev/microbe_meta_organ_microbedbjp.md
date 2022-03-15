@@ -12,13 +12,14 @@ PREFIX meo: <http://purl.jp/bio/11/meo/>
 PREFIX mdbv: <http://purl.jp/bio/11/mdbv#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+PREFIX idtax: <http://identifiers.org/taxonomy/>
 SELECT DISTINCT ?child ?child_label ?parent
 WHERE {
   VALUES ?rank { tax:Genus tax:NoRank }
   [] a sio:SIO_001050 ;
-     sio:SIO_000008 [
-       a mdbv:HostName;
-       sio:SIO_000300 "Homo sapiens"
+     sio:SIO_000255/sio:SIO_000255 [
+       a mdbv:HostTaxonIDAnnotation ;
+       sio:SIO_000671 idtax:9606
      ] ;
      mdbv:has_analysis [
        a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;

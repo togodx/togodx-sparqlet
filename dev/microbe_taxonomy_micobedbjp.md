@@ -17,9 +17,9 @@ SELECT DISTINCT ?rank0 ?rank0_label ?rank1 ?rank1_label ?rank2 ?rank2_label
                 ?rank6 ?rank6_label ?rank7 ?rank7_label
 WHERE {
   [] a sio:SIO_001050 ;
-     sio:SIO_000008 [
-       a mdbv:HostName;
-       sio:SIO_000300 "Homo sapiens"
+     sio:SIO_000255/sio:SIO_000255 [
+       a mdbv:HostTaxonIDAnnotation ;
+       sio:SIO_000671 idtax:9606
      ] ;
      obo:RO_0002162 ?rank0 .
   ?rank0 rdfs:label ?rank0_label_pre .
