@@ -110,7 +110,6 @@ WHERE {
         checked[d[rank].value] = true;
         let label = d["rank" + i + "_label"].value;
         let parent = "root";
-        let leaf = false;
         for (let j = i + 1; j <= 8; j++) {
           if (d["rank" + j]) {
             parent = d["rank" + j].value.replace(nodePrefix, "");
@@ -122,6 +121,8 @@ WHERE {
           label: label,
           parent: parent,
         })
+      } else if (!d[rank]) {
+        continue;
       } else {
         break;
       }

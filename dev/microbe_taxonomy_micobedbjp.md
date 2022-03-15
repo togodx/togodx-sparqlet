@@ -98,6 +98,8 @@ WHERE {
           parent: parent,
           leaf: leaf
         })
+      }  else if (!d[rank]) {
+        continue;
       } else {
         break;
       }

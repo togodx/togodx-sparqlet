@@ -115,6 +115,8 @@ WHERE {
           label: label,
           parent: parent
         })
+      }  else if (!d[rank]) {
+        continue;
       } else {
         break;
       }

@@ -18,17 +18,22 @@ SELECT DISTINCT ?rank1 ?rank1_label ?rank2 ?rank2_label ?rank3 ?rank3_label
                 ?rank7 ?rank7_label
 WHERE {
   VALUES ?rank { tax:Genus tax:NoRank }
-  [] a sio:SIO_001050 ;
-     sio:SIO_000255/sio:SIO_000255 [
-       a mdbv:HostTaxonIDAnnotation ;
-       sio:SIO_000671 idtax:9606
-     ] ;
-     mdbv:has_analysis [
-       a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
-       sio:SIO_000216 [
-         mdbv:has_key ?rank1
-       ] 
-     ] .
+  {
+    SELECT DISTINCT ?rank1
+    WHERE {              
+      [] a sio:SIO_001050 ;
+         sio:SIO_000255/sio:SIO_000255 [
+           a mdbv:HostTaxonIDAnnotation ;
+           sio:SIO_000671 idtax:9606
+         ] ;
+         mdbv:has_analysis [
+           a mdbv:TaxonomicAnnotationOfMicrobiomeBasedOn16SrRNA ;
+           sio:SIO_000216 [
+             mdbv:has_key ?rank1
+           ] 
+         ] .
+    }
+  }
   ?rank1 rdfs:label ?rank1_label ;
          tax:rank ?rank .
   OPTIONAL {
@@ -100,6 +105,8 @@ WHERE {
           parent: parent,
           leaf: leaf
         })
+      }  else if (!d[rank]) {
+        continue;
       } else {
         break;
       }
