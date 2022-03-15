@@ -14,9 +14,9 @@ PREFIX idtax: <http://identifiers.org/taxonomy/>
 SELECT DISTINCT ?host
 WHERE {
   [] a sio:SIO_001050 ;
-     sio:SIO_000008 [
-       a mdbv:HostName;
-       sio:SIO_000300 ?host
+     sio:SIO_000255/sio:SIO_000255 [
+       a mdbv:HostTaxonIDAnnotation ;
+       sio:SIO_000671 ?host
      ] ;
      obo:RO_0002162 ?tax .
   ?tax rdfs:subClassOf* idtax:408169 . # metagenome
