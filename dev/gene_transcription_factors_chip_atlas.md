@@ -20,14 +20,16 @@ https://integbio.jp/togosite/sparql
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX ensembl: <http://identifiers.org/ensembl/>
+PREFIX cao: <http://chip-atlas.org/ontology/>
 
 SELECT DISTINCT ?tf
 WHERE {
   #VALUES ?tf { ensembl:ENSG00000275700 ensembl:ENSG00000101544 ensembl:ENSG00000048052 } # for test
   GRAPH <http://rdf.integbio.jp/dataset/togosite/chip_atlas> {
-    ?tf obo:RO_0002428 [] .
+    #?tf obo:RO_0002428 [] .
+    [] cao:hasTF ?tf .
   }
-}#LIMIT 5
+}#LIMIT 500
 ```
 
 ## `tfclassSp`
