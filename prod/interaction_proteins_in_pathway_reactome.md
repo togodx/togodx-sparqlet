@@ -158,12 +158,14 @@ WHERE {
   // アノテーション関係
   leaf.results.bindings.map(d => {
     withAnnotation[d.child.value] = true;
-    tree.push({
-      id: d.child.value,
-      label: id2label[d.child.value],
-      leaf: true,
-      parent: d.parent.value
-    })
+    if (id2label[d.child.value]) {  // proteome check
+      tree.push({
+        id: d.child.value,
+        label: id2label[d.child.value],
+        leaf: true,
+        parent: d.parent.value
+      })
+    }
   })
   // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
