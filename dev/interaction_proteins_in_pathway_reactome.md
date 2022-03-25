@@ -176,7 +176,7 @@ WHERE {
         label: d.leaf_label.value,
         leaf: true,
         parent: withoutId
-      });
+      })
     }
   })
   
