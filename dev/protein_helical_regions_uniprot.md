@@ -59,23 +59,29 @@ ORDER BY ?uniprot ?begin_position
 ```javascript
 ({ main }) => {
   let tree = [];
-  let id_match;
+  let ids = [];
+  let mnemonic = new Map();
+  let seqLen = new Map();
+  let regionLen = new Map();
   main.results.bindings.map(d => {
-    let total_length;
-    if (id_match === d.uniprot.value){
-      total_length = total_length + Number(d.region_length.value);
-      tree.pop();
-    } else{  
-      id_match = d.uniprot.value;
-      total_length = Number(d.region_length.value);
+    const uniprot = d.uniprot.value.replace('http://purl.uniprot.org/uniprot/', '');
+    mnemonic.set(uniprot, d.mnemonic.value);
+    seqLen.set(uniprot, Number(d.seq_length.value));
+    if (regionLen.has(uniprot)) {
+      regionLen.set(uniprot, Number(d.region_length.value) + regionLen.get(uniprot));
+    } else {
+      ids.push(uniprot);
+      regionLen.set(uniprot, Number(d.region_length.value));
     }
-    const num = parseInt( 100* total_length/Number(d.seq_length.value));
+  });
+  ids.forEach((uniprot) => {
+    const pct = Math.round(regionLen.get(uniprot) / seqLen.get(uniprot) * 100);
     tree.push({
-      id: d.uniprot.value.replace('http://purl.uniprot.org/uniprot/', ''),
-      label: d.mnemonic.value,
-      value: num ,
-      binId: num + 1 ,
-      binLabel: num + "%"
+      id: uniprot,
+      label: mnemonic.get(uniprot),
+      value: pct,
+      binId: pct + 1,
+      binLabel: pct + "%"
     })
   });
   return tree;

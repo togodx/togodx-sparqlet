@@ -1,7 +1,6 @@
 # UniProt beta strand regions（井手・千葉）* beta strandの合計長をタンパク質全長における割合で示す
 
 ## Description
-
 - Data sources
     - [UniProt](https://www.uniprot.org/)
 
@@ -10,111 +9,81 @@
         - UniProt ID
     - Output
         - Regions of Beta_Strand_Annotation in UniProt
-        
+
 ## Parameters
-
 * `categoryIds` -(type:Annotation)
-  * default: Beta_Strand_Annotation
-  * example: Helix_Annotation
+  * default: Helix_Annotation
+  * example: Beta_Strand_Annotation
 
-## `annotation_list`
+## `annotation_types`
 - annotation 選択
 ```javascript
-({categoryIds}) => {
+({ categoryIds }) => {
   categoryIds = categoryIds.replace(/,/g," ")
-  if (categoryIds.match(/[^\s]/)) return categoryIds.split(/\s+/);
-  return false;
+  if (categoryIds.match(/[^\s]/)) {
+    return categoryIds.split(/\s+/);
+  }
 }
 ```
 
 ## Endpoint
 https://integbio.jp/togosite/sparql
 
-## `withAnnotation`
+## `main`
 ```sparql
 PREFIX up: <http://purl.uniprot.org/core/>
-PREFIX upid: <http://purl.uniprot.org/uniprot/>
-PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 
-SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position ?end_position
- FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
- WHERE {
-   #VALUES ?leaf {upid:A0FGR8}
-   VALUES ?annotation_type { {{#each annotation_list}} up:{{this}} {{/each}} } 
-   ?leaf a up:Protein ;
-            up:mnemonic ?label;
-            up:annotation ?annotation .
-   ?annotation a ?annotation_type;
-   			   up:range ?range .
-   ?range rdf:type faldo:Region;
-          faldo:begin/faldo:position ?begin_position;
-          faldo:end/faldo:position ?end_position .
-   ?range faldo:begin/faldo:reference/rdf:value ?seq_value .
-   BIND (STRLEN(?seq_value) AS ?seq_length)
-   BIND ((?end_position-?begin_position+1) AS ?value)
-   ?leaf up:proteome ?proteome.
-   FILTER(REGEX(STR(?proteome), "UP000005640"))
+SELECT DISTINCT ?uniprot ?mnemonic ?seq_length ?region_length ?begin_position ?end_position
+FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+WHERE {
+  VALUES ?annotation_type { {{#each annotation_types}} up:{{this}} {{/each}} } 
+  ?uniprot up:proteome ?proteome_subset ;
+      up:mnemonic ?mnemonic;
+      up:annotation ?annotation .
+  ?annotation a ?annotation_type ;
+      up:range ?range .
+  ?range faldo:begin/faldo:position ?begin_position ;
+         faldo:end/faldo:position ?end_position .
+  ?range faldo:begin/faldo:reference/rdf:value ?seq .
+  BIND(STRLEN(?seq) AS ?seq_length)
+  BIND((?end_position - ?begin_position + 1) AS ?region_length)
+  FILTER(REGEX(STR(?proteome_subset), "UP000005640"))
 }
-ORDER BY ?leaf ?begin_position
-#limit 50
-```
-
-## `withoutAnnotation`
-```sparql
-PREFIX up: <http://purl.uniprot.org/core/>
-PREFIX upid: <http://purl.uniprot.org/uniprot/>
-PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
-PREFIX faldo: <http://biohackathon.org/resource/faldo#>
-
-SELECT DISTINCT ?leaf ?label ?value
- FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
- WHERE {
-   VALUES ?annotation_type { {{#each annotation_list}} up:{{this}} {{/each}} } 
-   ?leaf a up:Protein ;
-         up:mnemonic ?label ;
-   		 up:proteome ?proteome.
-   FILTER(REGEX(STR(?proteome), "UP000005640"))
-   MINUS {
-    ?leaf up:annotation ?annotation .
-    ?annotation  a ?annotation_type.
-   }
-  BIND ("0" AS ?value)
-}
-#limit 10
+ORDER BY ?uniprot ?begin_position
 ```
 
 ## `results`
 
 ```javascript
-({withAnnotation,withoutAnnotation})=>{
-  const idPrefix = "http://purl.uniprot.org/uniprot/";
+({ main }) => {
   let tree = [];
-  let id_match;
-  let total_length = 0 ;
-  withAnnotation.results.bindings.map(d => {
-    if (id_match == d.leaf.value){
-      total_length = total_length + Number(d.value.value);
-      tree.pop();
-    }else{  
-      id_match = d.leaf.value;
-      total_length = Number(d.value.value);
+  let ids = [];
+  let mnemonic = new Map();
+  let seqLen = new Map();
+  let regionLen = new Map();
+  main.results.bindings.map(d => {
+    const uniprot = d.uniprot.value.replace('http://purl.uniprot.org/uniprot/', '');
+    mnemonic.set(uniprot, d.mnemonic.value);
+    seqLen.set(uniprot, Number(d.seq_length.value));
+    if (regionLen.has(uniprot)) {
+      regionLen.set(uniprot, Number(d.region_length.value) + regionLen.get(uniprot));
+    } else {
+      ids.push(uniprot);
+      regionLen.set(uniprot, Number(d.region_length.value));
     }
-    const num = parseInt( 100* total_length/Number(d.seq_length.value));
+  });
+  ids.forEach((uniprot) => {
+    const pct = Math.round(regionLen.get(uniprot) / seqLen.get(uniprot) * 100);
     tree.push({
-      id: d.leaf.value.replace(idPrefix, ""),
-      label: d.label.value,
-      value: num ,
-      binId: num + 1 ,
-      binLabel: num + "%"
+      id: uniprot,
+      label: mnemonic.get(uniprot),
+      value: pct,
+      binId: pct + 1,
+      binLabel: pct + "%"
     })
-   });
-    return tree;
+  });
+  return tree;
 }
 ```
