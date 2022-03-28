@@ -55,30 +55,27 @@ ORDER BY ?uniprot ?begin_position
 ```
 
 ## `results`
-
 ```javascript
 ({ main }) => {
   let tree = [];
-  let ids = [];
   let mnemonic = new Map();
   let seqLen = new Map();
   let regionLen = new Map();
   main.results.bindings.map(d => {
-    const uniprot = d.uniprot.value.replace('http://purl.uniprot.org/uniprot/', '');
-    mnemonic.set(uniprot, d.mnemonic.value);
-    seqLen.set(uniprot, Number(d.seq_length.value));
-    if (regionLen.has(uniprot)) {
-      regionLen.set(uniprot, Number(d.region_length.value) + regionLen.get(uniprot));
+    const id = d.uniprot.value.replace('http://purl.uniprot.org/uniprot/', '');
+    mnemonic.set(id, d.mnemonic.value);
+    seqLen.set(id, Number(d.seq_length.value));
+    if (regionLen.has(id)) {
+      regionLen.set(id, Number(d.region_length.value) + regionLen.get(id));
     } else {
-      ids.push(uniprot);
-      regionLen.set(uniprot, Number(d.region_length.value));
+      regionLen.set(id, Number(d.region_length.value));
     }
   });
-  ids.forEach((uniprot) => {
-    const pct = Math.round(regionLen.get(uniprot) / seqLen.get(uniprot) * 100);
+  regionLen.forEach((len, id) => {
+    const pct = Math.round(len / seqLen.get(id) * 100);
     tree.push({
-      id: uniprot,
-      label: mnemonic.get(uniprot),
+      id: id,
+      label: mnemonic.get(id),
       value: pct,
       binId: pct + 1,
       binLabel: pct + "%"
