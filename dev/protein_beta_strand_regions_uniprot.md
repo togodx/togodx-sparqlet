@@ -1,4 +1,4 @@
-# UniProt beta strand ratio（井手・千葉）* beta strandの合計長をタンパク質全長における割合で示す
+# UniProt beta strand regions（井手・千葉）* beta strandの合計長をタンパク質全長における割合で示す
 
 ## Description
 
@@ -9,7 +9,7 @@
     - Input
         - UniProt ID
     - Output
-        - Regions of Helix_Annotation in UniProt
+        - Regions of Beta_Strand_Annotation in UniProt
         
 ## Parameters
 
