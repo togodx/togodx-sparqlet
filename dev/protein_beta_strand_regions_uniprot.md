@@ -12,8 +12,8 @@
 
 ## Parameters
 * `categoryIds` -(type:Annotation)
-  * default: Helix_Annotation
-  * example: Beta_Strand_Annotation
+  * default: Beta_Strand_Annotation
+  * example: Helix_Annotation
 
 ## `annotation_types`
 - annotation 選択
