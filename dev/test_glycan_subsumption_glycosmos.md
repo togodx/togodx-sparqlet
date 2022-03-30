@@ -32,6 +32,7 @@ SELECT DISTINCT ?parent ?child ?iupac
 FROM <http://rdf.glytoucan.org/partner/glycome-db>
 FROM <http://rdf.glycosmos.org/glycans/subsumption>
 FROM <http://rdf.glycosmos.org/glycans/seq>
+FROM <http://rdf.glycosmos.org/glycans/taxon>
 WHERE {
   VALUES ?parent {
     sbsmpt:Linkage_defined_saccharide
