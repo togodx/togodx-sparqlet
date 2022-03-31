@@ -18,6 +18,8 @@
 
 https://knowledge.brc.riken.jp/sparql
 
+## `data`
+
 ```sparql
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -30,5 +32,5 @@ WHERE {
     ?category rdfs:label ?category_label.
   }
 } 
- ORDER BY DESC(?count)
+ORDER BY ?brcID
 ```
