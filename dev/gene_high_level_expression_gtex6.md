@@ -51,7 +51,7 @@ PREFIX refexo: <http://purl.jp/bio/01/refexo#>
 
 SELECT DISTINCT ?parent ?parent_label ?child ?child_label
 WHERE {
-  BIND("low_specificity" AS ?parent)
+  BIND("unclassified" AS ?parent)
   BIND("Low specificity" AS ?parent_label)
   ?child a refexo:GTEx_v6_ts_evaluated_gene .
   GRAPH <http://rdf.integbio.jp/dataset/togosite/refex_tissue_specific_genes_gtex_v6> {
@@ -84,7 +84,7 @@ WHERE {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
       tree.push({     
-        id: d.parent_label.value,
+        id: d.parent.value,
         label: d.parent_label.value,
         leaf: false,
         parent: "root"
@@ -94,7 +94,7 @@ WHERE {
       id: d.child.value.replace(idPrefix, ""),
       label: d.child_label.value,
       leaf: true,
-      parent: d.parent_label.value
+      parent: d.parent.value
     })
   });
   
