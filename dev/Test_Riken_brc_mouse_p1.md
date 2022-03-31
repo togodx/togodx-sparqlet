@@ -25,20 +25,24 @@ https://knowledge.brc.riken.jp/sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX brs: <http://metadb.riken.jp/db/bioresource_schema/brs_>
 
-SELECT DISTINCT ?brcID ?category_label 
+SELECT DISTINCT ?brcID ?category_label ?mouse_label
 WHERE {
    GRAPH <http://metadb.riken.jp/db/xsearch_animal> { 
-    ?brcID brs:strainTypeLink ?category.
+    ?brcID    rdfs:label ?mouse_label;
+              brs:strainTypeLink ?category.
     ?category rdfs:label ?category_label.
   }
 } 
 ORDER BY ?brcID
+
+#LIMIT 10
 ```
 ## `return`
 
 ```javascript
 ({data}) => {
   const idPrefix = "http://metadb.riken.jp/db/rikenbrc_mouse/";
+ 
   let tree = [
     {
       id: "root",
@@ -51,16 +55,16 @@ ORDER BY ?brcID
   data.results.bindings.map(d => {
     tree.push({
       id: d.brcID.value.replace(idPrefix, ""),
-      label: d.category_label.value,
+      label: d.mouse_label.value,
       leaf: true,
-      parent: d.parent.value
-    })
+      parent: d.category_label.value
+      })
   // root との親子関係を追加
-    if (!edge[d.parent.value]) {
-      edge[d.parent.value] = true;
+    if (!edge[d.category_label.value]) {
+      edge[d.category_label.value] = true;
       tree.push({   
-        id: d.parent.value,
-        label: d.parent.value,
+        id: d.category_label.value,
+        label: d.category_label.value,
         leaf: false,
         parent: "root"
       })
