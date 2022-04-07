@@ -31,7 +31,7 @@ WHERE {
   ?mondo rdfs:label ?label.
   ?mondo rdfs:subClassOf ?parent.
   FILTER(!STRSTARTS(str(?parent), "nodeID:"))
-  ?parent rdfs:subClassOf* ?root . # root につながらない親を除外
+  # ?parent rdfs:subClassOf* ?root . # root につながらない親を除外（帰ってこないので javascript で処理）
   # 中間ノードの場合は?parentに値が存在し、leafノードの場合は?parentは存在しないのでOPTIONALが必要
   OPTIONAL {
     ?mondo ^rdfs:subClassOf ?child.
@@ -51,13 +51,19 @@ GROUP BY ?mondo ?parent ?label
       root: true
     }
   ];
+  let mondo = { "0000001": true };
   data.results.bindings.forEach(d => {
-    tree.push({
-      id: d.mondo.value.replace(idPrefix, ""),
-      label: d.label.value,
-      leaf: (d.child == undefined ? true : false),
-      parent: d.parent.value.replace(idPrefix, "")
-    });
+    mondo[d.mondo.value.replace(idPrefix, "")] = true;
+  });
+  data.results.bindings.forEach(d => {
+    if (mondo[d.parent.value.replace(idPrefix, "")]) { // root につながらない親を除外
+      tree.push({
+        id: d.mondo.value.replace(idPrefix, ""),
+        label: d.label.value,
+        leaf: (d.child == undefined ? true : false),
+        parent: d.parent.value.replace(idPrefix, "")
+      });
+    }
   });
   return tree;
 };
