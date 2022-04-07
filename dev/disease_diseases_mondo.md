@@ -50,13 +50,20 @@ GROUP BY ?mondo ?parent ?label
       root: true
     }
   ];
+  let mondo = {'0000001': true};
   data.results.bindings.forEach(d => {
-    tree.push({
-      id: d.mondo.value.replace(idPrefix, ""),
-      label: d.label.value,
-      leaf: (d.child == undefined ? true : false),
-      parent: d.parent.value.replace(idPrefix, "")
-    });
+    mondo[d.mondo.value.replace(idPrefix, "")] = true;
+  });
+  data.results.bindings.forEach(d => {
+    // root につながらない親を除外
+    if (mondo[d.parent.value.replace(idPrefix, "")]) {
+      tree.push({
+        id: d.mondo.value.replace(idPrefix, ""),
+        label: d.label.value,
+        leaf: (d.child == undefined ? true : false),
+        parent: d.parent.value.replace(idPrefix, "")
+      });
+    }
   });
   return tree;
 };
