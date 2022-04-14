@@ -25,7 +25,7 @@ https://knowledge.brc.riken.jp/sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX brs: <http://metadb.riken.jp/db/bioresource_schema/brs_>
 
-SELECT DISTINCT ?brcID ?category_label ?mouse_label
+SELECT DISTINCT ?brcID ?category_label ?mouse_label ?category
 WHERE {
    GRAPH <http://metadb.riken.jp/db/xsearch_animal> { 
     ?brcID    rdfs:label ?mouse_label;
@@ -35,7 +35,7 @@ WHERE {
 } 
 ORDER BY ?brcID
 
-#LIMIT 10
+LIMIT 100
 ```
 ## `return`
 
@@ -57,13 +57,13 @@ ORDER BY ?brcID
       id: d.brcID.value.replace(idPrefix, ""),
       label: d.mouse_label.value,
       leaf: true,
-      parent: d.category_label.value
+      parent: d.category.value.replace(idPrefix, "")
       })
   // root との親子関係を追加
     if (!edge[d.category_label.value]) {
       edge[d.category_label.value] = true;
       tree.push({   
-        id: d.category_label.value,
+        id: d.category.value.replace(idPrefix, ""),
         label: d.category_label.value,
         leaf: false,
         parent: "root"
