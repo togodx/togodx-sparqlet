@@ -28,7 +28,7 @@ PREFIX sio: <http://semanticscience.org/resource/SIO_>
 PREFIX brso: <http://purl.org.jp/brso/>
 PREFIX cell: <http://metadb.riken.jp/db/rikenbrc_cell/>
 
-SELECT DISTINCT ?brcID ?cell_name ?category_label
+SELECT DISTINCT ?brcID ?cell_name ?category_label ?categoryID
 WHERE {
    GRAPH <http://metadb.riken.jp/db/xsearch_cell> { 
      ?brcID rdfs:label ?cell_name.
@@ -45,7 +45,7 @@ Limit 10
 
 ```javascript
 ({data}) => {
-  const idPrefix = "http://metadb.riken.jp/db/rikenbrc_mouse/";
+  const idPrefix = "http://metadb.riken.jp/db/rikenbrc_cell/";
  
   let tree = [
     {
@@ -61,13 +61,13 @@ Limit 10
       id: d.brcID.value.replace(idPrefix, ""),
       label: d.cell_name.value,
       leaf: true,
-      parent: d.category_label.value
+      parent: d.categoryID.value.replace(idPrefix, ""),
       })
   // root との親子関係を追加
     if (!edge[d.category_label.value]) {
       edge[d.category_label.value] = true;
       tree.push({   
-        id: d.category_label.value,
+        id: d.categoryID.value.replace(idPrefix, ""),
         label: d.category_label.value,
         leaf: false,
         parent: "root"
