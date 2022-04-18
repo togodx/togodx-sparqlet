@@ -60,7 +60,7 @@ WHERE {
             rdfs:label ?parent_label .
     ?trait rdfs:subClassOf* ?child .
   }
-  ?trait ^terms:mapped_trait_uri/rdf:seeAlso/^rdfs:seeAlso ?togovar.
+  ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
 }
 ```
 
