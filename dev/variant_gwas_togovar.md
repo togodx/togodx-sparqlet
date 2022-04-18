@@ -66,7 +66,6 @@ WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
     ?dbsnp ^rdfs:seeAlso ?togovar.
   }
-#  ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
 }
 ```
 
