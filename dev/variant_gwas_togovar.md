@@ -60,7 +60,13 @@ WHERE {
             rdfs:label ?parent_label .
     ?trait rdfs:subClassOf* ?child .
   }
-  ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>{
+    ?trait ^terms:mapped_trait_uri/rdfs:seeAlso ?dbsnp.
+  }
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
+    ?dbsnp ^rdfs:seeAlso ?togovar.
+  }
+#  ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
 }
 ```
 
