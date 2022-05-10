@@ -1,15 +1,14 @@
 # ヒト遺伝子が保存されている生物（千葉）
 
 ## Description
-Ortholog existence for each human gene in other organisms defined in HomoloGene
-
-- Data sources
-  - HomoloGene Release 68: [https://www.ncbi.nlm.nih.gov/homologene/statistics/](https://www.ncbi.nlm.nih.gov/homologene/statistics/)
-- Input/Output 
-  - Input
-    - NCBI Gene ID
-  - Output
-    - Organisms
+- Name
+  - Ortholog existence
+- Description
+  - Ortholog existence for each human gene in other organisms in HomoloGene
+- Original data
+  - [HomoloGene](https://www.ncbi.nlm.nih.gov/homologene/statistics/)
+- Version
+  - 68
 
 ## Endpoint
 
