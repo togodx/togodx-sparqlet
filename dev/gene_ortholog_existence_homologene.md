@@ -1,14 +1,20 @@
 # ヒト遺伝子が保存されている生物（千葉）
 
 ## Description
-- Name
+- Label
   - Ortholog existence
 - Description
-  - Ortholog existence for each human gene in other organisms in HomoloGene
-- Original data
-  - [HomoloGene](https://www.ncbi.nlm.nih.gov/homologene/statistics/)
+  - Ortholog existence for each human gene in other organisms defined by HomoloGene
+- Order  
+  - id_asc
+- Source
+  - [HomoloGene](https://www.ncbi.nlm.nih.gov/homologene/statistics/) : https://www.ncbi.nlm.nih.gov/homologene/statistics/
 - Version
   - 68
+- Updated
+  - 2021-03-12
+- Key
+  - NCBI gene
 
 ## Endpoint
 
@@ -73,27 +79,27 @@ WHERE {
   };
 
   const organismLabel = {
-    'organism_01': 'Human',
-    'organism_02': 'Chimpanzee',
-    'organism_03': 'Rhesus monkey',
-    'organism_04': 'Mouse',
-    'organism_05': 'Rat',
-    'organism_06': 'Dog',
-    'organism_07': 'Cow',
-    'organism_08': 'Chicken',
-    'organism_09': 'Western clawed frog',
-    'organism_10': 'Zebrafish',
-    'organism_11': 'Fruit fly',
-    'organism_12': 'Malaria mosquito',
-    'organism_13': 'Nematode',
-    'organism_14': 'Budding yeast',
-    'organism_15': 'Fission yeast',
-    'organism_16': 'Kluyveromyces lactis',
-    'organism_17': 'Eremothecium gossypii',
-    'organism_18': 'Magnaporthe oryzae',
-    'organism_19': 'Neurospora crassa',
-    'organism_20': 'Arabidopsis thaliana',
-    'organism_21': 'Oryza sativa',
+    'organism_01': 'Homo sapiens (human)',
+    'organism_02': 'Pan troglodytes (chimpanzee)',
+    'organism_03': 'Macaca mulatta (Rhesus monkey)',
+    'organism_04': 'Mus musculus (mouse)',
+    'organism_05': 'Rattus norvegicus (rat)',
+    'organism_06': 'Canis lupus familiaris (dog)',
+    'organism_07': 'Bos taurus (cow)',
+    'organism_08': 'Gallus gallus (chicken)',
+    'organism_09': 'Xenopus tropicalis (western clawed frog)',
+    'organism_10': 'Danio rerio (zebrafish)',
+    'organism_11': 'Drosophila melanogaster (fruit fly)',
+    'organism_12': 'Anopheles gambiae (malaria mosquito)',
+    'organism_13': 'Caenorhabditis elegans (nematode)',
+    'organism_14': 'Saccharomyces cerevisiae (budding yeast)',
+    'organism_15': 'Schizosaccharomyces pombe (fission yeast)',
+    'organism_16': 'Kluyveromyces lactis (ascomycetes)',
+    'organism_17': 'Eremothecium gossypii (ascomycetes)',
+    'organism_18': 'Magnaporthe oryzae (rice blast fungus)',
+    'organism_19': 'Neurospora crassa (ascomycetes)',
+    'organism_20': 'Arabidopsis thaliana (thale cress)',
+    'organism_21': 'Oryza sativa (rice)',
   }
 
   let checked = {};
