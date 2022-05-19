@@ -1,4 +1,4 @@
-# RefEx organ specific expression based on ROKU flag（守屋）
+# RefEx organ specific expression based on ROKU flag（守屋、池田）
 
 - backend SPARQLet
 
@@ -35,13 +35,13 @@ WHERE {
 ```
 
 ## `allLeaf`
-- 全 Ensembl gene (without annotation 用)
+- 全 NCBI gene (without annotation 用)
 ```sparql
 PREFIX refexo: <http://purl.jp/bio/01/refexo#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?leaf ?leaf_label
 FROM <http://rdf.integbio.jp/dataset/togosite/refex_id_relation_human>
-FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
+FROM <http://rdf.integbio.jp/dataset/togosite/homo_sapiens_gene_info>
 WHERE {
   ?leaf refexo:affyProbeset [] ;
         rdfs:label ?leaf_label .
