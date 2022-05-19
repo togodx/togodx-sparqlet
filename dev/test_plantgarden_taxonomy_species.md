@@ -7,7 +7,7 @@ https://mb2.ddbj.nig.ac.jp/sparql
 ```sparql
 prefix pg_ns: <https://plantgardden.jp/ns/>
 prefix dcterms: <http://purl.org/dc/terms/>
-select distinct   ?genus  ?family  ?scientific_name  ?species_id
+select distinct   ?genus  ?family  ?scientific_name replace(?species_id,"t","") AS ?species_id
 from <http://plantgarden.jp/resource/species>
 where {
 ?s pg_ns:family_name ?family ;
