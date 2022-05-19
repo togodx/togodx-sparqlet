@@ -42,6 +42,8 @@ WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
     ?child a ?type ;
            rdfs:label ?child_label .
+    # GTEx のプロトコルの原理上、small RNA は取れていないはずだが、データ上には存在してしまっている。
+    # そのような RNA を GTEx のデータを用いて「無発現」と判断するべきでないので、除く。
     VALUES ?type { enso:lncRNA obo:SO_0001217 obo:SO_0000336 enso:TEC } # lncRNA, protein_coding_gene, pseudogene
     MINUS { ?child a enso:rRNA_pseudogene }
   }
