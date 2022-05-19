@@ -52,6 +52,7 @@ WHERE {
 ## `all`
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX so: <http://purl.obolibrary.org/obo/so#>
 PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX refexo:  <http://purl.jp/bio/01/refexo#>
@@ -65,7 +66,7 @@ WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
     ?child a ?type ;
            rdfs:label ?child_label .
-    [] obo:SO_transcribed_from ?child .
+    [] so:transcribed_from ?child .
     VALUES ?type { enso:lncRNA obo:SO_0001217 obo:SO_0000336 enso:TEC }
     MINUS { ?child a enso:rRNA_pseudogene }
   }
@@ -86,7 +87,11 @@ WHERE {
   let chk = {};
   let unclassified = {};
   all.results.bindings.forEach(d => {
-    unclassified[d.child.value] = d.child_label.value;
+    let label = d.child_label.value;
+    if (label == "") {
+      label = d.child.value.replace(idPrefix, "");
+    }
+    unclassified[d.child.value] = label;
   });
   data.results.bindings.forEach(d => {
     if (!chk[d.parent.value]) {
@@ -98,13 +103,17 @@ WHERE {
         parent: "root"
       });
     }
-    delete unclassified[d.child.value];
+    let label = d.child_label.value;
+    if (label == "") {
+      label = d.child.value.replace(idPrefix, "");
+    }
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
-      label: d.child_label.value,
+      label: label,
       leaf: true,
       parent: d.parent_label.value
     });
+    delete unclassified[d.child.value];
   });
 
   tree.push({     
