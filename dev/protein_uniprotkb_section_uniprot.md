@@ -1,4 +1,4 @@
-# Reviewed flag classification in the UniProt reference proteome（守屋）
+# UniProtKB section (SwissProt, TrEMBL) in the UniProt reference proteome（守屋）
 
 ## Description
 
