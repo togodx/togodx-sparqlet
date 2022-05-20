@@ -44,10 +44,18 @@ WHERE {
            rdfs:label ?child_label .
     # GTEx のプロトコルの原理上、small RNA は取れていないはずだが、GTEx のデータ上には存在してしまっている。
     # そのような RNA を GTEx のデータを用いて「無発現」と判断するべきでないので、除く。
-    VALUES ?type { enso:lncRNA obo:SO_0001217 obo:SO_0000336 enso:TEC } # lncRNA, protein_coding_gene, pseudogene
-    MINUS { ?child a enso:rRNA_pseudogene }
+    VALUES ?type {
+      enso:protein_coding enso:lncRNA enso:pseudogene
+      enso:polymorphic_pseudogene enso:processed_pseudogene enso:unitary_pseudogene enso:unprocessed_pseudogene
+      enso:transcribed_processed_pseudogene enso:transcribed_unitary_pseudogene enso:transcribed_unprocessed_pseudogene
+      enso:translated_processed_pseudogene enso:translated_unprocessed_pseudogene
+      enso:IG_C_gene enso:IG_D_gene enso:IG_J_gene enso:IG_V_gene
+      enso:IG_pseudogene enso:IG_C_pseudogene enso:IG_J_pseudogene enso:IG_V_pseudogene
+      enso:TR_C_gene enso:TR_D_gene enso:TR_J_gene enso:TR_V_gene
+      enso:TR_J_pseudogene enso:TR_V_pseudogene
+      enso:TEC
+    }
   }
-
 }
 ```
 
@@ -69,8 +77,17 @@ WHERE {
     ?child a ?type ;
            rdfs:label ?child_label .
     [] so:transcribed_from ?child .
-    VALUES ?type { enso:lncRNA obo:SO_0001217 obo:SO_0000336 enso:TEC }
-    MINUS { ?child a enso:rRNA_pseudogene }
+    VALUES ?type {
+      enso:protein_coding enso:lncRNA enso:pseudogene
+      enso:polymorphic_pseudogene enso:processed_pseudogene enso:unitary_pseudogene enso:unprocessed_pseudogene
+      enso:transcribed_processed_pseudogene enso:transcribed_unitary_pseudogene enso:transcribed_unprocessed_pseudogene
+      enso:translated_processed_pseudogene enso:translated_unprocessed_pseudogene
+      enso:IG_C_gene enso:IG_D_gene enso:IG_J_gene enso:IG_V_gene
+      enso:IG_pseudogene enso:IG_C_pseudogene enso:IG_J_pseudogene enso:IG_V_pseudogene
+      enso:TR_C_gene enso:TR_D_gene enso:TR_J_gene enso:TR_V_gene
+      enso:TR_J_pseudogene enso:TR_V_pseudogene
+      enso:TEC
+    }
   }
 }
 ```
