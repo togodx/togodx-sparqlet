@@ -111,12 +111,14 @@ WHERE {
         parent: "root"
       });
     }
-    tree.push({
-      id: d.child.value.replace(idPrefix, ""),
-      label: allEnsg[d.child.value],
-      leaf: true,
-      parent: d.parent_label.value
-    });
+    if (allEnsg[d.child.value]) {
+      tree.push({
+        id: d.child.value.replace(idPrefix, ""),
+        label: allEnsg[d.child.value],
+        leaf: true,
+        parent: d.parent_label.value
+      });
+    }
     delete unclassified[d.child.value];
   });
 
@@ -130,7 +132,7 @@ WHERE {
   Object.keys(unclassified).forEach(d => {
     tree.push({
       id: d.replace(idPrefix, ""),
-      label: unclassified[d],
+      label: allEnsg[d],
       leaf: true,
       parent: "unclassified"
     });

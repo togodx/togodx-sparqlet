@@ -90,9 +90,13 @@ WHERE {
         parent: "root"
       })
     }
+    let label = d.child.value;
+    if (label == "") {
+      label = d.child.value.replace(idPrefix, "");
+    }
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
-      label: d.child_label.value,
+      label: label,
       leaf: true,
       parent: d.parent.value
     })
