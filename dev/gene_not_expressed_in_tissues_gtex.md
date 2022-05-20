@@ -20,7 +20,7 @@ PREFIX sio: <http://semanticscience.org/resource/>
 PREFIX schema: <http://schema.org/>
 PREFIX ensg: <http://rdf.ebi.ac.uk/resource/ensembl/>
 
-SELECT DISTINCT ?parent_label ?parent ?child ?child_label
+SELECT DISTINCT ?parent_label ?parent ?child
 WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/refex_gtex_v8_summary> {
     ?refex a refexo:RefExEntry ;
@@ -38,24 +38,6 @@ WHERE {
     ?refexs dcterms:description ?parent_label ;
             dcterms:identifier ?parent .
   }
-
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
-    ?child a ?type ;
-           rdfs:label ?child_label .
-    # GTEx のプロトコルの原理上、small RNA は取れていないはずだが、GTEx のデータ上には存在してしまっている。
-    # そのような RNA を GTEx のデータを用いて「無発現」と判断するべきでないので、除く。
-    VALUES ?type {
-      enso:protein_coding enso:lncRNA enso:pseudogene
-      enso:polymorphic_pseudogene enso:processed_pseudogene enso:unitary_pseudogene enso:unprocessed_pseudogene
-      enso:transcribed_processed_pseudogene enso:transcribed_unitary_pseudogene enso:transcribed_unprocessed_pseudogene
-      enso:translated_processed_pseudogene enso:translated_unprocessed_pseudogene
-      enso:IG_C_gene enso:IG_D_gene enso:IG_J_gene enso:IG_V_gene
-      enso:IG_pseudogene enso:IG_C_pseudogene enso:IG_J_pseudogene enso:IG_V_pseudogene
-      enso:TR_C_gene enso:TR_D_gene enso:TR_J_gene enso:TR_V_gene
-      enso:TR_J_pseudogene enso:TR_V_pseudogene
-      enso:TEC
-    }
-  }
 }
 ```
 
@@ -67,7 +49,7 @@ PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX refexo:  <http://purl.jp/bio/01/refexo#>
 
-SELECT DISTINCT ?child ?child_label
+SELECT DISTINCT ?child ?child_label ?type
 WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/refex_gtex_v8_summary> {
     ?refex a refexo:RefExEntry ;
@@ -77,17 +59,6 @@ WHERE {
     ?child a ?type ;
            rdfs:label ?child_label .
     [] so:transcribed_from ?child .
-    VALUES ?type {
-      enso:protein_coding enso:lncRNA enso:pseudogene
-      enso:polymorphic_pseudogene enso:processed_pseudogene enso:unitary_pseudogene enso:unprocessed_pseudogene
-      enso:transcribed_processed_pseudogene enso:transcribed_unitary_pseudogene enso:transcribed_unprocessed_pseudogene
-      enso:translated_processed_pseudogene enso:translated_unprocessed_pseudogene
-      enso:IG_C_gene enso:IG_D_gene enso:IG_J_gene enso:IG_V_gene
-      enso:IG_pseudogene enso:IG_C_pseudogene enso:IG_J_pseudogene enso:IG_V_pseudogene
-      enso:TR_C_gene enso:TR_D_gene enso:TR_J_gene enso:TR_V_gene
-      enso:TR_J_pseudogene enso:TR_V_pseudogene
-      enso:TEC
-    }
   }
 }
 ```
@@ -104,13 +75,31 @@ WHERE {
     root: true
   }];
   let chk = {};
+  let allEnsg = {};
   let unclassified = {};
+  // GTEx のプロトコルの原理上、small RNA は取れていないはずだが、GTEx のデータ上には存在してしまっている。
+  // そのような RNA を GTEx のデータを用いて「無発現」と判断するべきでないので、除く。
+  const biotypes = new Set([
+    "protein_coding", "lncRNA", "pseudogene",
+    "polymorphic_pseudogene", "processed_pseudogene", "unitary_pseudogene", "unprocessed_pseudogene",
+    "transcribed_processed_pseudogene", "transcribed_unitary_pseudogene", "transcribed_unprocessed_pseudogene",
+    "translated_processed_pseudogene", "translated_unprocessed_pseudogene",
+    "IG_C_gene", "IG_D_gene", "IG_J_gene", "IG_V_gene",
+    "IG_pseudogene", "IG_C_pseudogene", "IG_J_pseudogene", "IG_V_pseudogene",
+    "TR_C_gene", "TR_D_gene", "TR_J_gene", "TR_V_gene",
+    "TR_J_pseudogene", "TR_V_pseudogene",
+    "TEC"
+  ])
+  const ensoPrefix = "http://rdf.ebi.ac.uk/terms/ensembl/"
   all.results.bindings.forEach(d => {
     let label = d.child_label.value;
     if (label == "") {
       label = d.child.value.replace(idPrefix, "");
     }
-    unclassified[d.child.value] = label;
+    if (biotypes.has(d.type.value.replace(ensoPrefix, ""))) {
+      allEnsg[d.child.value] = label;
+      unclassified[d.child.value] = true;
+    }
   });
   data.results.bindings.forEach(d => {
     if (!chk[d.parent.value]) {
@@ -122,13 +111,9 @@ WHERE {
         parent: "root"
       });
     }
-    let label = d.child_label.value;
-    if (label == "") {
-      label = d.child.value.replace(idPrefix, "");
-    }
     tree.push({
       id: d.child.value.replace(idPrefix, ""),
-      label: label,
+      label: allEnsg[d.child.value],
       leaf: true,
       parent: d.parent_label.value
     });
