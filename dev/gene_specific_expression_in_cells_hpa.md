@@ -17,10 +17,8 @@ WHERE {
     ?child refexo:isPositivelySpecificTo ?parent .
   }
   BIND(URI(REPLACE(STR(?child), "http://identifiers.org/ensembl/", "http://rdf.ebi.ac.uk/resource/ensembl/")) AS ?ebi_ensg)
-  OPTIONAL { # some of ENSG IDs used in HPA are obsolete and do not have label
-    GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
-      ?ebi_ensg rdfs:label ?child_label .
-    }
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
+    ?ebi_ensg rdfs:label ?child_label .
   }
   ?parent rdfs:label ?parent_label .
 }
@@ -41,10 +39,8 @@ WHERE {
     }
   }
   BIND(URI(REPLACE(STR(?child), "http://identifiers.org/ensembl/", "http://rdf.ebi.ac.uk/resource/ensembl/")) AS ?ebi_ensg)
-  OPTIONAL { # some of ENSG IDs used in HPA are obsolete and do not have label
-    GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
       ?ebi_ensg rdfs:label ?child_label .
-    }
   }
 }
 ```
@@ -73,9 +69,9 @@ WHERE {
         parent: "root"
       })
     }
-    let label = "(obsolete)";
-    if (d.child_label) {
-      label = d.child_label.value;
+    let label = d.child_label.value;
+    if (label == "") {
+      label = d.child.value.replace(childIdPrefix, "");
     }
     tree.push({
       id: d.child.value.replace(childIdPrefix, ""),
