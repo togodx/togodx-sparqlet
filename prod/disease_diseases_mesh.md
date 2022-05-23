@@ -4,11 +4,6 @@
 
 - Data sources
     -  [Medical Subject Headings (MeSH)](https://www.nlm.nih.gov/mesh/meshhome.html) 
-- Query
-    - Input
-        - MeSH Descriptor
-    - Output
-        -  [Diseases ([C])](https://meshb.nlm.nih.gov/treeView) and its subcategories of MeSH
 
 ## Endpoint
 
@@ -46,23 +41,21 @@ https://integbio.jp/togosite/sparql
 ## `data`
 ```sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 
-SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id SAMPLE(?child) AS ?tree_child
+SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id (SAMPLE(?child) AS ?tree_child)
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH Treeの Diseases[C] 以下を取得
   # See https://meshb.nlm.nih.gov/treeView
-  FILTER (regex(str(?node), "C"))
-  ?node meshv:parentTreeNumber* ?tree .
+  FILTER (contains(str(?node), "C"))
   OPTIONAL {
     ?node meshv:parentTreeNumber ?parent  .
     ?parent_mesh_id meshv:treeNumber ?parent .
   }
 
   ?mesh_id meshv:treeNumber ?node ;
-      rdfs:label ?mesh_label .
+    rdfs:label ?mesh_label .
   FILTER(lang(?mesh_label) = "en")
   
   OPTIONAL {

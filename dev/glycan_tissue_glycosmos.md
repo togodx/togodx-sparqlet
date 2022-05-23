@@ -25,19 +25,23 @@ PREFIX info: <http://rdf.glycoinfo.org/glycan/>
 PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
 SELECT DISTINCT ?parent_label ?parent ?child ?child_label ?sbsmpt
 WHERE {
-  [] glycan:has_glycan ?child ;
-     a <http://purl.jp/bio/4/id/200906013374193296> ;
+  ?child rdfs:seeAlso [
      glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> ;
-     glycan:has_tissue ?parent .
+     glycan:has_tissue ?parent
+  ] .
   ?parent rdfs:label ?parent_label .
   OPTIONAL {
-    ?child glycan:has_glycosequence / glycan:has_sequence / ^rdfs:label / a ?sbsmpt .
+    ?wurcs dcterms:source ?child ;
+           a ?sbsmpt .
   }
   OPTIONAL {
-    ?child skos:altLabel ?child_label .
+    ?child glycan:has_glycosequence ?gsq .
+    ?gsq glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac_condensed ;
+         glycan:has_sequence ?child_label .
   }
 }
 ```

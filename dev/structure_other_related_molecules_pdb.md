@@ -52,6 +52,7 @@ WHERE {
       pdbo:pdbx_entity_nonpoly.comp_id ?comp_id ;
       pdbo:pdbx_entity_nonpoly.name ?name .
 }
+limit 100
 ```
 
 ## `results`
