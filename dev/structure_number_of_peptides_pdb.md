@@ -40,7 +40,7 @@ SELECT (COUNT(?polypeptide) AS ?value) ?leaf ?label
 
 ```javascript
 ({withAnnotation})=>{
-  const idPrefix = "https://rdf.wwpdb.org/pdb/";
+  const idPrefix = "http://rdf.wwpdb.org/pdb/";
   
   return withAnnotation.results.bindings.map(d => {
     return {

@@ -36,7 +36,7 @@ rdfs:label ?mesh .
   let edge = {};
   main.results.bindings.map(d => {
     tree.push({
-      id: d.chemical.value,
+      id: d.mesh.value,
       label: d.chemical.value,
       leaf: true,
       parent: d.taxid.value
