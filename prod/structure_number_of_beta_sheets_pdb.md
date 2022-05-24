@@ -13,7 +13,7 @@
         - The beta-sheets value contained in each entry.
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+https://integbio.jp/rdf/pdb/sparql
 
 ## `withAnnotation`
 
