@@ -8,7 +8,7 @@ https://mb2.ddbj.nig.ac.jp/sparql
 ```sparql
 PREFIX pg_ns: <https://plantgardden.jp/ns/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
-select distinct ?genome_id  ?version   ?subspecies_id  ?subspecies_label ?species_id  ?species_name  ?level 
+select distinct ?genome_id  ?version   ?subspecies_id  ?subspecies_label ?tax_id  ?species_name  ?level 
 from <http://plantgarden.jp/resource/genome>
 from <http://plantgarden.jp/resource/subspecies>
 from <http://plantgarden.jp/resource/species>
@@ -26,6 +26,7 @@ rdfs:label ?subspecies_label .
 ?species a pg_ns:Species ;
 pg_ns:scientific_name ?species_name .
 FILTER (lang(?subspecies_label) = "en" )
+  BIND (strafter(str(?species_id), "t") AS ?tax_id)
 }
 
 ```
@@ -63,13 +64,13 @@ FILTER (lang(?subspecies_label) = "en" )
   tree.push({
       id: d.subspecies_id.value,
       label: d.subspecies_label.value,
-      parent: d.species_id.value
+      parent: d.tax_id.value
     })
         });
   
     main.results.bindings.map(d => {
   tree.push({
-      id: d.species_id.value,
+      id: d.tax_id.value,
       label: d.species_name.value,
       parent: d.level.value
     })
