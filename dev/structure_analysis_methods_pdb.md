@@ -40,7 +40,7 @@ SELECT DISTINCT ?leaf ?label ?parent
 
 ```javascript
 ({data})=>{
-  const idPrefix = "https://rdf.wwpdb.org/pdb/";
+  const idPrefix = "http://rdf.wwpdb.org/pdb/";
   
   let tree = [
     {
