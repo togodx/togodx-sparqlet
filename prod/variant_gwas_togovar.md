@@ -30,7 +30,7 @@ WHERE {
             a owl:Class .
   }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>{
-    ?parent ^terms:mapped_trait_uri/terms:dbsnp_url ?child_label .
+    ?parent ^terms:mapped_trait_uri/rdfs:seeAlso ?child_label .
   }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
     ?child_label ^rdfs:seeAlso/dct:identifier ?child .
@@ -60,7 +60,7 @@ WHERE {
             rdfs:label ?parent_label .
     ?trait rdfs:subClassOf* ?child .
   }
-  ?trait ^terms:mapped_trait_uri/terms:dbsnp_url/^rdfs:seeAlso ?togovar.
+  ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
 }
 ```
 
