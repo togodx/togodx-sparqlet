@@ -88,8 +88,10 @@ WHERE {
   id2label["risk_factor"] = "risk factor"
   id2label["uncertain_significance_affects"] = "Uncertain significance, Affects"
   id2label["uncertain_significance_other"] = "Uncertain significance, other"
+  id2label["uncertain_significance_other_risk_factor"] = "Uncertain significance, other, risk factor"
   id2label["uncertain_significance_risk_factor"] = "Uncertain significance, risk factor"
   id2label["uncertain_significance"] = "Uncertain significance"
+  
   // 親子関係
   for(let id in id2label){
     tree.push({
@@ -100,11 +102,13 @@ WHERE {
   }
   // アノテーション関係
   leaf.results.bindings.map(d => {
+    const parent = d.category.value.toLowerCase().replace(";",",").replace("/", "_or_").replace(/,?\s+/g, "_")
+    if(!id2label[parent]){ return; }   // 親(id2label)にエントリがない子供は無視する。
     tree.push({
       id: d.tgv_id.value,
       label: d.rs_id.value.replace(childLabelPrefix, ""),
       leaf: true,
-      parent: d.category.value.toLowerCase().replace("/", "_or_").replace(/,?\s+/g, "_")
+      parent: parent
     });
   })
   return tree;	
