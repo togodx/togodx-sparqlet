@@ -104,7 +104,7 @@ WHERE {
       id: d.tgv_id.value,
       label: d.rs_id.value.replace(childLabelPrefix, ""),
       leaf: true,
-      parent: d.category.value.toLowerCase().replace("/", "_or_").replace(/,?\s+/g, "_")
+      parent: d.category.value.toLowerCase().replace(";",",").replace("/", "_or_").replace(/,?\s+/g, "_")
     });
   })
   return tree;	
