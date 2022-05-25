@@ -77,16 +77,22 @@ WHERE {
     }
   ];
 
+  let parents = { "0000001": true };
+  
   // 親子関係
   graph.results.bindings.map(d => {
+    id = d.child.value.split(/\//).slice(-1)[0]
+    parents[id] = true
     tree.push({
-      id: d.child.value.split(/\//).slice(-1)[0],
+      id: id,
       label: d.child_label.value,
       parent: d.parent.value.split(/\//).slice(-1)[0]
     })
   })
   // アノテーション関係
   leaf.results.bindings.map(d => {
+    parent = d.parent.value.split(/\//).slice(-1)[0]
+    if(!parents[parent]){ return; }
     tree.push({
       id: d.child.value,
       label: d.child_label.value.replace(childLabelPrefix, ""),
