@@ -32,9 +32,11 @@ WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>{
     ?parent ^terms:mapped_trait_uri/rdfs:seeAlso ?child_label .
   }
+  # ここまで80秒
   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
     ?child_label ^rdfs:seeAlso/dct:identifier ?child .
   }
+  # ここまで100秒
 }
 ```
 
@@ -53,19 +55,22 @@ WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
   GRAPH <http://rdf.integbio.jp/dataset/togosite/efo> {
     ?child a owl:Class ;
-           rdfs:subClassOf* ?root ;
+ #          rdfs:subClassOf* ?root ;
+           rdfs:subClassOf+ ?root ;
            rdfs:subClassOf ?parent ;
            rdfs:label ?child_label .
     ?parent a owl:Class ;
             rdfs:label ?parent_label .
-    ?trait rdfs:subClassOf* ?child .
+#    ?trait rdfs:subClassOf* ?child .
   }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>{
-    ?trait ^terms:mapped_trait_uri/rdfs:seeAlso ?dbsnp.
+#    ?trait ^terms:mapped_trait_uri/rdfs:seeAlso ?dbsnp.
+    ?child ^terms:mapped_trait_uri/rdfs:seeAlso ?dbsnp.
   }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
     ?dbsnp ^rdfs:seeAlso ?togovar.
   }
+  # ここまで40秒
 }
 ```
 
