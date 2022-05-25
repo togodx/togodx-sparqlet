@@ -53,10 +53,10 @@ FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
 FROM <http://rdf.integbio.jp/dataset/togosite/efo>
 WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
+  VALUES ?parent {  efo:EFO_0000001  } 
   GRAPH <http://rdf.integbio.jp/dataset/togosite/efo> {
     ?child a owl:Class ;
- #          rdfs:subClassOf* ?root ;
-           rdfs:subClassOf+ ?root ;
+           rdfs:subClassOf* ?root ;
            rdfs:subClassOf ?parent ;
            rdfs:label ?child_label .
     ?parent a owl:Class ;
