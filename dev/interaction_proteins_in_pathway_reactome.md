@@ -142,7 +142,7 @@ WHERE {
   // トップとルートの関係
   top.results.bindings.map(d => {
     tree.push({
-      id: d.top.value,
+      id: d.top.value.replace("R-HSA-", "R_HSA_"),
       label: d.top_label.value,
       parent: "root"
     })
@@ -150,9 +150,9 @@ WHERE {
   // 親子関係
   graph.results.bindings.map(d => {
     tree.push({
-      id: d.child.value,
+      id: d.child.value.replace("R-HSA-", "R_HSA_"),
       label: d.child_label.value,
-      parent: d.parent.value
+      parent: d.parent.value.replace("R-HSA-", "R_HSA_")
     })
   })
   // アノテーション関係
@@ -163,7 +163,7 @@ WHERE {
         id: d.child.value,
         label: id2label[d.child.value],
         leaf: true,
-        parent: d.parent.value
+        parent: d.parent.value.replace("R-HSA-", "R_HSA_")
       })
     }
   })

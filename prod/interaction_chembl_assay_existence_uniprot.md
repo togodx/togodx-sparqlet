@@ -92,12 +92,14 @@ WHERE {
       parent_id = parent_id.toString();
       d.parent_label.value = "Conf-score " + d.parent.value + ": " + d.parent_label.value;
     }
-    tree.push({
-      id: d.child.value.replace(idPrefix, ""),
-      label: uri2label[d.child.value],
-      leaf: true,
-      parent: parent_id
-    })
+    if (uri2label[d.child.value]) { // uniprot referece proteome human にあるもの "UP000005640"
+      tree.push({
+        id: d.child.value.replace(idPrefix, ""),
+        label: uri2label[d.child.value],
+        leaf: true,
+        parent: parent_id
+      })
+    }
     // root との親子関係を追加
     if (!edge[d.parent.value]) {
       edge[d.parent.value] = true;
