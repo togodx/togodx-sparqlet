@@ -1,4 +1,4 @@
-# chembl mesh（山本、守屋、信定）
+# chembl mesh（山本、守屋、信定、建石）
 Server対応済み
 
 ## Description
