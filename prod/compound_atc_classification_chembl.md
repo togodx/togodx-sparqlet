@@ -1,5 +1,10 @@
-# ChEMBL で薬を薬効（WHO ATC Code）で分類 （建石、山本） 
-- (Server 対応だが、アノテーションのないものを数えていない）
+# ChEMBL で薬を薬効（WHO ATC Code）で分類 (Server 対応だが、アノテーションのないものを数えていない）（建石、山本） 
+
+* 入力：
+  * 
+* 出力：
+  * ChEMBL の化合物でWHO ATC コードの付与されている化合物をATCコードとともに出漁句
+  * 一つの薬に複数のATCコードがついていることがありうる 
 
 ## Description
 
@@ -108,7 +113,7 @@ WHERE
 {
     
     ?atcuri  skos:prefLabel ?label.  
-    BIND(substr(str(?atcuri),43) as ?atc)  
+    BIND(substr(str(?atcuri),42) as ?atc)  #
 }
 ```
 
@@ -160,4 +165,3 @@ WHERE
   return tree;
 };
 ```
-

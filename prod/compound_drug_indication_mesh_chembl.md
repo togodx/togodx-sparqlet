@@ -1,4 +1,4 @@
-# chembl mesh（山本、守屋、信定）
+# chembl mesh（山本、守屋、信定、建石）
 Server対応済み
 
 ## Description
@@ -69,22 +69,28 @@ WHERE {
       root: true
     }
   ];
-
+  let mesh_id_list=[]
+  
   meshTree.results.bindings.forEach((d) => {
+    let mesh_id = d.mesh_id.value.replace(idPrefix, "") ;
     tree.push({
-      id: d.mesh_id.value.replace(idPrefix, ""),
+      id: mesh_id,
       label: d.mesh_label.value,
       parent: d.parent_mesh_id ? d.parent_mesh_id.value.replace(idPrefix, "") : "root"
     });
+    mesh_id_list.push(mesh_id)
   });
 
   chemblHasMesh.results.bindings.map((d) => {
-    tree.push({
-      id: d.chembl_id.value,
-      label: d.chembl_label.value,
-      leaf: true,
-      parent: d.mesh.value.replace('http://identifiers.org/mesh/', '')
-    });
+    let mesh_id = d.mesh.value.replace('http://identifiers.org/mesh/', '')
+    if (mesh_id_list.includes(mesh_id)) { 
+      tree.push({
+        id: d.chembl_id.value,
+        label: d.chembl_label.value,
+        leaf: true,
+        parent: mesh_id
+      });
+    };
   });
 
   return tree;
