@@ -89,6 +89,7 @@ WHERE {
     // id を conf-score [9-0] から sortable に
     if (d.parent.value.match(/^\d$/)) {
       parent_id = 10 - Number(d.parent.value);
+      parent_id = parent_id.toString();
       d.parent_label.value = "Conf-score " + d.parent.value + ": " + d.parent_label.value;
     }
     tree.push({
