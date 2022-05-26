@@ -90,7 +90,7 @@ WHERE {
         parent: "root"
       })
     }
-    let label = d.child.value;
+    let label = d.child_label.value;
     if (label == "") {
       label = d.child.value.replace(idPrefix, "");
     }

@@ -3,7 +3,7 @@
 ## Description
 
 - Data sources
-    - Ensembl human release 102: [http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index](http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index)
+    - Ensembl human release 106: [http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index](http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index)
 - Input/Output
     -  Input
         - Ensembl gene ID
@@ -20,19 +20,27 @@ https://integbio.jp/togosite/sparql
 ## `data`
 
 ```sparql
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX so: <http://purl.obolibrary.org/obo/so#>
+PREFIX taxon: <http://identifiers.org/taxonomy/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
-PREFIX taxonomy: <http://identifiers.org/taxonomy/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
 SELECT DISTINCT ?parent ?child ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
 WHERE {
-  ?child faldo:location ?ensg_location ;
-         rdfs:label ?child_label ;
-         obo:RO_0002162 taxonomy:9606  .
-  ?transcript obo:SO_transcribed_from ?child .
-  BIND (strbefore(strafter(str(?ensg_location), "GRCh38/"), ":") AS ?parent)
-  VALUES ?parent {"1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "X" "Y" "MT"}
+  ?enst so:transcribed_from ?ensg .
+  ?ensg obo:RO_0002162 taxon:9606 ;
+        dcterms:identifier ?child ;
+        rdfs:label ?child_label ;
+        so:part_of ?chr .
+  BIND(STRBEFORE(STRAFTER(STR(?chr), "hco/"), "#GRCh38") AS ?parent)
+  VALUES ?parent {
+      "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"
+      "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22"
+      "X" "Y" "MT"
+  }
 }
 ```
 
@@ -62,9 +70,13 @@ WHERE {
       parent_id = ('00' + parent_id).slice(-2);
       d.parent.value = "chr" + d.parent.value;
     }
+    let label = d.child_label.value;
+    if (label == "") {
+      label = d.child.value;
+    }
     tree.push({
-      id: d.child.value.replace(idPrefix, ""),
-      label: d.child_label.value,
+      id: d.child.value,
+      label: label,
       leaf: true,
       parent: parent_id
     })
