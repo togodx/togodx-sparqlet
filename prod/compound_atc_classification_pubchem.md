@@ -71,6 +71,7 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
       OPTIONAL {
       	?atc skos:broader ?parent .      
       	?parent skos:prefLabel  ?parent_label .
+        FILTER (?atc != ?parent)
         }
 } ORDER BY ?atc
 ```
