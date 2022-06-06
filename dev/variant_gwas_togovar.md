@@ -45,7 +45,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 PREFIX efo: <http://www.ebi.ac.uk/efo/>
-SELECT DISTINCT ?parent ?child ?parent_label ?child_label
+SELECT DISTINCT ?parent ?child ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
 FROM <http://rdf.integbio.jp/dataset/togosite/efo>
@@ -56,8 +56,7 @@ WHERE {
            rdfs:subClassOf* ?root ;
            rdfs:subClassOf ?parent ;
            rdfs:label ?child_label .
-    ?parent a owl:Class ;
-            rdfs:label ?parent_label .
+    ?parent a owl:Class.
     ?trait rdfs:subClassOf* ?child .
   }
   ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
@@ -82,10 +81,12 @@ WHERE {
   // 親子関係
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
+//    if(parents[id]){ return; }
     parents[id] = true
     tree.push({
       id: id,
       label: d.child_label.value,
+      parent_label: d.parent_label.value,
       parent: d.parent.value.split(/\//).slice(-1)[0]
     })
   })
