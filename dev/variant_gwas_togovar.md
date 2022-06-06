@@ -78,15 +78,20 @@ WHERE {
 
   let parents = { "0000001": true };
   
+  // EFO_IDを全て記録する
+  graph.results.bindings.map(d => {
+    id = d.child.value.split(/\//).slice(-1)[0]
+    parents[id] = true
+  })
+  
   // 親子関係
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
-//    if(parents[id]){ return; }
+　　if(parents[id]){ return; }  // 親EFOが存在しない時は取り込まない
     parents[id] = true
     tree.push({
       id: id,
       label: d.child_label.value,
-//      parent_label: d.parent_label.value,
       parent: d.parent.value.split(/\//).slice(-1)[0]
     })
   })
