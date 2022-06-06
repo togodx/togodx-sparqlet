@@ -87,23 +87,23 @@ WHERE {
   // 親子関係
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
-　　if(parents[id]){ return; }  // 親EFOが存在しない時は取り込まない
-    parents[id] = true
+    parent = d.parent.value.split(/\//).slice(-1)[0]
+　　if(!parents[parent]){ return }  // 親EFOが存在しない時は取り込まない
     tree.push({
       id: id,
       label: d.child_label.value,
-      parent: d.parent.value.split(/\//).slice(-1)[0]
+      parent: parent
     })
   })
   // アノテーション関係
   leaf.results.bindings.map(d => {
     parent = d.parent.value.split(/\//).slice(-1)[0]
-    if(!parents[parent]){ return; }
+    if(!parents[parent]){ return } // 親EFOが存在しない時は取り込まない
     tree.push({
       id: d.child.value,
       label: d.child_label.value.replace(childLabelPrefix, ""),
       leaf: true,
-      parent: d.parent.value.split(/\//).slice(-1)[0]
+      parent: parent
     })
   })
   
