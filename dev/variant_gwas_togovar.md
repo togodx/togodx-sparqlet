@@ -86,7 +86,7 @@ WHERE {
     tree.push({
       id: id,
       label: d.child_label.value,
-      parent_label: d.parent_label.value,
+//      parent_label: d.parent_label.value,
       parent: d.parent.value.split(/\//).slice(-1)[0]
     })
   })
