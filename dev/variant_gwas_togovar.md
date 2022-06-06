@@ -76,7 +76,7 @@ WHERE {
     }
   ];
 
-  let parents = { "0000001": true };
+  let parents = { "EFO_0000001": true };
   
   // EFO_IDを全て記録する
   graph.results.bindings.map(d => {
