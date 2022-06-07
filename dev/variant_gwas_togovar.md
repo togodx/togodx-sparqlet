@@ -89,7 +89,7 @@ WHERE {
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
     parent = d.parent.value.split(/\//).slice(-1)[0]
-    if(!parents[parent]){ return }  // 親EFOが存在しない時は取り込まない
+//    if(!parents[parent]){ return }  // 親EFOが存在しない時は取り込まない
     tree.push({
       id: id,
       label: d.child_label.value,
