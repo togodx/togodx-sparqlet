@@ -56,7 +56,8 @@ WHERE {
            rdfs:subClassOf* ?root ;
            rdfs:subClassOf ?parent ;
            rdfs:label ?child_label .
-    ?parent a owl:Class.
+    ?parent a owl:Class;
+           rdfs:subClassOf* ?root.
     ?trait rdfs:subClassOf* ?child .  # これがないとleafにtogovarを持つEFOの中間ノードが出力できない
   }
   ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
@@ -83,17 +84,13 @@ WHERE {
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
     parents[id] = true
-    tree.push({
-      ID: id,
-      label: d.child_label.value
-    })
   })
     
   // 親子関係
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
     parent = d.parent.value.split(/\//).slice(-1)[0]
-　　if(!parents[parent]){ return }  // 親EFOが存在しない時は取り込まない
+//　　if(!parents[parent]){ return }  // 親EFOが存在しない時は取り込まない
     tree.push({
       id: id,
       label: d.child_label.value,
@@ -103,7 +100,7 @@ WHERE {
   // アノテーション関係
   leaf.results.bindings.map(d => {
     parent = d.parent.value.split(/\//).slice(-1)[0]
-    if(!parents[parent]){ return } // 親EFOが存在しない時は取り込まない
+//    if(!parents[parent]){ return } // 親EFOが存在しない時は取り込まない
     tree.push({
       id: d.child.value,
       label: d.child_label.value.replace(childLabelPrefix, ""),
