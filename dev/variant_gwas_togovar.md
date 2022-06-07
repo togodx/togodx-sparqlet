@@ -55,11 +55,12 @@ WHERE {
     ?child a owl:Class ;
            rdfs:subClassOf* ?root ;
            rdfs:subClassOf ?parent ;
-           rdfs:label ?child_label .
+           rdfs:label ?_child_label .
     ?parent a owl:Class.
     ?trait rdfs:subClassOf* ?child .  # これがないとleafにtogovarを持つEFOの中間ノードが出力できない
   }
   ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
+  BIND(STR(?_child_label) AS ?child_label) # ?child_label@enが存在してDISTINCTが効かないので追加
 }
 ```
 
@@ -83,10 +84,7 @@ WHERE {
     id = d.child.value.split(/\//).slice(-1)[0]
     parents[id] = true
   })
-  
-//  if(!parents["BFO_0000040"]){ console.debug("aaa") }
-// return;
-  
+    
   // 親子関係
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
