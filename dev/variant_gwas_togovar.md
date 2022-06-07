@@ -76,7 +76,7 @@ WHERE {
     }
   ];
 
-  let is_dumped;  // 既に出力されたid,parent関係
+  let is_dumped = {}  // 既に出力されたid,parent関係
  
   // 親子関係
   graph.results.bindings.map(d => {
