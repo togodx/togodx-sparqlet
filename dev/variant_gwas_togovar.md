@@ -82,7 +82,7 @@ WHERE {
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
     parent = d.parent.value.split(/\//).slice(-1)[0]
-    if(is_dumped[id] == parent){ return }   // 一度出力されたidは出力しない
+    if(is_dumped[id] == parent){ return }   // 一度出力されたid,parentは出力しない
     is_dumped[id] = parent
     tree.push({
       id: id,
