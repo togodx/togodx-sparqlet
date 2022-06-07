@@ -53,14 +53,14 @@ WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
   GRAPH <http://rdf.integbio.jp/dataset/togosite/efo> {
     ?child a owl:Class ;
+           rdfs:subClassOf* ?root ;
            rdfs:subClassOf ?parent ;
            rdfs:label ?child_label .
-    ?parent a owl:Class;
-           rdfs:subClassOf* ?root.
-    ?trait rdfs:subClassOf* ?child .  # これがないとleafにtogovarを持つEFOの中間ノードが出力できない
+    ?parent a owl:Class ;
+           rdfs:subClassOf* ?root ;
+    ?trait rdfs:subClassOf* ?child .
   }
   ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
-#  FILTER ( lang(?child_label) != "en" ) # ?child_label@enが存在してDISTINCTが効かないので追加
 }
 ```
 
@@ -77,36 +77,27 @@ WHERE {
     }
   ];
 
-  let is_dumped = { "EFO_0000001": true };  // 既に出力されたid
-  
-  // EFO_IDを全て記録する
-//  graph.results.bindings.map(d => {
-//    id = d.child.value.split(/\//).slice(-1)[0]
-//    parents[id] = true
-//  })
-    
+//  let is_dumped = { "EFO_0000001": true };  // 既に出力されたid
+ 
   // 親子関係
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
-    parent = d.parent.value.split(/\//).slice(-1)[0]
-//　　if(!parents[parent]){ return }  // 親EFOが存在しない時は取り込まない
-    　if(is_dumped[id]){ return }   // 一度出力されたidは出力しない
-    is_dumped[id] = true
+//    if(is_dumped[id]){ return }   // 一度出力されたidは出力しない
+//    is_dumped[id] = true
     tree.push({
       id: id,
       label: d.child_label.value,
-      parent: parent
+      parent: d.parent.value.split(/\//).slice(-1)[0]
     })
   })
   // アノテーション関係
   leaf.results.bindings.map(d => {
     parent = d.parent.value.split(/\//).slice(-1)[0]
-//    if(!parents[parent]){ return } // 親EFOが存在しない時は取り込まない
     tree.push({
       id: d.child.value,
       label: d.child_label.value.replace(childLabelPrefix, ""),
       leaf: true,
-      parent: parent
+      parent: d.parent.value.split(/\//).slice(-1)[0]
     })
   })
   
