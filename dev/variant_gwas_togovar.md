@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+https://togodx.integbio.jp/ep/sparql/virtuoso
 
 ## `leaf`
 ```sparql
@@ -45,7 +45,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 PREFIX efo: <http://www.ebi.ac.uk/efo/>
-SELECT DISTINCT ?parent ?child ?child_label
+SELECT ?parent ?child sample(?child_label) AS ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
 FROM <http://rdf.integbio.jp/dataset/togosite/efo>
@@ -60,8 +60,9 @@ WHERE {
     ?trait rdfs:subClassOf* ?child .  # これがないとleafにtogovarを持つEFOの中間ノードが出力できない
   }
   ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
-  FILTER ( lang(?child_label) != "en" ) # ?child_label@enが存在してDISTINCTが効かないので追加
+#  FILTER ( lang(?child_label) != "en" ) # ?child_label@enが存在してDISTINCTが効かないので追加
 }
+GROUP BY ?parent ?child
 ```
 
 ## `return`
@@ -89,7 +90,7 @@ WHERE {
   graph.results.bindings.map(d => {
     id = d.child.value.split(/\//).slice(-1)[0]
     parent = d.parent.value.split(/\//).slice(-1)[0]
-//    if(!parents[parent]){ return }  // 親EFOが存在しない時は取り込まない
+//　　if(!parents[parent]){ return }  // 親EFOが存在しない時は取り込まない
     tree.push({
       id: id,
       label: d.child_label.value,
@@ -99,7 +100,7 @@ WHERE {
   // アノテーション関係
   leaf.results.bindings.map(d => {
     parent = d.parent.value.split(/\//).slice(-1)[0]
-    if(!parents[parent]){ return } // 親EFOが存在しない時は取り込まない
+//    if(!parents[parent]){ return } // 親EFOが存在しない時は取り込まない
     tree.push({
       id: d.child.value,
       label: d.child_label.value.replace(childLabelPrefix, ""),
