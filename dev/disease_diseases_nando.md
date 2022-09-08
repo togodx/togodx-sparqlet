@@ -22,7 +22,7 @@ https://integbio.jp/togosite/sparql
 PREFIX nando: <http://nanbyodata.jp/ontology/NANDO_>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?id ?parent ?label SAMPLE(?child) AS ?child
+SELECT DISTINCT ?id AS ?nando ?parent ?label SAMPLE(?child) AS ?child
 FROM <http://rdf.integbio.jp/dataset/togosite/nando>
 WHERE {
   # ルートノードは、NANDO:0000001（Intractable disease）
@@ -48,24 +48,25 @@ GROUP BY ?id ?parent ?label
   const idPrefix = "http://nanbyodata.jp/ontology/NANDO_";
   let tree = [
     {
-      id: "0000001",
+      nando: "0000001",
       label: "Intractable disease",
       root: true
     }
   ];
   let nando = { "0000001" : true };
   data.results.bindings.forEach(d => {
-      nando[d.nando.value.replace(idPrefix, "")] = ture;
-   });
-   data.results.bindings.forEach(d => {
-       if (nando[d.parent.value.replace(idPrefix, "")])
+    nando[d.nando.value.replace(idPrefix, "")] = true;
+  });
+  data.results.bindings.forEach(d => {
+       if (nando[d.parent.value.replace(idPrefix, "")]){
         tree.push({
           id: d.id.value.replace(idPrefix, ""),
           label: d.label.value,
           leaf: (d.child == undefined ? true : false),
           parent: d.parent.value.replace(idPrefix, "")
-    });
-  });
+        });
+       }
+    }); 
   return tree;
 };
 
