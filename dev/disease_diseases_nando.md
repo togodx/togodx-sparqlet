@@ -54,7 +54,9 @@ GROUP BY ?id ?parent ?label
       root: true
     }
   ];
+  let nando = { "0000001":true };
   data.results.bindings.forEach(d => {
+    nando[d.nando.value.replace(idPrefix,"")])
     tree.push({
       id: d.id.value.replace(idPrefix, ""),
       label: d.label.value,
@@ -64,6 +66,7 @@ GROUP BY ?id ?parent ?label
   });
   return tree;
 };
+
 ```
 
 ## MEMO
