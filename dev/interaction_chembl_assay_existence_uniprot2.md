@@ -24,21 +24,22 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX taxon: <http://identifiers.org/taxonomy/>
 PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
 PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
-SELECT DISTINCT ?child ?parent ?parent_label ?assay_type
+SELECT DISTINCT ?uniprot ?conf_score ?conf_score_label ?assay_type
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
 WHERE {
   ?chembl a cco:SmallMolecule ;
           cco:hasActivity/cco:hasAssay ?assay.
   ?assay a cco:Assay ;
-            cco:targetConfScore ?parent ;
-            cco:targetConfDesc ?parent_label ;
-            cco:assayType ?assay_type ;
+            cco:targetConfScore ?conf_score ;
+            cco:targetConfDesc ?conf_score_label ;
+         cco:assayType ?assay_type ;
             cco:hasTarget/skos:exactMatch [
             cco:taxonomy taxon:9606 ;
-            skos:exactMatch ?child
+            skos:exactMatch ?uniprot
           ] . 
-  ?child a cco:UniprotRef .
+  ?uniprot a cco:UniprotRef .
 }
+
 ```
 
 ## `allLeaf`
@@ -83,26 +84,33 @@ WHERE {
 
   let withAnnotation = {};
   let edge = {};
+
   // アノテーション関係
   data.results.bindings.map(d => {
-    withAnnotation[d.child.value] = true;
+    withAnnotation[d.uniprot.value] = true;
     let parent_id;
     // id を conf-score [9-0] から sortable に
-    if (d.parent.value.match(/^\d$/)) {
-      parent_id = 10 - Number(d.parent.value);
+    if (d.conf_score.value.match(/^\d$/)) {
+      parent_id = 10 - Number(d.conf_score.value);
       parent_id = parent_id.toString();
-      d.parent_label.value = "Conf-score " + d.parent.value + ": " + d.parent_label.value;
+      d.parent.value = "Conf-score " + d.conf_score.value + ": " + d.conf_score_label.value;
     }
-    if (uri2label[d.child.value]) { // uniprot referece proteome human にあるもの "UP000005640"
+    if (uri2label[d.uniprot.value]) { // uniprot referece proteome human にあるもの "UP000005640"
       tree.push({
-        id: d.child.value.replace(idPrefix, ""),
-        label: uri2label[d.child.value],
+        id: d.uniprot.value.replace(idPrefix, ""),
+        label: uri2label[d.uniprot.value],
         leaf: true,
         parent: parent_id
       })
+      tree.push({
+        id: parent_id,
+        label: d.parent.value,
+        parent: d.assay_type.value
+      })
     }
+    
     // root との親子関係を追加
-    if (!edge[d.assay_type.value]) {
+    if (!edge[d.parent.value]) {
       edge[d.assay_type.value] = true;
       tree.push({     
         id: d.assay_type.value,
@@ -111,6 +119,9 @@ WHERE {
       })
     }
   });
+  
+  
+  
   // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
     if (!withAnnotation[d.leaf.value]) {
