@@ -41,7 +41,6 @@ WHERE {
 }
 GROUP BY ?id ?parent ?label 
 ```
-
 ## `return`
 
 ```javascript
@@ -54,20 +53,25 @@ GROUP BY ?id ?parent ?label
       root: true
     }
   ];
-  let nando = { "0000001":true };
+  let nando = { "0000001" : true };
   data.results.bindings.forEach(d => {
-    nando[d.nando.value.replace(idPrefix,"")])
-    tree.push({
-      id: d.id.value.replace(idPrefix, ""),
-      label: d.label.value,
-      leaf: (d.child == undefined ? true : false),
-      parent: d.parent.value.replace(idPrefix, "")
+      nando[d.nando.value.replace(idPrefix, "")] = ture;
+   });
+   data.results.bindings.forEach(d => {
+       if (nando[d.parent.value.replace(idPrefix, "")])
+        tree.push({
+          id: d.id.value.replace(idPrefix, ""),
+          label: d.label.value,
+          leaf: (d.child == undefined ? true : false),
+          parent: d.parent.value.replace(idPrefix, "")
     });
   });
   return tree;
 };
 
 ```
+
+
 
 ## MEMO
 -Author
