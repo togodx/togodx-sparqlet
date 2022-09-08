@@ -24,6 +24,7 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX taxon: <http://identifiers.org/taxonomy/>
 PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
 PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
+
 SELECT DISTINCT ?uniprot ?conf_score ?conf_score_label ?assay_type
 FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
 WHERE {
@@ -93,7 +94,7 @@ WHERE {
     if (d.conf_score.value.match(/^\d$/)) {
       parent_id = 10 - Number(d.conf_score.value);
       parent_id = parent_id.toString();
-      d.parent.value = "Conf-score " + d.conf_score.value + ": " + d.conf_score_label.value;
+      d.conf_score_label.value = "Conf-score " + d.conf_score.value + ": " + d.conf_score_label.value;
     }
     if (uri2label[d.uniprot.value]) { // uniprot referece proteome human にあるもの "UP000005640"
       tree.push({
@@ -102,15 +103,15 @@ WHERE {
         leaf: true,
         parent: parent_id
       })
-      tree.push({
-        id: parent_id,
-        label: d.parent.value,
-        parent: d.assay_type.value
-      })
+    	 tree.push({
+         id: parent_id,
+	     label: d.conf_score_label.value,
+	     parent: d.assay_type.value
+	   })
     }
     
     // root との親子関係を追加
-    if (!edge[d.parent.value]) {
+    if (!edge[d.assay_type.value]) {
       edge[d.assay_type.value] = true;
       tree.push({     
         id: d.assay_type.value,
@@ -119,9 +120,7 @@ WHERE {
       })
     }
   });
-  
-  
-  
+
   // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
     if (!withAnnotation[d.leaf.value]) {
