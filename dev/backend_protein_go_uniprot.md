@@ -9,7 +9,7 @@
   * example: GO_0008150 (biological process), GO_0005575 (cellular component), GO_0003674 (molecular function)
 
 ## Endpoint
-https://integbio.jp/rdf/sib/sparql
+https://integbio.jp/togosite/sparql
 
 - https://integbio.jp/togosite/sparql
 - https://integbio.jp/rdf/sib/sparql
@@ -23,10 +23,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-#FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
-#FROM <http://rdf.integbio.jp/dataset/togosite/go>
-FROM <http://sparql.uniprot.org/uniprot>
-FROM <http://sparql.uniprot.org/go>
+FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+FROM <http://rdf.integbio.jp/dataset/togosite/go>
 WHERE {
   ?child a up:Protein ;
 #         up:organism taxon:9606 ;
@@ -48,10 +46,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-#FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
-#FROM <http://rdf.integbio.jp/dataset/togosite/go>
-FROM <http://sparql.uniprot.org/uniprot>
-FROM <http://sparql.uniprot.org/go>
+FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+FROM <http://rdf.integbio.jp/dataset/togosite/go>
 WHERE {
   ?child rdfs:subClassOf* obo:{{root}} ;
          rdfs:subClassOf ?parent .
@@ -71,8 +67,7 @@ WHERE {
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 SELECT DISTINCT ?leaf ?leaf_label
-#FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
-FROM <http://sparql.uniprot.org/uniprot>
+FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {
   ?leaf a up:Protein ;
 #        up:organism taxon:9606 ;
