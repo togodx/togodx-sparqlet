@@ -1,6 +1,6 @@
 # Gene Ontology 'Molecular function' distribution（守屋）
 
-- Required SPARQLet: backend_protein_go_uniprot
+- Required SPARQLet: [backend_protein_go_uniprot](https://togodx.integbio.jp/sparqlist/backend_protein_go_uniprot)
 
 ## Description
 
