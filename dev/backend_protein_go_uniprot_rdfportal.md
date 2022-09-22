@@ -18,7 +18,6 @@ PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://sparql.uniprot.org/uniprot>
 FROM <http://sparql.uniprot.org/go> # GO は展開されているので、１ステップですべての祖先が取れる（が、元のGOの親子関係は取りにくい）
@@ -58,11 +57,8 @@ https://integbio.jp/rdf/bioportal/sparql
   - 展開されていない endpoint で取得
   - human に無い GO も含まれるが、DX server では問題ない
 ```sparql
-PREFIX up: <http://purl.uniprot.org/core/>
-PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://rdf.integbio.jp/dataset/bioportal/go>
 WHERE {
