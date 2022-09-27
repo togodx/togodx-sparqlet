@@ -13,7 +13,7 @@
         - If a uniprot id is entered, it returns whether pdb entry exists or not.
 
 ## Endpoint
-https://integbio.jp/togosite/sparql
+https://integbio.jp/rdf/sib/sparql
 
 ## `withAnnotation`
 ```sparql
@@ -22,7 +22,7 @@ PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX db: <http://purl.uniprot.org/database/>
 SELECT DISTINCT ?child ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+#FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {
   ?child a up:Protein ;
          up:mnemonic ?child_label ;
@@ -41,7 +41,7 @@ PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX db: <http://purl.uniprot.org/database/>
 SELECT DISTINCT ?child ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+#FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {
   ?child a up:Protein ;
          up:mnemonic ?child_label ;
