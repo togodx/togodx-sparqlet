@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+https://integbio.jp/rdf/sparql
 
 ## `leaf`
 ```sparql
@@ -21,9 +21,9 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/variation>
-FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
-FROM <http://rdf.integbio.jp/dataset/togosite/efo>
+#FROM <http://rdf.integbio.jp/dataset/togosite/variation>
+#FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
+#FROM <http://rdf.integbio.jp/dataset/togosite/efo>
 WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/efo>{
     ?parent rdfs:label ?parent_label ;
@@ -46,9 +46,9 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 PREFIX efo: <http://www.ebi.ac.uk/efo/>
 SELECT DISTINCT ?parent ?child ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/variation>
-FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
-FROM <http://rdf.integbio.jp/dataset/togosite/efo>
+#FROM <http://rdf.integbio.jp/dataset/togosite/variation>
+#FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
+#FROM <http://rdf.integbio.jp/dataset/togosite/efo>
 WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
   GRAPH <http://rdf.integbio.jp/dataset/togosite/efo> {
