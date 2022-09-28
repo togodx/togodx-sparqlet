@@ -17,7 +17,7 @@ Server対応済み
 
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+https://integbio.jp/rdf/ebi/sparql
 
 ## `chemblHasMesh`
 ```sparql
@@ -25,13 +25,18 @@ PREFIX chembl: <http://rdf.ebi.ac.uk/terms/chembl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?chembl_id ?chembl_label ?mesh
-FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
+FROM <http://rdf.ebi.ac.uk/dataset/chembl>
 WHERE {
   ?molecule chembl:chemblId ?chembl_id ;
       rdfs:label ?chembl_label ;
       chembl:hasDrugIndication/chembl:hasMesh ?mesh .
 }
 ```
+
+
+## Endpoint
+
+https://integbio.jp/rdf/mesh/sparql
 
 ## `meshTree`
 ```sparql
@@ -40,7 +45,7 @@ PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 
 SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id
-FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
+# FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH Treeの Diseases[C] 以下を取得
   # See https://meshb.nlm.nih.gov/treeView
