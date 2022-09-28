@@ -20,7 +20,7 @@
 
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+https://integbio.jp/rdf/ebi/sparql
 
 ## `data`
 - 化合物とATCコードの対応
@@ -32,7 +32,7 @@ PREFIX molecule: <http://rdf.ebi.ac.uk/resource/chembl/molecule/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?atc ?molecule ?molecule_label
-FROM <http://rdf.integbio.jp/dataset/togosite/chembl>  
+FROM <http://rdf.ebi.ac.uk/dataset/chembl>
 
 WHERE {
   # test
@@ -95,6 +95,8 @@ WHERE {
 }
 ```
 
+## Endpoint
+https://integbio.jp/rdf/mirror/bioportal/sparql
 
 ## `labelData`
 * ATCコードのラベル取得
@@ -108,7 +110,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX atc: <http://purl.bioontology.org/ontology/UATC/>
 
 SELECT ?atc ?label 
-FROM <http://rdf.integbio.jp/dataset/togosite/atc>
+  FROM <http://integbio.jp/rdf/mirror/bioportal/atc>
 WHERE 
 {
     
