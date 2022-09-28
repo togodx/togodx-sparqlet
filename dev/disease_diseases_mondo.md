@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://togodx.integbio.jp/ep/sparql
+https://integbio.jp/rdf/sparql
 
 ## `data`
 ```sparql
