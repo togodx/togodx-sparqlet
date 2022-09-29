@@ -1,4 +1,4 @@
-# UniProt GO classification for RDF portal (dev)(守屋)
+# UniProt GO classification for RDF portal (守屋)
 
 - backend SPARQLet
 
