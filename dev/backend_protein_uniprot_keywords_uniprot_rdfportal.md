@@ -27,6 +27,7 @@ https://integbio.jp/rdf/sib/sparql
 ## `graph`
 - keyword ID と UniProt ID のアノテーション関係と、keyword ID の親子関係を同時取得
 ```sparql
+DEFINE sql:select-option "order"
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -37,26 +38,32 @@ SELECT DISTINCT ?parent ?child ?parent_label ?child_label ?leaf
 FROM <http://sparql.uniprot.org/uniprot>
 FROM <http://sparql.uniprot.org/keywords>
 WHERE {
-  VALUES ?root { keywords:{{root}} }
   {
-    ?child a up:Protein ;
-           up:organism taxon:9606 ;
-           up:proteome ?proteome ;
-           up:classifiedWith ?parent .
-    FILTER(REGEX(STR(?proteome), "UP000005640"))
-    ?parent a up:Concept ;
-            rdfs:subClassOf* ?root .
-    ?child up:mnemonic ?child_label .
+    GRAPH <http://sparql.uniprot.org/uniprot> {
+      ?child up:organism taxon:9606 ;
+             up:mnemonic ?child_label ;
+             up:proteome ?proteome .
+      FILTER(REGEX(STR(?proteome), "UP000005640"))
+      ?child up:classifiedWith ?parent .
+    }
+    GRAPH <http://sparql.uniprot.org/keywords> {
+      ?parent a up:Concept ;
+              rdfs:subClassOf* keywords:{{root}} .
+    }
     BIND(1 AS ?leaf)
   } UNION {
-    ?child rdfs:subClassOf* ?root ;
-           a up:Concept ;
-           rdfs:subClassOf ?parent .
-    ?parent rdfs:subClassOf* ?root . # keywords は複数のカテゴリにぶら下がることがあるので親のrootもチェック
-    ?child skos:prefLabel ?child_label .
+    GRAPH <http://sparql.uniprot.org/keywords> {
+      ?child rdfs:subClassOf* keywords:{{root}} ;
+             a up:Concept ;
+             rdfs:subClassOf ?parent .
+      ?parent rdfs:subClassOf* keywords:{{root}} . # keywords は複数のカテゴリにぶら下がることがあるので親のrootもチェック
+      ?child skos:prefLabel ?child_label .
+    }
     BIND(0 AS ?leaf)
   }
-  ?parent skos:prefLabel ?parent_label .
+  GRAPH <http://sparql.uniprot.org/keywords> {
+    ?parent skos:prefLabel ?parent_label .
+  }
 }
 ```
 
