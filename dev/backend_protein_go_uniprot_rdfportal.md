@@ -14,38 +14,42 @@
 ## `leaf`
 - GO と UniProt のアノテーション関係
 ```sparql
+DEFINE sql:select-option "order"
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-SELECT DISTINCT ?parent ?child ?parent_label ?child_label
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT DISTINCT ?parent ?child ?child_label
 FROM <http://sparql.uniprot.org/uniprot>
 FROM <http://sparql.uniprot.org/go> # GO は展開されているので、１ステップですべての祖先が取れる（が、元のGOの親子関係は取りにくい）
 WHERE {
-  ?child a up:Protein ;
-         up:organism taxon:9606 ;
-         up:proteome ?proteome ;
-         up:classifiedWith ?parent .
-  ?parent rdfs:subClassOf obo:{{root}} .
-  ?child up:mnemonic ?child_label .
-  FILTER(REGEX(STR(?proteome), "UP000005640"))
-  ?parent rdfs:label ?parent_label .
+  GRAPH <http://sparql.uniprot.org/uniprot> {
+    ?child up:organism taxon:9606 ;
+           up:mnemonic ?child_label ;
+           up:proteome ?proteome .
+    FILTER (REGEX (STR ( ?proteome), "UP000005640"))
+    ?child up:classifiedWith ?parent .
+  }
+  GRAPH <http://sparql.uniprot.org/go> { 
+    ?parent rdfs:subClassOf obo:{{root}} . 
+  }
 }
 ```
 
 ## `allLeaf`
 - 全 UniProt (without annotation 用)
 ```sparql
+DEFINE sql:select-option "order"
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 SELECT DISTINCT ?leaf ?leaf_label
 FROM <http://sparql.uniprot.org/uniprot>
 WHERE {
-  ?leaf a up:Protein ;
-        up:organism taxon:9606 ;
+  ?leaf up:organism taxon:9606 ;
         up:mnemonic ?leaf_label ;
         up:proteome ?proteome .
-  FILTER(REGEX(STR(?proteome), "UP000005640"))
+  FILTER (REGEX( STR( ?proteome), "UP000005640"))
 }
 ```
 
