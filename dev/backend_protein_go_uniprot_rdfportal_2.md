@@ -27,11 +27,16 @@ FROM <http://sparql.uniprot.org/uniprot>
 FROM <http://sparql.uniprot.org/go> # GO は展開されているので、１ステップですべての祖先が取れる（が、元のGOの親子関係は取りにくい）
 WHERE {
   GRAPH <http://sparql.uniprot.org/uniprot> {
-    VALUES ?proteome { ch:1 ch:2 ch:3 ch:4 ch:5 ch:6 ch:7 ch:8 ch:9 ch:10
+    {
+    SELECT DISTINCT ?child
+      WHERE {                
+        VALUES ?proteome { ch:1 ch:2 ch:3 ch:4 ch:5 ch:6 ch:7 ch:8 ch:9 ch:10
                        ch:11 ch:12 ch:13 ch:14 ch:15 ch:16 ch:17 ch:18 ch:19 ch:20
                        ch:21 ch:22 ch:X ch:Y chx:Mitochondrion chx:Unplaced }
-    ?child up:proteome ?proteome ;
-           up:mnemonic ?child_label ;
+        ?child up:proteome ?proteome .
+      }
+    }
+    ?child up:mnemonic ?child_label ;
            up:classifiedWith ?parent .
   }
   GRAPH <http://sparql.uniprot.org/go> { 
