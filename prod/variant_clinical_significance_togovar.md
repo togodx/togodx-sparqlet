@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://integbio.jp/rdf/sparql
+https://integbio.jp/togosite/sparql
 
 ## `leaf`
 
@@ -25,9 +25,9 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dct: <http://purl.org/dc/terms/>
 
 SELECT DISTINCT ?tgv_id ?rs_id ?category
-#FROM <http://rdf.integbio.jp/dataset/togosite/variation>
-#FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
-#FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
+FROM <http://rdf.integbio.jp/dataset/togosite/variation>
+FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
+FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
 WHERE {
   ?togovar dct:identifier ?tgv_id.
   ?togovar rdfs:seeAlso ?rs_id.
