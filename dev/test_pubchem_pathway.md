@@ -1,4 +1,4 @@
-# classification of PubChem_pathway（信定）\
+# classification of PubChem_pathway（信定）
 
 ## Description
 
@@ -60,7 +60,6 @@ limit 100
     }
   ];
 
-  let edge = {};
   leaf.results.bindings.map(d => {
     tree.push({
       id: d.child_id.value,
@@ -68,8 +67,32 @@ limit 100
       leaf: true,
       parent: d.parent_id.value
     })
+    });
     
+let edge = {};    
+  all_classification.results.bindings.map(d => { 
+    tree.push({
+      id: d.child_id.value,
+      label: d.child_path_name.value,
+      leaf: false,
+      parent: d.parent_id.value
+    })
     
+    if (!edge[d.parent_id.value]) {
+      edge[d.parent_id.value] = true;
+      tree.push({   
+        id: d.parent_id.value,
+        label: d.parent_path_name.value,
+        parent: d.homepage.value
+      })
+          tree.push({
+      id: d.homepage.value,
+      label: d.homepage.value,
+      leaf: false,
+      parent: "root"
+    })
+      
+    }   
     
 
   });
