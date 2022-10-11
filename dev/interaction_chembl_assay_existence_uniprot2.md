@@ -75,6 +75,26 @@ WHERE {
       id: withoutId,
       label: "No ChEMBL assay",
       parent: "root"
+    },{
+      id: "Binding",
+      label: "Binding",
+      parent: "root"
+    },{
+      id: "ADME",
+      label: "ADME",
+      parent: "root"
+    },{
+      id: "Functional",
+      label: "Functional",
+      parent: "root"
+    },{
+      id: "Toxicity",
+      label: "Toxicity",
+      parent: "root"
+    },{
+      id: "Unassigned",
+      label: "Unassigned",
+      parent: "root"
     }
   ];
 
@@ -110,15 +130,7 @@ WHERE {
 	   })
     }
     
-    // root との親子関係を追加
-    if (!edge[d.assay_type.value]) {
-      edge[d.assay_type.value] = true;
-      tree.push({     
-        id: d.assay_type.value,
-        label: d.assay_type.value,
-        parent: "root"
-      })
-    }
+
   });
 
   // アノテーション無し要素
