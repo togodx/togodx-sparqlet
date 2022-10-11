@@ -33,7 +33,7 @@ WHERE {
   ?assay a cco:Assay ;
             cco:targetConfScore ?conf_score ;
             cco:targetConfDesc ?conf_score_label ;
-         cco:assayType ?assay_type ;
+            cco:assayType ?assay_type ;
             cco:hasTarget/skos:exactMatch [
             cco:taxonomy taxon:9606 ;
             skos:exactMatch ?uniprot
@@ -123,7 +123,7 @@ WHERE {
         leaf: true,
         parent: parent_id
       })
-    	 tree.push({
+      tree.push({
          id: parent_id,
 	     label: d.conf_score_label.value,
 	     parent: d.assay_type.value
