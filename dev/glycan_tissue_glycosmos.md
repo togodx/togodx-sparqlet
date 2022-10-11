@@ -26,10 +26,11 @@ PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sio: <http://semanticscience.org/resource/>
 
 SELECT DISTINCT ?parent_label ?parent ?child ?child_label ?sbsmpt
 WHERE {
-  ?child rdfs:seeAlso [
+  ?child sio:SIO_000255 [
      glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> ;
      glycan:has_tissue ?parent
   ] .
@@ -57,27 +58,25 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX sbsmpt: <http://www.glycoinfo.org/glyco/owl/relation#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sio: <http://semanticscience.org/resource/>
 
-SELECT DISTINCT ?gtc ?label ?sbsmpt
-#SELECT DISTINCT (COUNT(DISTINCT ?wurcs) AS ?c)
-FROM <http://rdf.glytoucan.org/partner/glycome-db>
-FROM <http://rdf.glytoucan.org/partner/bcsdb>
-FROM <http://rdf.glytoucan.org/partner/glycoepitope>
-FROM <http://rdf.glycosmos.org/glycans/subsumption>
-FROM <http://rdf.glycosmos.org/glycans/seq>
-FROM <http://rdf.glycosmos.org/glycomeatlas>
+SELECT DISTINCT ?child ?child_label ?sbsmpt
 WHERE {
   ?wurcs a ?sbsmpt ;
-         rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?label;
-         rdfs:seeAlso ?gtc ;
+         dcterms:source ?child ;
          sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
   VALUES ?sbsmpt { sbsmpt:Glycosidic_topology sbsmpt:Linkage_defined_saccharide }
+
   FILTER NOT EXISTS {
-    [] glycan:has_glycan ?child ;
-       a <http://purl.jp/bio/4/id/200906013374193296> ;
-       glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> ;
-       glycan:has_tissue ?tissue .
-    ?child glycan:has_glycosequence / glycan:has_sequence / ^rdfs:label ?wurcs .
+    ?child sio:SIO_000255 [
+      glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> ;
+      glycan:has_tissue ?tissue
+    ] .
+  }
+  OPTIONAL {
+    ?child glycan:has_glycosequence ?gsq .
+    ?gsq glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac_condensed ;
+         glycan:has_sequence ?child_label .
   }
 }
 ```
@@ -127,7 +126,7 @@ WHERE {
 
     tree.push({
       id: d.child.value.replace(childIdPrefix, ""),
-      label: makeLabel(d.child_label?.value, d.sbsmpt?.value, cap),
+      label: makeLabel(d.child_label?.value, d.sbsmpt?.value.replace("http://www.glycoinfo.org/glyco/owl/relation#", ""), cap),
       leaf: true,
       parent: d.parent.value.replace(parentIdPrefix, "")
     });
@@ -141,12 +140,14 @@ WHERE {
   });
 
   unclassified.results.bindings.forEach(d => {
+    if (!(d.child_label?.value) || d.child_label.type == "literal") {
     tree.push({
-      id: d.gtc.value.replace("https://glytoucan.org/Structures/Glycans/", ""),
-      label: makeLabel(d.label.value, d.sbsmpt.value, cap),
+      id: d.child.value.replace(childIdPrefix, ""),
+      label: makeLabel(d.child_label?.value, d.sbsmpt?.value.replace("http://www.glycoinfo.org/glyco/owl/relation#", ""), cap),
       leaf: true,
       parent: "unclassified"
     });
+      }
   });
 
   return tree;
