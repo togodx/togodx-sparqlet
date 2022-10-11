@@ -23,7 +23,7 @@ WHERE {
  BIND (strafter(str(?parent_path), "http://rdf.ncbi.nlm.nih.gov/pubchem/pathway/") AS ?parent_id)
  BIND (strafter(str(?child_path), "http://rdf.ncbi.nlm.nih.gov/pubchem/pathway/") AS ?child_id)
 }
-limit 100
+
 ```
 ## `all_classification`
 ```sparql
@@ -45,7 +45,7 @@ WHERE {
  BIND (strafter(str(?parent_path), "http://rdf.ncbi.nlm.nih.gov/pubchem/pathway/") AS ?parent_id)
  BIND (strafter(str(?child_path), "http://rdf.ncbi.nlm.nih.gov/pubchem/pathway/") AS ?child_id)
 }
-limit 100
+
 ```
 ## `return`
 
@@ -59,6 +59,25 @@ limit 100
       root: true
     }
   ];
+  
+      tree.push({
+      id: "https://www.pharmgkb.org/",
+      label: "PharmGKB",
+      leaf: false,
+      parent: "root"
+    });
+     tree.push({
+      id: "https://pathbank.org/",
+      label: "PathBank",
+      leaf: false,
+      parent: "root"
+    });
+     tree.push({
+      id: "https://reactome.org/",
+      label: "reactome",
+      leaf: false,
+      parent: "root"
+    });
 
   leaf.results.bindings.map(d => {
     tree.push({
@@ -85,15 +104,9 @@ let edge = {};
         label: d.parent_path_name.value,
         parent: d.homepage.value
       })
-          tree.push({
-      id: d.homepage.value,
-      label: d.homepage.value,
-      leaf: false,
-      parent: "root"
-    })
       
     }   
-    
+   
 
   });
   
