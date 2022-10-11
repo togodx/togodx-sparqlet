@@ -1,6 +1,7 @@
 # classification of PubChem_pathway（信定）
 
 ## Description
+pubchem pathwayに入っている<https://www.pharmgkb.org/> <https://pathbank.org/> <https://reactome.org/>　についてpathwayの階層を取得。leafは最下層のpathway。togoIDでpubchem_pathway_idとuniprot、ncbigene、pubchem_compoundがつながっている。
 
 ## Endpoint
 https://integbio.jp/rdf/pubchem/sparql
