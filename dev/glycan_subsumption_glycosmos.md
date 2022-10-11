@@ -5,12 +5,6 @@
 - Data sources
     - [GlyCosmos](https://glycosmos.org/data)
 
-- Query
-    - Input
-        - GlyTouCan ID
-    - Output
-        - 
-
 ## Endpoint
 
 https://ts.glycosmos.org/sparql
@@ -26,30 +20,29 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX sbsmpt: <http://www.glycoinfo.org/glyco/owl/relation#>
 PREFIX struct: <https://glytoucan.org/Structures/Glycans/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX info: <http://rdf.glycoinfo.org/glycan/>
 
 SELECT DISTINCT ?parent ?child ?iupac
 FROM <http://rdf.glytoucan.org/partner/glycome-db>
-FROM <http://rdf.glytoucan.org/partner/bcsdb>
-FROM <http://rdf.glytoucan.org/partner/glycoepitope>
 FROM <http://rdf.glycosmos.org/glycans/subsumption>
 FROM <http://rdf.glycosmos.org/glycans/seq>
-FROM <http://rdf.glycosmos.org/glycomeatlas>
+FROM <http://rdf.glycosmos.org/glycans/taxon>
 WHERE {
-  {
-    ?wurcs a ?parent ;
-           rdfs:seeAlso ?child ;
-           sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
-    OPTIONAL {
-      ?wurcs rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence / skos:altLabel ?iupac .
-    }
-  } UNION {
-    ?wurcs a ?parent ;
-           rdfs:seeAlso ?child ;
-           sbsmpt:subsumes* / rdfs:label / ^glycan:has_sequence / ^glycan:has_glycosequence ?gtc .
-    ?gtc ^glycan:has_glycan / glycan:has_taxon <http://rdf.glycoinfo.org/source/9606> .
-    OPTIONAL {
-      ?gtc skos:altLabel ?iupac .
-    }
+  VALUES ?parent {
+    sbsmpt:Linkage_defined_saccharide
+    sbsmpt:Monosaccharide_composition_with_linkage
+    sbsmpt:Glycosidic_topology
+    sbsmpt:Base_composition_with_linkage
+  }
+  #VALUES ?child { info:G00155YT }
+  ?wurcs a ?parent ;
+         dcterms:source ?child .
+  ?wurcs sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
+  OPTIONAL {
+    ?child glycan:has_glycosequence [
+      glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac_condensed ;
+      glycan:has_sequence ?iupac
+    ] .
   }
 }
 ```
@@ -59,7 +52,7 @@ WHERE {
 ```javascript
 ({data}) => {
   const parentIdPrefix = "http://www.glycoinfo.org/glyco/owl/relation#";
-  const childIdPrefix = "https://glytoucan.org/Structures/Glycans/";
+  const childIdPrefix = "http://rdf.glycoinfo.org/glycan/";
 
   const idMap = new Map([["Base_composition_with_linkage", 1],
                          ["Monosaccharide_composition_with_linkage", 2],
@@ -76,7 +69,7 @@ WHERE {
     let sbsmpt = d.parent.value.replace(parentIdPrefix, "")
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
-      tree.push({     
+      tree.push({
         id: idMap.get(sbsmpt),
         label: sbsmpt.replace(/_/g, " "),
         leaf: false,
@@ -100,7 +93,7 @@ WHERE {
       parent: idMap.get(sbsmpt)
     });
   });
-  
+
   return tree;
 }
 ```
