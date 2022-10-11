@@ -114,6 +114,7 @@ WHERE {
     if (d.conf_score.value.match(/^\d$/)) {
       parent_id = 10 - Number(d.conf_score.value);
       parent_id = parent_id.toString();
+      parent_id2 = d.assay_type.value + parent_id;
       d.conf_score_label.value = "Conf-score " + d.conf_score.value + ": " + d.conf_score_label.value;
     }
     if (uri2label[d.uniprot.value]) { // uniprot referece proteome human にあるもの "UP000005640"
@@ -121,10 +122,10 @@ WHERE {
         id: d.uniprot.value.replace(idPrefix, ""),
         label: uri2label[d.uniprot.value],
         leaf: true,
-        parent: parent_id
+        parent: parent_id2
       })
       tree.push({
-         id: parent_id,
+         id: parent_id2,
 	     label: d.conf_score_label.value,
 	     parent: d.assay_type.value
 	   })
