@@ -20,16 +20,24 @@ PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ch: <http://purl.uniprot.org/proteomes/UP000005640#Chromosome%20>
+PREFIX chx: <http://purl.uniprot.org/proteomes/UP000005640#>
 SELECT DISTINCT ?parent ?child ?child_label
 FROM <http://sparql.uniprot.org/uniprot>
 FROM <http://sparql.uniprot.org/go> # GO は展開されているので、１ステップですべての祖先が取れる（が、元のGOの親子関係は取りにくい）
 WHERE {
   GRAPH <http://sparql.uniprot.org/uniprot> {
-    ?child up:organism taxon:9606 ;
-           up:mnemonic ?child_label ;
-           up:proteome ?proteome .
-    FILTER (REGEX (STR ( ?proteome), "UP000005640"))
-    ?child up:classifiedWith ?parent .
+    {
+    SELECT DISTINCT ?child # sub query にすることで強制的に最初に処理
+      WHERE {                
+        VALUES ?proteome { ch:1 ch:2 ch:3 ch:4 ch:5 ch:6 ch:7 ch:8 ch:9 ch:10
+                       ch:11 ch:12 ch:13 ch:14 ch:15 ch:16 ch:17 ch:18 ch:19 ch:20
+                       ch:21 ch:22 ch:X ch:Y chx:Mitochondrion chx:Unplaced }
+        ?child up:proteome ?proteome .
+      }
+    }
+    ?child up:mnemonic ?child_label ;
+           up:classifiedWith ?parent .
   }
   GRAPH <http://sparql.uniprot.org/go> { 
     ?parent rdfs:subClassOf obo:{{root}} . 
@@ -43,13 +51,16 @@ WHERE {
 DEFINE sql:select-option "order"
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+PREFIX ch: <http://purl.uniprot.org/proteomes/UP000005640#Chromosome%20>
+PREFIX chx: <http://purl.uniprot.org/proteomes/UP000005640#>
 SELECT DISTINCT ?leaf ?leaf_label
 FROM <http://sparql.uniprot.org/uniprot>
 WHERE {
-  ?leaf up:organism taxon:9606 ;
-        up:mnemonic ?leaf_label ;
-        up:proteome ?proteome .
-  FILTER (REGEX( STR( ?proteome), "UP000005640"))
+  VALUES ?proteome { ch:1 ch:2 ch:3 ch:4 ch:5 ch:6 ch:7 ch:8 ch:9 ch:10
+                     ch:11 ch:12 ch:13 ch:14 ch:15 ch:16 ch:17 ch:18 ch:19 ch:20
+                     ch:21 ch:22 ch:X ch:Y chx:Mitochondrion chx:Unplaced }
+  ?leaf up:proteome ?proteome ;
+        up:mnemonic ?leaf_label .
 }
 ```
 
