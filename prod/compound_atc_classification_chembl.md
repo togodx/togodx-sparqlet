@@ -113,7 +113,8 @@ WHERE
 {
     
     ?atcuri  skos:prefLabel ?label.  
-    BIND(substr(str(?atcuri),42) as ?atc)  #
+    # BIND(substr(str(?atcuri),42) as ?atc)  
+    BIND(substr(str(?atcuri),43) as ?atc) 
 }
 ```
 
