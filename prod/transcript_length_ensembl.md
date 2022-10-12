@@ -18,27 +18,28 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX taxon: <http://identifiers.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX so: <http://purl.obolibrary.org/obo/so#>
 
 SELECT DISTINCT ?child ?child_label ?exon_len
 FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
 WHERE {
-  ?enst obo:SO_transcribed_from ?ensg .
+  ?enst so:transcribed_from ?ensg .
   ?ensg obo:RO_0002162 taxon:9606 ;
-        faldo:location ?ensg_location .
-  ?enst dc:identifier ?child ;
+        so:part_of ?chr .
+  ?enst dcterms:identifier ?child ;
         rdfs:label ?child_label ;
-        obo:SO_has_part ?ense .
+        so:has_part ?ense .
   ?ense faldo:location ?ense_location .
-  BIND(STRBEFORE(STRAFTER(STR(?ensg_location), "GRCh38/"), ":") AS ?chromosome)
+  BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "#") as ?chromosome)
   VALUES ?chromosome {
       "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"
       #"11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22"
       #"X" "Y" "MT"
   }
-  BIND(STRBEFORE(STRAFTER(STRAFTER(STR(?ense_location), "GRCh38/"), ":"), "-") AS ?exon_start)
-  BIND(STRBEFORE(STRAFTER(STRAFTER(STRAFTER(STR(?ense_location), "GRCh38/"), ":"), "-"), ":") AS ?exon_end)
+  ?ense_location faldo:begin / faldo:position ?exon_start ;
+                 faldo:end / faldo:position ?exon_end .
   BIND((xsd:integer(?exon_end) - xsd:integer(?exon_start) + 1) AS ?exon_len)
 }
 ```
@@ -50,27 +51,28 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX taxon: <http://identifiers.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX faldo: <http://biohackathon.org/resource/faldo#>
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX so: <http://purl.obolibrary.org/obo/so#>
 
 SELECT DISTINCT ?child ?child_label ?exon_len
 FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
 WHERE {
-  ?enst obo:SO_transcribed_from ?ensg .
+  ?enst so:transcribed_from ?ensg .
   ?ensg obo:RO_0002162 taxon:9606 ;
-        faldo:location ?ensg_location .
-  ?enst dc:identifier ?child ;
+        so:part_of ?chr .
+  ?enst dcterms:identifier ?child ;
         rdfs:label ?child_label ;
-        obo:SO_has_part ?ense .
+        so:has_part ?ense .
   ?ense faldo:location ?ense_location .
-  BIND(STRBEFORE(STRAFTER(STR(?ensg_location), "GRCh38/"), ":") AS ?chromosome)
+  BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "#") as ?chromosome)
   VALUES ?chromosome {
       #"1" "2" "3" "4" "5" "6" "7" "8" "9" "10"
       "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22"
       "X" "Y" "MT"
   }
-  BIND(STRBEFORE(STRAFTER(STRAFTER(STR(?ense_location), "GRCh38/"), ":"), "-") AS ?exon_start)
-  BIND(STRBEFORE(STRAFTER(STRAFTER(STRAFTER(STR(?ense_location), "GRCh38/"), ":"), "-"), ":") AS ?exon_end)
+  ?ense_location faldo:begin / faldo:position ?exon_start ;
+                 faldo:end / faldo:position ?exon_end .
   BIND((xsd:integer(?exon_end) - xsd:integer(?exon_start) + 1) AS ?exon_len)
 }
 ```
