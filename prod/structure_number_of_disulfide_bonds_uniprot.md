@@ -1,6 +1,7 @@
 # UniProt disulfide bond count distribution（守屋）
 
-- require : [backend_protein_number_of_uniprot_annotation_uniprot](./backend_protein_number_of_uniprot_annotation_uniprot)
+- require : [backend_number_of_uniprot_annotation_uniprot](./backend_number_of_uniprot_annotation_uniprot)
+
 ## Description
 
 - Data sources
@@ -16,7 +17,7 @@
 
 ```javascript
 async ({})=>{
-  let url = "backend_protein_number_of_uniprot_annotation_uniprot"; // parent SPARQLet relative path
+  let url = "backend_number_of_uniprot_annotation_uniprot"; // parent SPARQLet relative path
   let options = {
     method: 'POST',
     body: 'type=Disulfide_Bond_Annotation',
