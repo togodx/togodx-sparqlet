@@ -54,6 +54,7 @@ WHERE {
   let tree = [
     {
       id: "root",
+      label: "root node",
       root: true
     },{
       id: "GoBiologicalProcess",
