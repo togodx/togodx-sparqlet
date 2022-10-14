@@ -19,18 +19,28 @@ PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
+PREFIX ch: <http://purl.uniprot.org/proteomes/UP000005640#Chromosome%20>
+PREFIX chx: <http://purl.uniprot.org/proteomes/UP000005640#>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/go>
 WHERE {
-  ?child a up:Protein ;
-         up:organism taxon:9606 ;
-         up:proteome ?proteome ;
-         up:classifiedWith ?parent .
-  ?parent rdfs:subClassOf* obo:{{root}} .
-  ?child up:mnemonic ?child_label .
-  FILTER(REGEX(STR(?proteome), "UP000005640"))
-  ?parent rdfs:label ?parent_label .
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/uniprot> {
+    {
+    SELECT DISTINCT ?child # sub query にすることで強制的に最初に処理
+      WHERE {                
+        VALUES ?proteome { ch:1 ch:2 ch:3 ch:4 ch:5 ch:6 ch:7 ch:8 ch:9 ch:10
+                       ch:11 ch:12 ch:13 ch:14 ch:15 ch:16 ch:17 ch:18 ch:19 ch:20
+                       ch:21 ch:22 ch:X ch:Y chx:Mitochondrion chx:Unplaced }
+        ?child up:proteome ?proteome .
+      }
+    }
+    ?child up:mnemonic ?child_label ;
+           up:classifiedWith ?parent .
+  }
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/go> { 
+    ?parent rdfs:subClassOf* obo:{{root}} . 
+  }
 }
 ```
 
