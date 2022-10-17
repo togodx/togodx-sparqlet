@@ -23,17 +23,12 @@ SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/go>
 WHERE {
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/uniprot> {
-    ?child a up:Protein ;
-           up:proteome ?proteome ;
-           up:classifiedWith ?parent .
-    ?child up:mnemonic ?child_label .
+    ?parent rdfs:subClassOf* obo:{{root}} .
+    ?child up:classifiedWith ?parent ;
+           up:proteome ?proteome .
     FILTER(REGEX(STR(?proteome), "UP000005640"))
-  }
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/go> {
-    ?parent rdfs:subClassOf* obo:{{root}} ;
-            rdfs:label ?parent_label .
-  }
+    ?child up:mnemonic ?child_label .
+    ?parent rdfs:label ?parent_label .
 }
 ```
 
@@ -46,16 +41,16 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+#FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/go>
 WHERE {
   ?child rdfs:subClassOf* obo:{{root}} ;
          rdfs:subClassOf ?parent .
-  ?protein up:classifiedWith/rdfs:subClassOf* ?child ;
-           up:proteome ?proteome .
+#  ?protein up:classifiedWith/rdfs:subClassOf* ?child ;
+#           up:proteome ?proteome .
   FILTER(REGEX(STR(?child), "GO_"))
   FILTER(REGEX(STR(?parent), "GO_"))
-  FILTER(REGEX(STR(?proteome), "UP000005640"))
+#  FILTER(REGEX(STR(?proteome), "UP000005640"))
   ?child rdfs:label ?child_label .
   ?parent rdfs:label ?parent_label .
 }
@@ -70,7 +65,7 @@ SELECT DISTINCT ?leaf ?leaf_label
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {
   ?leaf a up:Protein ;
-        up:organism taxon:9606 ;
+#        up:organism taxon:9606 ;
         up:mnemonic ?leaf_label ;
         up:proteome ?proteome .
   FILTER(REGEX(STR(?proteome), "UP000005640"))
