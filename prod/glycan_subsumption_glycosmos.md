@@ -70,7 +70,7 @@ WHERE {
     if (!chk[d.parent.value]) {
       chk[d.parent.value] = true;
       tree.push({
-        id: idMap.get(sbsmpt),
+        id: idMap.get(sbsmpt).toString(),
         label: sbsmpt.replace(/_/g, " "),
         leaf: false,
         parent: "root"
@@ -90,7 +90,7 @@ WHERE {
       id: d.child.value.replace(childIdPrefix, ""),
       label: label,
       leaf: true,
-      parent: idMap.get(sbsmpt)
+      parent: idMap.get(sbsmpt).toString()
     });
   });
 
