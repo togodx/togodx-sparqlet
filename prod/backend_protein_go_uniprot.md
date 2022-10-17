@@ -22,10 +22,11 @@ PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/go>
+WHERE {
   GRAPH <http://rdf.integbio.jp/dataset/togosite/uniprot> {
     ?child a up:Protein ;
            up:proteome ?proteome ;
-           up:classifiedWith ?parent_label .
+           up:classifiedWith ?parent .
     ?child up:mnemonic ?child_label .
     FILTER(REGEX(STR(?proteome), "UP000005640"))
   }
@@ -33,6 +34,7 @@ FROM <http://rdf.integbio.jp/dataset/togosite/go>
     ?parent rdfs:subClassOf* obo:{{root}} ;
             rdfs:label ?parent_label .
   }
+}
 ```
 
 ## `graph`
