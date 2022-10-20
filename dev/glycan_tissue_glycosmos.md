@@ -25,6 +25,7 @@ PREFIX info: <http://rdf.glycoinfo.org/glycan/>
 PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX sbsmpt: <http://www.glycoinfo.org/glyco/owl/relation#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX sio: <http://semanticscience.org/resource/>
 
@@ -35,10 +36,9 @@ WHERE {
      glycan:has_tissue ?parent
   ] .
   ?parent rdfs:label ?parent_label .
-  OPTIONAL {
-    ?wurcs dcterms:source ?child ;
-           a ?sbsmpt .
-  }
+  ?wurcs dcterms:source ?child ;
+         a ?sbsmpt ;
+         sbsmpt:subsumes* / dcterms:source / glycan:is_from_source / rdfs:seeAlso <http://identifiers.org/taxonomy/9606> .
   OPTIONAL {
     ?child glycan:has_glycosequence ?gsq .
     ?gsq glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac_condensed ;
