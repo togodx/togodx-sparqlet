@@ -99,13 +99,14 @@ WHERE {
   const bin = 50;
   let tree = transcripts.map(t => {
     const num = bin * parseInt(len_sum[t].len/bin);
-    const bin_id = num + "-" + (num + bin - 1);
+    const bin_label = num + "-" + (num + bin - 1);
+    const bin_id = String(parseInt(len_sum[t].len/bin) + 1).padStart(4,'0');
     return {
       id: t,
       label: len_sum[t].label,
       value: len_sum[t].len,
       binId: bin_id,
-      binLabel: bin_id
+      binLabel: bin_label
     };
   });
   return tree;
