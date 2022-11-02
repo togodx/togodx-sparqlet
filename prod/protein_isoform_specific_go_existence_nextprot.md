@@ -58,7 +58,7 @@ WHERE {
       root: true
     },{
       id: "GoBiologicalProcess",
-      label: "With bibiological process specifcity",
+      label: "With biological process specifcity",
       parent: "root"
     },{
       id: "GoCellularComponent",
