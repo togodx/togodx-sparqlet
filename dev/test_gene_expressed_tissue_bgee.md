@@ -27,15 +27,21 @@ LIMIT 1
 ```
 
 ## `return`
-
 ```javascript
-async ({graph}) => {
-  const fetchReq = async (url, options, body) => {
-    if (body) options.body = body;
-    return await fetch(url, options).then(res=>res.json());
+({graph})=>{
+  let fetchReq = async (obo)=>{
+    const options = {
+      method: 'POST',
+      bodt: 'obo=' + obo,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    return await fetch("test_gene_expressed_tissue_bgee_backend", options).then(res=>res.json());
   }
   
-  const url = "test_gene_expressed_tissue_bgee_backend"; // parent SPARQLet relative path
+  const url = "https://togodx.integbio.jp/sparqlist_dev/api/test_gene_expressed_tissue_bgee_backend";
   let options = {
     method: 'POST',
     headers: {
@@ -49,9 +55,10 @@ async ({graph}) => {
       id: "BFO_0000004",
       label: "independent continuant"
     }
-  ];
+  ]
+  
   let onto = {};
-  graph.results.bindings.each(d => {
+  graph.results.bindings.map(async d => {
     let anat = d.child.value.replace("http://purl.obolibrary.org/obo/", "");
     anat = "UBERON_0001296";
     if (! onto[anat]) {
@@ -61,8 +68,9 @@ async ({graph}) => {
         label: d.child_label.value,
         parent: d.parent.value.replace("http://purl.obolibrary.org/obo/", "")
       });
-      options.body = 'obo=' + anat;
-      let json = await fetchReq(url, options, "obo=" + anat);
+            console.log("hoge");	
+      let json = await fetchReq(anat);
+      console.log(json);
       if (json[0]) tree = tree.concat(json);
     }
   });
