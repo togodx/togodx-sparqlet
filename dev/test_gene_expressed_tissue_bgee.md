@@ -9,7 +9,7 @@
 
 https://bgee.org/sparql/
 
-## `data`
+## `leaf`
 
 ```sparql
 PREFIX orth: <http://purl.org/net/orth#>
@@ -17,7 +17,6 @@ PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX genex: <http://purl.org/genex#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
-
 SELECT DISTINCT ?gene_id ?anat_entity {
     ?gene a orth:Gene ;
           orth:organism/obo:RO_0002162 <http://purl.uniprot.org/taxonomy/9606> ;
@@ -29,20 +28,55 @@ SELECT DISTINCT ?gene_id ?anat_entity {
 }
 ```
 
+## Endpoint
+
+https://integbio.jp/togosite/sparql
+
+## `graph`
+```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT DISTINCT *
+FROM <http://rdf.integbio.jp/dataset/togosite/uberon>
+WHERE {
+  [] a owl:Class ;
+       skos:notation ?child ;
+       rdfs:label ?child_label ;
+       rdfs:subClassOf [
+         skos:notation ?parent ;
+         rdfs:label ?parent_label 
+       ] .
+  FILTER (REGEX(?child, "UBERON"))
+}
+```
+
 ## `return`
 
 ```javascript
-({data}) => {  
-  let tree = [{id: "root", label: "root node", root: true}];
+({graph, leaf}) => {
 
-  let anats = {};
-  data.results.bindings.map(d => {
+  let tree = [
+    {
+      id: "root"
+    },
+    {
+      id: "UBERON:0001062",
+      label: "anatomical entity",
+      parent: "root"
+    },
+     {
+      id: "UBERON:0000104",
+       label: "life cycle",
+      parent: "root"
+    }
+  ];	
+  graph.results.bindings.map(d => {
     let anat_id = d.anat_entity.value.replace("http://purl.obolibrary.org/obo/", "");
     tree.push({
-      id: d.gene_id.value,
-      label: d.gene_name.value,
-      leaf: true,
-      parent: anat_id
+      id: d.child.value,
+      label: d.child_label.value,
+      parent: d.parent.value
     })
     if (!anats[anat_id]) {
       anats[anat_id] = true;
