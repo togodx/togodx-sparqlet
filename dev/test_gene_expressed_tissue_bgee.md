@@ -26,7 +26,7 @@ SELECT DISTINCT ?gene_id ?gene_label ?anat_entity {
     ?anat_entity a genex:AnatomicalEntity .
     FILTER (?anat_entity != obo:UBERON_0001062 && ?anat_entity != obo:UBERON_0000061 
 && ?anat_entity != obo:UBERON_0000465 && ?anat_entity != obo:UBERON_0000468 && ?anat_entity != obo:UBERON_0000467)
-}
+}LIMIT 10
 ```
 
 ## Endpoint
@@ -48,8 +48,8 @@ WHERE {
          skos:notation ?parent ;
          rdfs:label ?parent_label 
        ] .
-  ?node rdf:subClassOf* obo:BFO_0000001 .
-}
+  ?node rdfs:subClassOf* obo:BFO_0000001 .
+}LIMIT 10
 ```
 
 ## `return`
@@ -62,7 +62,9 @@ WHERE {
       label: "entity"
     }
   ];
+  let onto = {};
   graph.results.bindings.map(d => {
+    onto[d.child.value] = true;
     tree.push({
       id: d.child.value,
       label: d.child_label.value,
@@ -71,12 +73,14 @@ WHERE {
   });
   leaf.results.bindings.map(d => {
     let anat = d.anat_entity.value.replace("http://purl.obolibrary.org/obo/", "").replace("_", ":");
-    tree.push({
-      id: d.gene_id.value,
-      label: d.gene_label.value,
-      parent: anat,
-      leaf: true
-    })
+    if (onto[anat]) {
+      tree.push({
+        id: d.gene_id.value,
+        label: d.gene_label.value,
+        parent: anat,
+        leaf: true
+      })
+    }
   }); 
   return tree;
 };
