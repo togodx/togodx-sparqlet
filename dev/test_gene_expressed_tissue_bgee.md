@@ -24,8 +24,11 @@ SELECT DISTINCT ?gene_id ?gene_label ?anat_entity {
           dcterms:identifier ?gene_id ;
           genex:isExpressedIn ?anat_entity .
     ?anat_entity a genex:AnatomicalEntity .
-    FILTER (?anat_entity != obo:UBERON_0001062 && ?anat_entity != obo:UBERON_0000061 
-&& ?anat_entity != obo:UBERON_0000465 && ?anat_entity != obo:UBERON_0000468 && ?anat_entity != obo:UBERON_0000467)
+    FILTER (?anat_entity != obo:UBERON_0001062 
+            && ?anat_entity != obo:UBERON_0000061 
+            && ?anat_entity != obo:UBERON_0000465 
+            && ?anat_entity != obo:UBERON_0000468 
+            && ?anat_entity != obo:UBERON_0000467)
 }
 ```
 
