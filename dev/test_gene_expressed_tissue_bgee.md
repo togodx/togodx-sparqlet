@@ -30,7 +30,7 @@ LIMIT 1
 
 ```javascript
 async ({graph}) => {
-  async function leaf(obo) {
+  const leaf = async (obo)=>{
     let url = "test_gene_expressed_tissue_bgee_backend"; // parent SPARQLet relative path
     let options = {
       method: 'POST',
@@ -52,16 +52,16 @@ async ({graph}) => {
   let onto = {};
   graph.results.bindings.map(d => {
     let anat = d.child.value.replace("http://purl.obolibrary.org/obo/", "");
-  anat = "UBERON_0001296";
+    anat = "UBERON_0001296";
     if (! onto[anat]) {
       onto[anat] = true;
       tree.push({
         id: anat,
         label: d.child_label.value,
         parent: d.parent.value.replace("http://purl.obolibrary.org/obo/", "")
-      })
-      //let leafs = await leaf(anat);
-    //  if (leafs[0]) tree = tree.concat(leafs);
+      });
+      let leafs = leaf(anat);
+      if (leafs[0]) tree = tree.concat(leafs);
     }
   });
   return tree;
