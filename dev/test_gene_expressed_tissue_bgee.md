@@ -30,6 +30,7 @@ LIMIT 1
 ```javascript
 ({graph})=>{
   let fetchReq = async (obo)=>{
+    console.log(obo);
     const options = {
       method: 'POST',
       bodt: 'obo=' + obo,
@@ -38,16 +39,7 @@ LIMIT 1
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
-    return await fetch("test_gene_expressed_tissue_bgee_backend", options).then(res=>res.json());
-  }
-  
-  const url = "https://togodx.integbio.jp/sparqlist_dev/api/test_gene_expressed_tissue_bgee_backend";
-  let options = {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    return await fetch("https://togodx.integbio.jp/sparqlist_dev/api/test_gene_expressed_tissue_bgee_backend", options).then(res=>res.json());
   }
   
   let tree = [
@@ -58,7 +50,7 @@ LIMIT 1
   ]
   
   let onto = {};
-  graph.results.bindings.map(async d => {
+  graph.results.bindings.map(async (d) => {
     let anat = d.child.value.replace("http://purl.obolibrary.org/obo/", "");
     anat = "UBERON_0001296";
     if (! onto[anat]) {
@@ -68,9 +60,7 @@ LIMIT 1
         label: d.child_label.value,
         parent: d.parent.value.replace("http://purl.obolibrary.org/obo/", "")
       });
-            console.log("hoge");	
       let json = await fetchReq(anat);
-      console.log(json);
       if (json[0]) tree = tree.concat(json);
     }
   });
