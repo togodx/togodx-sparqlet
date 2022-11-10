@@ -48,8 +48,7 @@ WHERE {
          skos:notation ?parent ;
          rdfs:label ?parent_label 
        ] .
-    FILTER (?parent != "UBERON:0001062" && ?parent != "UBERON:0000061" && ?parent != "UBERON:0000465"
-            && ?parent != "UBERON:0000468" && ?parent != "UBERON:0000467")
+  ?node rdf:subClassOf* obo:BFO_0000001 .
 }
 ```
 
@@ -59,8 +58,8 @@ WHERE {
 ({graph, leaf}) => {
   let tree = [
     {
-      id: "UBERON:0000000",
-      label: "processual entity"
+      id: "BFO:0000001",
+      label: "entity"
     }
   ];
   graph.results.bindings.map(d => {
