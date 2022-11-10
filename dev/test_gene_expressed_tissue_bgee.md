@@ -1,4 +1,4 @@
-# Genes expressed in tissues (Bgee) (池田)
+# Genes expressed in tissues (Bgee) (池田, 守屋)
 
 ## Description
 
@@ -49,6 +49,7 @@ WHERE {
          rdfs:label ?parent_label 
        ] .
   FILTER (REGEX(?child, "UBERON"))
+  FILTER (REGEX(?parent, "UBERON"))
 }
 ```
 
@@ -58,8 +59,8 @@ WHERE {
 ({graph, leaf}) => {
   let tree = [
     {
-      id: "UBERON:0001062",
-      label: "anatomical entity",
+      id: "UBERON:0000000",
+      label: "processual entity"
     }
   ];
   graph.results.bindings.map(d => {
