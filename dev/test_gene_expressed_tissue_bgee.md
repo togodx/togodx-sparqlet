@@ -41,15 +41,15 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 SELECT DISTINCT *
 FROM <http://rdf.integbio.jp/dataset/togosite/uberon>
 WHERE {
-  [] a owl:Class ;
+  ?node a owl:Class ;
        skos:notation ?child ;
        rdfs:label ?child_label ;
        rdfs:subClassOf [
          skos:notation ?parent ;
          rdfs:label ?parent_label 
        ] .
-  FILTER (REGEX(?child, "UBERON"))
-  FILTER (REGEX(?parent, "UBERON"))
+    FILTER (?parent != "UBERON:0001062" && ?parent != "UBERON:0000061" && ?parent != "UBERON:0000465"
+            && ?parent != "UBERON:0000468" && ?parent != "UBERON:0000467")
 }
 ```
 
