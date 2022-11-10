@@ -60,8 +60,8 @@ async ({graph}) => {
         label: d.child_label.value,
         parent: d.parent.value.replace("http://purl.obolibrary.org/obo/", "")
       })
-      let leafs = await leaf(anat);
-      if (leafs[0]) tree = tree.concat(leafs);
+      //let leafs = await leaf(anat);
+    //  if (leafs[0]) tree = tree.concat(leafs);
     }
   });
   return tree;
