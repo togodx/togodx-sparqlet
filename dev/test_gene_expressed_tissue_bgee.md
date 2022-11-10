@@ -17,8 +17,9 @@ PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX genex: <http://purl.org/genex#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
-SELECT DISTINCT ?gene_id ?anat_entity {
+SELECT DISTINCT ?gene_id ?gene_label ?anat_entity {
     ?gene a orth:Gene ;
+          rdfs:label ?gene_label ;
           orth:organism/obo:RO_0002162 <http://purl.uniprot.org/taxonomy/9606> ;
           dcterms:identifier ?gene_id ;
           genex:isExpressedIn ?anat_entity .
@@ -55,39 +56,28 @@ WHERE {
 
 ```javascript
 ({graph, leaf}) => {
-
   let tree = [
-    {
-      id: "root"
-    },
     {
       id: "UBERON:0001062",
       label: "anatomical entity",
-      parent: "root"
-    },
-     {
-      id: "UBERON:0000104",
-       label: "life cycle",
-      parent: "root"
     }
-  ];	
+  ];
   graph.results.bindings.map(d => {
-    let anat_id = d.anat_entity.value.replace("http://purl.obolibrary.org/obo/", "");
     tree.push({
       id: d.child.value,
       label: d.child_label.value,
       parent: d.parent.value
     })
-    if (!anats[anat_id]) {
-      anats[anat_id] = true;
-      tree.push({     
-        id: anat_id,
-        label: d.anat_name.value,
-        parent: "root"
-      })
-    }
   });
-  
+  leaf.results.bindings.map(d => {
+    let anat = d.anat_entity.value.replace("http://purl.obolibrary.org/obo/", "").replace("_", ":");
+    tree.push({
+      id: d.gene_id.value,
+      label: d.gene_label.value,
+      parent: anat,
+      leaf: true
+    })
+  }); 
   return tree;
 };
 ```
