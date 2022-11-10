@@ -26,7 +26,7 @@ SELECT DISTINCT ?gene_id ?gene_label ?anat_entity {
     ?anat_entity a genex:AnatomicalEntity .
     FILTER (?anat_entity != obo:UBERON_0001062 && ?anat_entity != obo:UBERON_0000061 
 && ?anat_entity != obo:UBERON_0000465 && ?anat_entity != obo:UBERON_0000468 && ?anat_entity != obo:UBERON_0000467)
-}LIMIT 10
+}
 ```
 
 ## Endpoint
@@ -38,18 +38,18 @@ https://integbio.jp/togosite/sparql
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
-SELECT DISTINCT *
+SELECT DISTINCT ?child ?child_label ?parent ?parent_label
 FROM <http://rdf.integbio.jp/dataset/togosite/uberon>
 WHERE {
-  ?node a owl:Class ;
-       skos:notation ?child ;
-       rdfs:label ?child_label ;
-       rdfs:subClassOf [
-         skos:notation ?parent ;
-         rdfs:label ?parent_label 
-       ] .
-  ?node rdfs:subClassOf* obo:BFO_0000001 .
-}LIMIT 10
+  [] a owl:Class ;
+     skos:notation ?child ;
+     rdfs:label ?child_label ;
+     rdfs:subClassOf [
+       skos:notation ?parent ;
+       rdfs:subClassOf* obo:BFO_0000001 ;
+       rdfs:label ?parent_label
+     ] .
+}
 ```
 
 ## `return`
