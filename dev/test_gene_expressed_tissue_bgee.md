@@ -29,9 +29,8 @@ LIMIT 1
 ## `return`
 
 ```javascript
-({graph}) => {
-  
-  let leaf = async ({obo})=>{
+async ({graph}) => {
+  async function leaf(obo) {
     let url = "test_gene_expressed_tissue_bgee_backend"; // parent SPARQLet relative path
     let options = {
       method: 'POST',
@@ -61,7 +60,8 @@ LIMIT 1
         label: d.child_label.value,
         parent: d.parent.value.replace("http://purl.obolibrary.org/obo/", "")
       })
-      tree = tree.concat(leaf(anat));
+      let leafs = await leaf(anat);
+      if (leafs[0]) tree = tree.concat(leafs);
     }
   });
   return tree;
