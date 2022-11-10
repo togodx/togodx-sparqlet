@@ -35,12 +35,12 @@ async ({graph}) => {
     return await fetch(url, options).then(res=>res.json());
   }
   
-  const url = "https://togodx.integbio.jp/sparqlist_dev/api/test_gene_expressed_tissue_bgee_backend"; // parent SPARQLet relative path
+  const url = "test_gene_expressed_tissue_bgee_backend"; // parent SPARQLet relative path
   let options = {
     method: 'POST',
     headers: {
-      'Accept': 'application/json' //,
-  //    'Content-Type': 'application/x-www-form-urlencoded'
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
   }
   
@@ -61,9 +61,9 @@ async ({graph}) => {
         label: d.child_label.value,
         parent: d.parent.value.replace("http://purl.obolibrary.org/obo/", "")
       });
-    //   options.body = 'obo=' + anat;
+      options.body = 'obo=' + anat;
       let json = await fetchReq(url, options, "obo=" + anat);
-   //   if (json[0]) tree = tree.concat(json);
+      if (json[0]) tree = tree.concat(json);
     }
   });
   return tree;
