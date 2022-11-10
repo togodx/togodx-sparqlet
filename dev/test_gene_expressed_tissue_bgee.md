@@ -45,7 +45,7 @@ WHERE {
   ?parent rdfs:label ?parent_label ;
      ^rdfs:subClassOf ?child .
    ?child rdfs:label ?child_label .
-  ?parent rdfs:subClassOf* obo:BFO_0000001 .
+  ?parent rdfs:subClassOf* obo:BFO_0000004 .
 }
 ```
 
@@ -55,8 +55,8 @@ WHERE {
 ({graph, leaf}) => {
   let tree = [
     {
-      id: "BFO_0000001",
-      label: "entity"
+      id: "BFO_0000004",
+      label: "independent continuant"
     }
   ];
   let onto = {};
