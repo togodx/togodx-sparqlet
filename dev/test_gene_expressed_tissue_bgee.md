@@ -42,13 +42,10 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 SELECT DISTINCT ?child ?child_label ?parent ?parent_label
 FROM <http://rdf.integbio.jp/dataset/togosite/uberon>
 WHERE {
-  ?p_node skos:notation ?parent ;
-     rdfs:label ?parent_label ;
-     ^rdfs:subClassOf [
-       skos:notation ?child ;
-       rdfs:label ?child_label
-     ] .
-  ?p_node rdfs:subClassOf* obo:BFO_0000001 .
+  ?parent rdfs:label ?parent_label ;
+     ^rdfs:subClassOf ?child .
+   ?child rdfs:label ?child_label .
+  ?parent rdfs:subClassOf* obo:BFO_0000001 .
 }
 ```
 
@@ -58,23 +55,24 @@ WHERE {
 ({graph, leaf}) => {
   let tree = [
     {
-      id: "BFO:0000001",
+      id: "BFO_0000001",
       label: "entity"
     }
   ];
   let onto = {};
   graph.results.bindings.map(d => {
-    if (! onto[d.child.value]) {
-      onto[d.child.value] = true;
+    let anat = d.child.value.replace("http://purl.obolibrary.org/obo/", "");
+    if (! onto[anat]) {
+      onto[anat] = true;
       tree.push({
-        id: d.child.value,
+        id: anat,
         label: d.child_label.value,
-        parent: d.parent.value
+        parent: d.parent.value.replace("http://purl.obolibrary.org/obo/", "")
       })
     }
   });
   leaf.results.bindings.map(d => {
-    let anat = d.anat_entity.value.replace("http://purl.obolibrary.org/obo/", "").replace("_", ":");
+    let anat = d.anat_entity.value.replace("http://purl.obolibrary.org/obo/", "");
     if (onto[anat]) {
       tree.push({
         id: d.gene_id.value,
