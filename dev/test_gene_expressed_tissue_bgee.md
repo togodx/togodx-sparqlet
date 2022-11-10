@@ -30,18 +30,19 @@ LIMIT 1
 
 ```javascript
 async ({graph}) => {
-  const leaf = async (obo)=>{
-    let url = "test_gene_expressed_tissue_bgee_backend"; // parent SPARQLet relative path
-    let options = {
-      method: 'POST',
-      body: 'obo=' + obo,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }
+  const fetchReq = async (url, options, body) => {
+    if (body) options.body = body;
     return await fetch(url, options).then(res=>res.json());
-  };
+  }
+  
+  const url = "https://togodx.integbio.jp/sparqlist_dev/api/test_gene_expressed_tissue_bgee_backend"; // parent SPARQLet relative path
+  let options = {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json' //,
+  //    'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
   
   let tree = [
     {
@@ -50,7 +51,7 @@ async ({graph}) => {
     }
   ];
   let onto = {};
-  graph.results.bindings.map(d => {
+  graph.results.bindings.each(d => {
     let anat = d.child.value.replace("http://purl.obolibrary.org/obo/", "");
     anat = "UBERON_0001296";
     if (! onto[anat]) {
@@ -60,8 +61,9 @@ async ({graph}) => {
         label: d.child_label.value,
         parent: d.parent.value.replace("http://purl.obolibrary.org/obo/", "")
       });
-      let leafs = leaf(anat);
-      if (leafs[0]) tree = tree.concat(leafs);
+    //   options.body = 'obo=' + anat;
+      let json = await fetchReq(url, options, "obo=" + anat);
+   //   if (json[0]) tree = tree.concat(json);
     }
   });
   return tree;
