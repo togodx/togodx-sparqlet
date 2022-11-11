@@ -31,7 +31,7 @@ WHERE {
      dcterms:identifier ?gene_id ;
      genex:isExpressedIn obo:{{obo}} .
   ?anat_entity a genex:AnatomicalEntity .
-}LIMIT 10
+}
 ```
 
 ## `return`

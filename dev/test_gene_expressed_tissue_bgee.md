@@ -23,12 +23,11 @@ WHERE {
    ?child rdfs:label ?child_label .
   ?parent rdfs:subClassOf* obo:BFO_0000004 .
 }
-LIMIT 1
 ```
 
 ## `return`
 ```javascript
-({graph})=>{
+async ({graph})=>{
   let fetchReq = async (obo)=>{
     console.log(obo);
     const options = {
@@ -39,7 +38,7 @@ LIMIT 1
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
-    return await fetch("https://togodx.integbio.jp/sparqlist_dev/api/test_gene_expressed_tissue_bgee_backend", options).then(res=>res.json());
+    return await fetch("test_gene_expressed_tissue_bgee_backend", options).then(res=>res.json());
   }
   
   let tree = [
@@ -50,9 +49,8 @@ LIMIT 1
   ]
   
   let onto = {};
-  graph.results.bindings.map(async (d) => {
+  for (const d of graph.results.bindings) {
     let anat = d.child.value.replace("http://purl.obolibrary.org/obo/", "");
-    anat = "UBERON_0001296";
     if (! onto[anat]) {
       onto[anat] = true;
       tree.push({
@@ -63,7 +61,7 @@ LIMIT 1
       let json = await fetchReq(anat);
       if (json[0]) tree = tree.concat(json);
     }
-  });
+  }
   return tree;
 };
 ```
