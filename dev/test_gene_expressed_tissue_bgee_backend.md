@@ -31,20 +31,19 @@ WHERE {
      dcterms:identifier ?gene_id ;
      genex:isExpressedIn obo:{{obo}} .
   ?anat_entity a genex:AnatomicalEntity .
-}
+}LIMIT 10
 ```
 
 ## `return`
 
 ```javascript
 ({obo, leaf}) => {
-  return
-  leaf.results.bindings.map(d => {
-    tree.push({
+  return leaf.results.bindings.map(d => {
+    return {
       id: d.gene_id.value,
       label: d.gene_label.value,
       parent: obo
-    })
+    }
   });
 };
 ```
