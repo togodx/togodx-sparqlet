@@ -1,5 +1,8 @@
 # Genes expressed in tissues (Bgee) (池田, 守屋)
 
+- <font style="color:red">データが大きくなりすぎて SPARQList サーバが落ちるので動かさない</font>
+- uberon　毎に取得
+
 ## Description
 
 - Data sources
