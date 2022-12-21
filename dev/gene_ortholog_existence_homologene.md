@@ -91,7 +91,7 @@ WHERE {
     'organism_10': 'Zebrafish (Danio rerio)',
     'organism_11': 'Fruit fly (Drosophila melanogaster)',
     'organism_12': 'Malaria mosquito (Anopheles gambiae)',
-    'organism_13': 'Mematode (Caenorhabditis elegans)',
+    'organism_13': 'Nematode (Caenorhabditis elegans)',
     'organism_14': 'Budding yeast (Saccharomyces cerevisiae)',
     'organism_15': 'Fission yeast (Schizosaccharomyces pombe)',
     'organism_16': 'Ascomycetes (Kluyveromyces lactis)',
