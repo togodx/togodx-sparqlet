@@ -43,7 +43,6 @@ WHERE {
      FILTER(?clinvar_label IN ("CLNSIG")).
    }
 }
-limit 100
 ```
 
 ## `return`
