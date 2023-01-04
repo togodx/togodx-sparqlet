@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://togodx.integbio.jp/ep/sparql/virtuoso
+https://integbio.jp/togosite/sparql
 
 ## `leaf`
 
@@ -43,6 +43,7 @@ WHERE {
      FILTER(?clinvar_label IN ("CLNSIG")).
    }
 }
+limit 10
 ```
 
 ## `return`
