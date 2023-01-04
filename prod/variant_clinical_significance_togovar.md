@@ -17,21 +17,33 @@ https://integbio.jp/togosite/sparql
 ## `leaf`
 
 ```sparql
+DEFINE sql:select-option "order"
+
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX tgvo: <http://togovar.biosciencedbc.jp/vocabulary/>
 PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX gvo: <http://genome-variation.org/resource#>
 
 SELECT DISTINCT ?tgv_id ?rs_id ?category
 FROM <http://rdf.integbio.jp/dataset/togosite/variation>
 FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
-FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
 WHERE {
-  ?togovar dct:identifier ?tgv_id.
-  ?togovar rdfs:seeAlso ?rs_id.
-  ?togovar tgvo:condition/rdfs:seeAlso/cvo:interpreted_record/cvo:rcv_list/cvo:rcv_accession/cvo:interpretation ?category.  
+   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
+     ?togovar dct:identifier ?tgv_id.
+   }
+   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>{
+     ?togovar gvo:info ?info_rs.
+     ?info_rs rdfs:label ?rs_label.
+     ?info_rs rdf:value ?rs_id.
+     FILTER(?rs_label  = "RS").
+     ?togovar gvo:info ?info_clinvar.
+     ?info_clinvar rdfs:label ?clinvar_label.
+     ?info_clinvar rdf:value ?category.
+     FILTER(?clinvar_label = "CLNSIG").
+   }
 }
 ```
 
