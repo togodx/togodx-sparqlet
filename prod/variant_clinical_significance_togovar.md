@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+https://togodx.integbio.jp/ep/sparql/virtuoso
 
 ## `leaf`
 
