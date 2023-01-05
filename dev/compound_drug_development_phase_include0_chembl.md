@@ -35,6 +35,36 @@ async ({}) => {
     });
   };
 
+  let errors = [];
+  const url = 'backend_compound_drug_development_phase_include0_chembl';
+
+  for (let i = 0; i <= 9; i++) {
+  //for (let i = 11111; i <= 11112; i++) {
+    let options = {
+      method: 'POST',
+      body: `i=${i}`,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
+    const results = await fetch(url, options).then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        errors.push(i);
+      }
+    });
+
+    if (results) {
+      tree = tree.concat(results);
+    }
+  }
+
+  if (errors.length) {
+    tree.push({ errors: errors });
+  }
+
   return tree;
 }
 ```
