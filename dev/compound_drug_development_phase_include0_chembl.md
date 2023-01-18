@@ -29,7 +29,7 @@ async ({}) => {
     else if (i == 4) label = "4: Indication Discovery & expansion";
 
     tree.push({
-      id: i,
+      id: i.toString(),
       label: label,
       parent: 'root'
     });
