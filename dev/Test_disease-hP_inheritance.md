@@ -14,7 +14,7 @@
 
 https://integbio.jp/rdf/sparql
 
-## `data`
+## `graph`
 ```sparql
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -36,12 +36,19 @@ WHERE {
   FILTER regex(str(?hpid), "http://purl.obolibrary.org/obo/HP_" )
  } 
  GROUP BY ?hpid ?parent ?label
-             
+
 ```
+## `leaf`
+```sparql
+
+
+
+```
+
 ## `return`
 
 ```javascript
-({data}) => {
+({graph}) => {
   const idPrefix = "http://purl.obolibrary.org/obo/HP_";
   let tree = [
     {
@@ -50,7 +57,7 @@ WHERE {
       root: true
     }
   ];
-  data.results.bindings.forEach(d => {
+  graph.results.bindings.forEach(d => {
     tree.push({
       id: d.hpid.value.replace(idPrefix, ""),
       label: d.label.value,
