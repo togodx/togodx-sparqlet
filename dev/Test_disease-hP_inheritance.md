@@ -1,7 +1,7 @@
-# Human phenotype ontorogy inheritance 分類
+# Human phenotype ontorogy inheritance 分類(高月）
 
 ## Description
-
+- HPのinheritanceのツリーに対して、OMIMのデータをMONDOへ変換をしてリーフにする
 - Data sources
     -  [Human Phenotype Ontology (HPO)](https://hpo.jax.org/app/) 
 - Query
@@ -47,10 +47,11 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX biolink: <https://w3id.org/biolink/vocab/>
 PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
  
-SELECT DISTINCT ?mondo ?omim ?mondo_id ?omim_id ?omim_iri ?hp
+SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp
  WHERE{ 
   GRAPH<http://integbio.jp/rdf/ontology/mondo>{
    ?mondo 
+   rdfs:label ?mondo_label;
    oboInOwl:hasDbXref ?omim;
    oboInOwl:id ?mondo_id.
    FILTER (regex(?omim, 'OMIM'))
@@ -67,8 +68,9 @@ SELECT DISTINCT ?mondo ?omim ?mondo_id ?omim_id ?omim_iri ?hp
 ## `return`
 
 ```javascript
-({graph}) => {
+({graph,leaf}) => {
   const idPrefix = "http://purl.obolibrary.org/obo/HP_";
+  const leafPrefix= "http://purl.obolibrary.org/obo/MONDO_";
   let tree = [
     {
       id: "0000005",
@@ -81,6 +83,14 @@ SELECT DISTINCT ?mondo ?omim ?mondo_id ?omim_id ?omim_iri ?hp
       id: d.hpid.value.replace(idPrefix, ""),
       label: d.label.value,
       parent: d.parent.value.replace(idPrefix, "")
+    })
+  })
+  leaf.results.bindings.forEach(d => {
+    tree.push({
+      id: d.mondo.value.replace(leafPrefix, ""),
+      label: d.mondo_label.value,
+      parent: d.hp.value.replace(idPrefix, ""),
+      leaf: true
     });
   });
   return tree;
