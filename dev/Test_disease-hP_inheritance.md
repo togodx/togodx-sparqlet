@@ -40,8 +40,27 @@ WHERE {
 ```
 ## `leaf`
 ```sparql
+## endpoint https://integbio.jp/rdf/sparql
 
-
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX biolink: <https://w3id.org/biolink/vocab/>
+PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+ 
+SELECT DISTINCT ?mondo ?omim ?mondo_id ?omim_id ?omim_iri ?hp
+ WHERE{ 
+  GRAPH<http://integbio.jp/rdf/ontology/mondo>{
+   ?mondo 
+   oboInOwl:hasDbXref ?omim;
+   oboInOwl:id ?mondo_id.
+   FILTER (regex(?omim, 'OMIM'))
+   BIND (REPLACE(str(?omim),"OMIM:","http://purl.obolibrary.org/obo/OMIM_") AS ?omim_id)
+   BIND (IRI(?omim_id) AS ?omim_iri) }
+  GRAPH <http://rdf.integbio.jp/dataset/monarch>{
+   ?omim_iri
+   biolink:has_mode_of_inheritance ?hp.
+  }
+}
 
 ```
 
