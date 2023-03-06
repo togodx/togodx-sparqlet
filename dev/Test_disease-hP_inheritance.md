@@ -40,7 +40,7 @@ SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp ?hp_l
   }
    GRAPH <http://integbio.jp/rdf/ontology/hp>{
   ?hp rdfs:label ?hp_label;
-      rdfs:subClassOf ?parent.
+      rdfs:subClassOf ?hp_parent.
   }
 }
 LIMIT 10
@@ -62,12 +62,19 @@ LIMIT 10
   ];
   data.results.bindings.forEach(d => {
     tree.push({
+      id: d.hp.value.replace(idPrefix, ""),
+      label: d.hp_label.value,
+      parent: d.hp_parent.value.replace(idPrefix, "")
+  })
+})
+   data.results.bindings.forEach(d => {
+    tree.push({
       id: d.mondo.value.replace(leafPrefix, ""),
       label: d.mondo_label.value,
       parent: d.hp.value.replace(idPrefix, ""),
       leaf: true
     });
-  });
+   });
   return tree;
 };
 ```
