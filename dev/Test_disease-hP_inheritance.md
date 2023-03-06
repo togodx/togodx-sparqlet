@@ -14,32 +14,9 @@
 
 https://integbio.jp/rdf/sparql
 
-## `graph`
+## `data`
 ```sparql
 
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-
-SELECT DISTINCT ?hpid ?label ?parent
-FROM <http://integbio.jp/rdf/ontology/hp>
-WHERE {
-  #root nodeはHP_000005
-  VALUES ?root {  obo:HP_0000005  }    
-  ?hpid rdfs:subClassOf+ ?root.
-  ?hpid rdfs:label ?label.
-  ?hpid rdfs:subClassOf ?parent.
-  ?hpid rdf:type owl:Class.  
-  # HP以外のIDも登録されているため、HPに限定するためにフィルターを追加
-  FILTER regex(str(?hpid), "http://purl.obolibrary.org/obo/HP_" )
- } 
- GROUP BY ?hpid ?parent ?label
-
-```
-## `leaf`
-```sparql
 ## endpoint https://integbio.jp/rdf/sparql
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -47,7 +24,7 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX biolink: <https://w3id.org/biolink/vocab/>
 PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
  
-SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp
+SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp ?hp_label ?hp_parent
  WHERE{ 
   GRAPH<http://integbio.jp/rdf/ontology/mondo>{
    ?mondo 
@@ -61,14 +38,19 @@ SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp
    ?omim_iri
    biolink:has_mode_of_inheritance ?hp.
   }
+   GRAPH <http://integbio.jp/rdf/ontology/hp>{
+  ?hp rdfs:label ?hp_label;
+      rdfs:subClassOf ?parent.
+  }
 }
+LIMIT 10
 
 ```
 
 ## `return`
 
 ```javascript
-({graph,leaf}) => {
+({data}) => {
   const idPrefix = "http://purl.obolibrary.org/obo/HP_";
   const leafPrefix= "http://purl.obolibrary.org/obo/MONDO_";
   let tree = [
@@ -78,14 +60,7 @@ SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp
       root: true
     }
   ];
-  graph.results.bindings.forEach(d => {
-    tree.push({
-      id: d.hpid.value.replace(idPrefix, ""),
-      label: d.label.value,
-      parent: d.parent.value.replace(idPrefix, "")
-    })
-  })
-  leaf.results.bindings.forEach(d => {
+  data.results.bindings.forEach(d => {
     tree.push({
       id: d.mondo.value.replace(leafPrefix, ""),
       label: d.mondo_label.value,
