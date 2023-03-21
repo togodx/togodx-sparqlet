@@ -38,20 +38,19 @@ WHERE {
   MINUS { [] biopax:pathwayComponent ?top_path . }
   ?top_path biopax:pathwayComponent* ?path .
   ?path a biopax:Pathway ;
-        biopax:displayName ?parent_label ;
-        biopax:xref [
-          biopax:db "Reactome"^^xsd:string ;
-          biopax:id ?parent ;
-        ] ;
-        biopax:pathwayComponent ?reaction .
-  ?reaction a biopax:BiochemicalReaction .
-  ?reaction biopax:left|biopax:right|biopax:product|^biopax:controlled/biopax:controller ?component .
-  ?component (biopax:memberPhysicalEntity|biopax:component)*/biopax:entityReference/biopax:xref [
-    biopax:db "ChEBI"^^xsd:string ;
-    biopax:id ?child
-  ] .
-  BIND (IRI(CONCAT (obo:, REPLACE(STR(?child), ":", "_"))) AS ?uri)
-  ?uri rdfs:label ?child_label .
+          biopax:displayName ?parent_label ;
+          biopax:xref [
+            biopax:db "Reactome"^^xsd:string ;
+                      biopax:id ?parent ;
+          ] ;
+          biopax:pathwayComponent ?child_path .
+  ?child_path a biopax:Pathway ;
+                biopax:displayName ?child_label ;
+                biopax:xref [
+                  biopax:db "Reactome"^^xsd:string ;
+                            biopax:id ?child 
+                ] .
+
 }
 ```
 
@@ -69,18 +68,18 @@ WHERE {
   MINUS { [] biopax:pathwayComponent ?top_path . }
   ?top_path biopax:pathwayComponent* ?parent_path .
   ?parent_path a biopax:Pathway ;
-               biopax:displayName ?parent_label ;
-               biopax:xref [
-                 biopax:db "Reactome"^^xsd:string ;
-                 biopax:id ?parent 
-               ] ;
-               biopax:pathwayComponent ?child_path .
+                 biopax:displayName ?parent_label ;
+                 biopax:xref [
+                   biopax:db "Reactome"^^xsd:string ;
+                             biopax:id ?parent 
+                 ] ;
+                 biopax:pathwayComponent ?child_path .
   ?child_path a biopax:Pathway ;
-              biopax:displayName ?child_label ;
-              biopax:xref [
-                biopax:db "Reactome"^^xsd:string ;
-                biopax:id ?child 
-              ] .
+                biopax:displayName ?child_label ;
+                biopax:xref [
+                  biopax:db "Reactome"^^xsd:string ;
+                            biopax:id ?child 
+                ] .
 }
 ```
 
@@ -142,11 +141,11 @@ WHERE {
   // 親子関係
   graph.results.bindings.map(d => {
     if (check[d.child.value]) {  // proteome check
-      tree.push({
+      /*tree.push({
         id: d.child.value.replace("R-HSA-", "R_HSA_"),
         label: d.child_label.value,
         parent: d.parent.value.replace("R-HSA-", "R_HSA_")
-      })
+      })*/
     } else {
       tree.push({
         id: d.child.value.replace("R-HSA-", "R_HSA_"),
