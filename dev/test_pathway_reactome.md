@@ -28,7 +28,7 @@ PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-SELECT DISTINCT ?parent ?child ?parent_label ?child_label
+SELECT DISTINCT ?parent ?child ?child_path ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
 FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
 WHERE {
@@ -36,7 +36,7 @@ WHERE {
             biopax:organism ?org .
   ?org biopax:name "Homo sapiens"^^xsd:string .
   MINUS { [] biopax:pathwayComponent ?top_path . }
-  ?top_path biopax:pathwayComponent* ?path .
+  ?top_path biopax:pathwayComponent+ ?path .
   ?path a biopax:Pathway ;
           biopax:displayName ?parent_label ;
           biopax:xref [
@@ -125,8 +125,8 @@ WHERE {
   ];
   
   let check = {};
-  graph.results.bindings.map(d => {
-    check[d.child.value] = true;
+  leaf.results.bindings.map(d => {
+    check[d.child_path.value] = true;
   })
   
   let withAnnotation = {};
@@ -140,12 +140,13 @@ WHERE {
   })
   // 親子関係
   graph.results.bindings.map(d => {
-    if (check[d.child.value]) {  // proteome check
-      /*tree.push({
+    if (check[d.parent.value]) {  // proteome check
+      tree.push({
         id: d.child.value.replace("R-HSA-", "R_HSA_"),
         label: d.child_label.value,
+        
         parent: d.parent.value.replace("R-HSA-", "R_HSA_")
-      })*/
+      })
     } else {
       tree.push({
         id: d.child.value.replace("R-HSA-", "R_HSA_"),
