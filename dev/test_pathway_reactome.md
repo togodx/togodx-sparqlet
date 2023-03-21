@@ -124,7 +124,12 @@ WHERE {
       parent: "root"
     } */
   ];
-
+  
+  let check = {};
+  graph.results.bindings.map(d => {
+    check[d.child.value] = true;
+  })
+  
   let withAnnotation = {};
   // トップとルートの関係
   top.results.bindings.map(d => {
@@ -136,12 +141,22 @@ WHERE {
   })
   // 親子関係
   graph.results.bindings.map(d => {
-    tree.push({
-      id: d.child.value.replace("R-HSA-", "R_HSA_"),
-      label: d.child_label.value,
-      parent: d.parent.value.replace("R-HSA-", "R_HSA_")
-    })
+    if (check[d.child.value]) {  // proteome check
+      tree.push({
+        id: d.child.value.replace("R-HSA-", "R_HSA_"),
+        label: d.child_label.value,
+        parent: d.parent.value.replace("R-HSA-", "R_HSA_")
+      })
+    } else {
+      tree.push({
+        id: d.child.value.replace("R-HSA-", "R_HSA_"),
+        label: d.child_label.value,
+        leaf: true,
+        parent: d.parent.value.replace("R-HSA-", "R_HSA_")
+      })
+    }
   })
+  /*
   // アノテーション関係
   leaf.results.bindings.map(d => {
     
@@ -152,6 +167,7 @@ WHERE {
       parent: d.parent.value.replace("R-HSA-", "R_HSA_")
     })
   })
+  */
 /*  // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
     if (!withAnnotation[d.leaf.value]) {
