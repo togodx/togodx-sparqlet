@@ -59,7 +59,7 @@ WHERE {
 ```sparql
 PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-SELECT DISTINCT ?parent ?child ?parent_label ?child_label
+SELECT DISTINCT ?parent ?child ?parent_label ?child_label SAMPLE(?child) as ?child_TF
 FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
 WHERE {
   ?top_path a biopax:Pathway ;
@@ -138,10 +138,11 @@ WHERE {
     tree.push({
       id: d.child.value.replace("R-HSA-", "R_HSA_"),
       label: d.child_label.value,
+      leaf: (d.child_TF == undefined ? true : false),
       parent: d.parent.value.replace("R-HSA-", "R_HSA_")
     })
   })
-  // アノテーション関係
+  /*// アノテーション関係
   leaf.results.bindings.map(d => {
     withAnnotation[d.child.value] = true;
     tree.push({
@@ -150,7 +151,7 @@ WHERE {
       leaf: true,
       parent: d.parent.value.replace("R-HSA-", "R_HSA_")
     })
-  })
+  })*/
 /*  // アノテーション無し要素
   allLeaf.results.bindings.map(d => {
     if (!withAnnotation[d.leaf.value]) {
