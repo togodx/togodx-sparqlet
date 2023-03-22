@@ -6,9 +6,10 @@
 - Query
     - Input
     - Output
+- https://integbio.jp/togosite/sparql
 
 ## Endpoint
-https://integbio.jp/togosite/sparql
+https://togodx-dev.dbcls.jp/human/sparql
 
 ## `leaf`
 - pathway の leaf
