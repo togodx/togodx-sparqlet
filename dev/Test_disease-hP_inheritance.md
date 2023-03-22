@@ -12,12 +12,12 @@
 
 ## Endpoint
 
-https://integbio.jp/rdf/sparql
+https://togodx-dev.dbcls.jp/human/virtuoso
 
 ## `leaf`
 ```sparql
 
-## endpoint https://integbio.jp/rdf/sparql
+## endpoint https://togodx-dev.dbcls.jp/human/virtuoso
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
@@ -25,8 +25,8 @@ PREFIX biolink: <https://w3id.org/biolink/vocab/>
 PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
  
 SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp
- WHERE{ 
-  GRAPH<http://integbio.jp/rdf/ontology/mondo>{
+ WHERE{
+  GRAPH<http://rdf.integbio.jp/dataset/togosite/mondo>{
    ?mondo 
    rdfs:label ?mondo_label;
    oboInOwl:hasDbXref ?omim;
@@ -44,7 +44,7 @@ SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp
 
 ## `graph`
 ```sparql
-## endpoint https://integbio.jp/rdf/sparql
+## endpoint https://togodx-dev.dbcls.jp/human/virtuoso
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
@@ -53,7 +53,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
  
 SELECT DISTINCT  ?hp ?hp_label ?parent
  WHERE{ 
-  GRAPH<http://integbio.jp/rdf/ontology/mondo>{
+  GRAPH<http://rdf.integbio.jp/dataset/togosite/mondo>{
    ?mondo 
    rdfs:label ?mondo_label;
    oboInOwl:hasDbXref ?omim;
@@ -61,7 +61,7 @@ SELECT DISTINCT  ?hp ?hp_label ?parent
    FILTER (regex(?omim, 'OMIM'))
    BIND (REPLACE(str(?omim),"OMIM:","http://purl.obolibrary.org/obo/OMIM_") AS ?omim_id)
    BIND (IRI(?omim_id) AS ?omim_iri) }
-  GRAPH <http://rdf.integbio.jp/dataset/monarch>{
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/monarch>{
    ?omim_iri
    biolink:has_mode_of_inheritance ?hp.
   }
