@@ -11,7 +11,7 @@
   * example: 33232 (Application type), 24432 (Biological role), 51086 (Chemical role)
 
 ## Endpoint
-https://integbio.jp/togosite/sparql
+{{SPARQLIST_TOGODX_SPARQL}}
 
 ## `graph`
 - Application の親子関係
