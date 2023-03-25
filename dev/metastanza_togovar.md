@@ -21,7 +21,7 @@
 
 ## Endpoint
 
-{{SPARQLIST_TOGODX_SPARQL}}
+https://grch38.togovar.org/sparql
 
 ## `data`
 
@@ -34,18 +34,21 @@ PREFIX m2r: <http://med2rdf.org/ontology/med2rdf#>
 PREFIX tgvo: <http://togovar.biosciencedbc.jp/vocabulary/>
 
 SELECT DISTINCT ?tgv_id ?type ?hgvs ?link_to_togovar
-FROM <http://rdf.integbio.jp/dataset/togosite/variation>
-FROM <http://rdf.integbio.jp/dataset/togosite/so>
+FROM <http://togovar.biosciencedbc.jp/so>
+FROM <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>
+FROM <http://togovar.biosciencedbc.jp/variant>
 WHERE {
     VALUES ?tgv_id { "{{tgv_id}}" }
 
-    ?variation dct:identifier ?tgv_id ;
-        a ?type .
+    ?variant dct:identifier ?tgv_id ;
+      a ?type .
 
-    OPTIONAL {
-       ?variation tgvo:hasConsequence/tgvo:hgvsg ?hgvs .
+    GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/ensembl> {
+      OPTIONAL {
+        ?variant tgvo:hasConsequence/tgvo:hgvsg ?hgvs .
+       }
     }
-  
+ 
     BIND(IRI(CONCAT("https://grch38.togovar.org/variant/", ?tgv_id)) AS ?link_to_togovar)
 }
 ```

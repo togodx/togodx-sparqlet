@@ -48,32 +48,28 @@ SELECT DISTINCT ?mondo ?omim ?mondo_id ?mondo_label ?omim_id ?omim_iri ?hp
 ## endpoint https://togodx-dev.dbcls.jp/human/sparql
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX biolink: <https://w3id.org/biolink/vocab/>
-PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
- 
-SELECT DISTINCT  ?hp ?hp_label ?parent
- WHERE{ 
-  GRAPH<http://rdf.integbio.jp/dataset/togosite/mondo>{
-   ?mondo 
-   rdfs:label ?mondo_label;
-   oboInOwl:hasDbXref ?omim;
-   oboInOwl:id ?mondo_id.
-   FILTER (regex(?omim, 'OMIM'))
-   BIND (REPLACE(str(?omim),"OMIM:","http://purl.obolibrary.org/obo/OMIM_") AS ?omim_id)
-   BIND (IRI(?omim_id) AS ?omim_iri)
-      }
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/monarch-kg-dev>{
-   ?omim_iri
-   biolink:has_mode_of_inheritance ?hp.
-      }
- GRAPH <http://rdf.integbio.jp/dataset/togosite/hpo>{
-  ?hp rdfs:label ?hp_label;
-      rdfs:subClassOf ?parent.
-      }
- }
-  ORDER BY ?hp
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT DISTINCT ?hp ?label ?parent SAMPLE(?child) AS ?child
+FROM <http://rdf.integbio.jp/dataset/togosite/hpo>
+WHERE {
+  #root nodeはHP:0000005
+  VALUES ?root {  obo:HP_0000005  }    
+  ?hp rdfs:subClassOf+ ?root.
+  ?hp rdfs:label ?label.
+  ?hp rdfs:subClassOf ?parent.
+  ?hp rdf:type owl:Class.  
+  # HP以外のIDも登録されているため、HPに限定するためにフィルターを追加
+  FILTER regex(str(?hp), "http://purl.obolibrary.org/obo/HP_" )
+  # 中間ノードの場合は？parentに値が存在し、leafノードの場合は?parentは存在しないのでOPTIONALが必要
+  OPTIONAL {
+    ?hp ^rdfs:subClassOf ?child.
+  }
+ } 
+ GROUP BY ?hp ?parent ?label
 
 ```
 ## `return`
@@ -92,7 +88,7 @@ SELECT DISTINCT  ?hp ?hp_label ?parent
   graph.results.bindings.forEach(d => {
     tree.push({
       id: d.hp.value.replace(idPrefix, ""),
-      label: d.hp_label.value,
+      label: d.label.value,
       parent: d.parent.value.replace(idPrefix, "")
     })
   })
