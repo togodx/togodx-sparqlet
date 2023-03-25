@@ -16,7 +16,7 @@
 ## Parameters
 
 * `tgv_id` TogoVar ID
-  * default: 
+  * default: tgv219804
   * example: tgv219804 (autosomal), tgv80912738(chr X), tgv67047924(chr Y), tgv67070461(MT)
 
 ## Endpoint
