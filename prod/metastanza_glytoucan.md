@@ -18,6 +18,7 @@ PREFIX mass: <https://glycoinfo.gitlab.io/wurcsframework/org/glycoinfo/wurcsfram
 PREFIX glycan2: <http://rdf.glycoinfo.org/glycan/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sio: <http://semanticscience.org/resource/>
 
 SELECT DISTINCT ?gtc ?mass ?sbsmpt ?wurcs_label ?iupac (GROUP_CONCAT(DISTINCT ?tissue_label; separator=", ") AS ?tissue_labels)
 WHERE {
@@ -27,7 +28,7 @@ WHERE {
          rdfs:label ?wurcs_label ;
          a ?sbsmpt .
   OPTIONAL {
-    ?gtc rdfs:seeAlso [
+    ?gtc sio:SIO_000255 [
       glycan:has_tissue ?tissue ;
       glycan:has_taxon / dcterms:identifier "9606"
     ] .

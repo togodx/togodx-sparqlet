@@ -1,3 +1,5 @@
+# Ensembl gene data for metastanza template (池田）
+
 ## Endpoint
 
 {{SPARQLIST_TOGODX_SPARQL}}

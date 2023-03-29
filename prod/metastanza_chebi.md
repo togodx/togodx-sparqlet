@@ -1,9 +1,8 @@
-# 化合物の詳細情報を出す（信定・山本・建石）
+# 化合物の詳細情報を出す（信定・山本・建石・池田）
 
 ## Parameters
 
 * `id`
-  * default: 15414
   * example: 15414, 17232
 
 ## Endpoint
@@ -28,7 +27,7 @@ FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
 WHERE {
   VALUES ?chebi  { obo:CHEBI_{{id}} }
   ?chebi rdfs:label ?label ;
-         oboinowl:id ?id .
+         oboinowl:hasId ?id .
   OPTIONAL { ?chebi oboinowl:hasExactSynonym ?synonym . }
   OPTIONAL { ?chebi chebi:formula ?molecular_formula . }
   OPTIONAL { ?chebi chebi:inchi ?inchi . }

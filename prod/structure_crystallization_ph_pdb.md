@@ -19,9 +19,9 @@
 ## `withAnnotation`
 
 ```sparql
-PREFIX pdbo: <https://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX pdbo: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX pdbr: <https://rdf.wwpdb.org/pdb/>
+PREFIX pdbr: <http://rdf.wwpdb.org/pdb/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
