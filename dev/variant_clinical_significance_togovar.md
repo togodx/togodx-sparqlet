@@ -3,7 +3,7 @@
 ## Description
 
 - Data sources
-    -  [TogoVar](https://togovar.biosciencedbc.jp/?) (limited to variants with frequency data in Japanese populations)
+    -  [TogoVar](https://togovar.org/?) (limited to variants with frequency data in Japanese populations)
 - Query
     - Input
         - TogoVar id
@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://integbio.jp/togosite/sparql
+https://grch38.togovar.org/sparql
 
 ## `leaf`
 
@@ -26,13 +26,13 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX gvo: <http://genome-variation.org/resource#>
 
 SELECT DISTINCT ?tgv_id ?rs_id ?category
-FROM <http://rdf.integbio.jp/dataset/togosite/variation>
-FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
+FROM <http://togovar.biosciencedbc.jp/variant>
+FROM <http://togovar.biosciencedbc.jp/clinvar>
 WHERE {
-   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
+   GRAPH <http://togovar.biosciencedbc.jp/variant>{
      ?togovar dct:identifier ?tgv_id.
    }
-   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>{
+   GRAPH <http://togovar.biosciencedbc.jp/clinvar>{
      ?togovar gvo:info ?info_rs.
      ?info_rs rdfs:label ?rs_label.
      ?info_rs rdf:value ?rs_id.

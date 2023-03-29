@@ -6,7 +6,7 @@
 - Query
     - Input
     - Output
-- https://integbio.jp/togosite/sparql
+- {{SPARQLIST_TOGODX_SPARQL}}
 
 ## Endpoint
 https://togodx-dev.dbcls.jp/human/sparql

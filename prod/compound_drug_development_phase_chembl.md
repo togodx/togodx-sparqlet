@@ -14,7 +14,7 @@ development_phase=0を対象から外したもの
         
  ## Endpoint
 
-https://integbio.jp/togosite/sparql
+{{SPARQLIST_TOGODX_SPARQL}}
 
 ## `main`
 

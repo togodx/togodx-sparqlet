@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://togodx.integbio.jp/ep/sparql/virtuoso
+https://grch38.togovar.org/sparql
 
 ## `leaf`
 ```sparql
@@ -23,23 +23,28 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/variation>
-FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
-FROM <http://rdf.integbio.jp/dataset/togosite/efo>
+FROM <http://togovar.biosciencedbc.jp/gwas-catalog>
+FROM <http://togovar.biosciencedbc.jp/efo>
+FROM <http://togovar.biosciencedbc.jp/variant>
+FROM <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>
 WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/efo>{
-    ?parent rdfs:label ?parent_label ;
-            rdfs:subClassOf* ?root;  # The parent must be reachable from the root.
-            a owl:Class .
+#  GRAPH <http://togovar.biosciencedbc.jp/efo>{
+#    ?parent rdfs:label ?parent_label ;
+#            rdfs:subClassOf* ?root;  # The parent must be reachable from the root.
+#            a owl:Class .
+#  }
+  GRAPH <http://togovar.biosciencedbc.jp/gwas-catalog>{
+ #   ?parent ^terms:mapped_trait_uri ?variant.
+    ?variant rdfs:seeAlso ?child_label .
   }
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>{
-    ?parent ^terms:mapped_trait_uri/rdfs:seeAlso ?child_label .
+  GRAPH <http://togovar.biosciencedbc.jp/variant>{
+    ?variant dct:identifier ?child .
   }
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
-    ?child_label ^rdfs:seeAlso/dct:identifier ?child .
+  GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>{
+    ?variant rdfs:seeAlso ?child_label.
   }
-}
+}limit 10
 ```
 
 ## `graph`
@@ -50,12 +55,12 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 PREFIX efo: <http://www.ebi.ac.uk/efo/>
 SELECT DISTINCT ?parent ?child ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/variation>
-FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
-FROM <http://rdf.integbio.jp/dataset/togosite/efo>
+FROM <http://togovar.biosciencedbc.jp/variant>
+FROM <http://togovar.biosciencedbc.jp/gwas-catalog>
+FROM <http://togovar.biosciencedbc.jp/efo>
 WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
-  GRAPH <http://rdf.integbio.jp/dataset/togosite/efo> {
+  GRAPH <http://togovar.biosciencedbc.jp/efo> {
     ?child a owl:Class ;
            rdfs:subClassOf ?parent ;
            rdfs:label ?child_label .
