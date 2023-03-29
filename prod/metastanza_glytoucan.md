@@ -6,7 +6,6 @@ https://ts.glycosmos.org/sparql
 
 ## Parameters
 * `id`
-  * default: G14606UO
   * example: G14606UO, G00035MO
 
 ## `main`

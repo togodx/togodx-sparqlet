@@ -1,4 +1,4 @@
-# Gene attributes from PDB RDF（井手)
+# PDB data for metastanza template （井手・池田)
 
 ## Endpoint
 
@@ -6,7 +6,6 @@
 
 ## Parameters
 * `id`
-  * default: 6TIW
   * example: 6TIW, 6W9K
 
 ## `main`

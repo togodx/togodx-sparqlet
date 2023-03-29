@@ -7,7 +7,6 @@
 ## Parameters
 
 * `id`
-  * default: 1
   * example: 1
 
 ## `main`

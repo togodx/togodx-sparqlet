@@ -7,7 +7,6 @@
 ## Parameters
 
 * `id`
-  * default: 0004997
   * example: 0004997, 0005854
 
 ## `main`

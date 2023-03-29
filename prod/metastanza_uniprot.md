@@ -2,7 +2,6 @@
 
 ## Parameters
 * `uniprot`
-  * default: P06493
   * example: P06493
 
 ## Endpoint

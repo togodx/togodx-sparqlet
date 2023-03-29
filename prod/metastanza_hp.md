@@ -7,7 +7,6 @@
 ## Parameters
 
 * `id`
-  * default: 0030432
   * example: 0030432
 
 ## `main`
