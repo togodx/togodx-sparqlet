@@ -29,13 +29,13 @@ FROM <http://togovar.biosciencedbc.jp/variant>
 FROM <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>
 WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
-#  GRAPH <http://togovar.biosciencedbc.jp/efo>{
-#    ?parent rdfs:label ?parent_label ;
-#            rdfs:subClassOf* ?root;  # The parent must be reachable from the root.
-#            a owl:Class .
-#  }
+  GRAPH <http://togovar.biosciencedbc.jp/efo>{
+    ?parent rdfs:label ?parent_label ;
+            rdfs:subClassOf* ?root;  # The parent must be reachable from the root.
+            a owl:Class .
+  }
   GRAPH <http://togovar.biosciencedbc.jp/gwas-catalog>{
- #   ?parent ^terms:mapped_trait_uri ?variant.
+    ?parent ^terms:mapped_trait_uri ?variant.
     ?variant rdfs:seeAlso ?child_label .
   }
   GRAPH <http://togovar.biosciencedbc.jp/variant>{
@@ -44,7 +44,7 @@ WHERE {
   GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>{
     ?variant rdfs:seeAlso ?child_label.
   }
-}limit 10
+}
 ```
 
 ## `graph`
