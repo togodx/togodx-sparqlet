@@ -27,7 +27,7 @@ FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
 WHERE {
   VALUES ?chebi  { obo:CHEBI_{{id}} }
   ?chebi rdfs:label ?label ;
-         oboinowl:hasId ?id .
+         oboinowl:id ?id .
   OPTIONAL { ?chebi oboinowl:hasExactSynonym ?synonym . }
   OPTIONAL { ?chebi chebi:formula ?molecular_formula . }
   OPTIONAL { ?chebi chebi:inchi ?inchi . }
