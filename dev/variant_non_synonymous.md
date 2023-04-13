@@ -2,8 +2,8 @@
 
 ## Parameters
 
-* `tgv_id` TogoVar ID
-  * default: tgv219804
+* `consequence_label` consequence_label
+  * default: missense_variant
 
 ## Endpoint
 
@@ -17,11 +17,14 @@ PREFIX dc11: <http://purl.org/dc/elements/1.1/>
 PREFIX tgvo: <http://togovar.biosciencedbc.jp/vocabulary/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
+SELECT ?transcript ?enst_id ?gene_symbol ?gene_xref ?hgvs_p ?hgvs_c ?sift ?polyphen ?consequence_label
+WHERE {
+    VALUES ?consequence_label {  "{{consequence_label}}" }
+
+{
 SELECT DISTINCT ?transcript ?enst_id ?gene_symbol ?gene_xref ?hgvs_p ?hgvs_c ?sift ?polyphen 
                 (GROUP_CONCAT(DISTINCT ?_consequence_label ; separator = ",") AS ?consequence_label)
-WHERE {
-  VALUES ?tgv_id { "{{tgv_id}}" }
-
+WHERE {  
   GRAPH <http://togovar.biosciencedbc.jp/variant> {
     ?variant dct:identifier ?tgv_id .
   }
@@ -68,4 +71,6 @@ WHERE {
   }
 }
 ORDER BY ?transcript
+}
+}
 ```
