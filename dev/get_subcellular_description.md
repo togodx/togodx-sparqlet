@@ -46,3 +46,10 @@ WHERE {
   FILTER (?begin <= ?position && ?position <= ?end)
 }
 ```
+
+## `Return`
+
+```javascript
+({Query})=>{
+  return  Query.results.bindings
+}
