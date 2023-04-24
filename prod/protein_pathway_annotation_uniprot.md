@@ -17,7 +17,7 @@
 
 
 ## Endpoint
-https://integbio.jp/togosite_dev/sparql
+{{SPARQLIST_TOGODX_SPARQL}}
 
 ## `getpathway1`
 ```sparql
