@@ -25,23 +25,21 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX gvo: <http://genome-variation.org/resource#>
 
-SELECT DISTINCT ?tgv_id ?rs_id ?category
+SELECT DISTINCT ?togovar ?tgv_id ?rs_id ?category
 FROM <http://togovar.biosciencedbc.jp/variant>
-FROM <http://togovar.biosciencedbc.jp/clinvar>
+FROM <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>
 WHERE {
    GRAPH <http://togovar.biosciencedbc.jp/variant>{
      ?togovar dct:identifier ?tgv_id.
    }
-   GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>{
-     ?togovar gvo:info ?info_rs.
-     ?info_rs rdfs:label ?rs_label.
-     ?info_rs rdf:value ?rs_id.
-     FILTER(?rs_label IN ("RS")).
-     ?togovar gvo:info ?info_clinvar.
-     ?info_clinvar rdfs:label ?clinvar_label.
-     ?info_clinvar rdf:value ?category.
-     FILTER(?clinvar_label IN ("CLNSIG")).
-   }
+  GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>{
+    ?togovar gvo:info ?info_rs;
+      gvo:info ?info_clinvar.
+    ?info_rs rdfs:label "RS";
+      rdf:value ?rs_id.
+    ?info_clinvar rdfs:label "CLNSIG";
+      rdf:value ?category.
+  }
 }
 ```
 
