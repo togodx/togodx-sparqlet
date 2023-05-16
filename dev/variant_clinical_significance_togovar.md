@@ -32,7 +32,7 @@ WHERE {
    GRAPH <http://togovar.biosciencedbc.jp/variant>{
      ?togovar dct:identifier ?tgv_id.
    }
-   GRAPH <http://togovar.biosciencedbc.jp/clinvar>{
+   GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>{
      ?togovar gvo:info ?info_rs.
      ?info_rs rdfs:label ?rs_label.
      ?info_rs rdf:value ?rs_id.
