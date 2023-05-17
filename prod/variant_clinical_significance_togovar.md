@@ -3,7 +3,7 @@
 ## Description
 
 - Data sources
-    -  [TogoVar](https://togovar.biosciencedbc.jp/?) (limited to variants with frequency data in Japanese populations)
+    -  [TogoVar](https://togovar.org/?) (limited to variants with frequency data in Japanese populations)
 - Query
     - Input
         - TogoVar id
@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-{{SPARQLIST_TOGODX_SPARQL}}
+https://grch38.togovar.org/sparql
 
 ## `leaf`
 
@@ -25,23 +25,21 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX gvo: <http://genome-variation.org/resource#>
 
-SELECT DISTINCT ?tgv_id ?rs_id ?category
-FROM <http://rdf.integbio.jp/dataset/togosite/variation>
-FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
+SELECT DISTINCT ?togovar ?tgv_id ?rs_id ?category
+FROM <http://togovar.biosciencedbc.jp/variant>
+FROM <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>
 WHERE {
-   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation>{
+   GRAPH <http://togovar.biosciencedbc.jp/variant>{
      ?togovar dct:identifier ?tgv_id.
    }
-   GRAPH <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>{
-     ?togovar gvo:info ?info_rs.
-     ?info_rs rdfs:label ?rs_label.
-     ?info_rs rdf:value ?rs_id.
-     FILTER(?rs_label  = "RS").
-     ?togovar gvo:info ?info_clinvar.
-     ?info_clinvar rdfs:label ?clinvar_label.
-     ?info_clinvar rdf:value ?category.
-     FILTER(?clinvar_label = "CLNSIG").
-   }
+  GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>{
+    ?togovar gvo:info ?info_rs;
+      gvo:info ?info_clinvar.
+    ?info_rs rdfs:label "RS";
+      rdf:value ?rs_id.
+    ?info_clinvar rdfs:label "CLNSIG";
+      rdf:value ?category.
+  }
 }
 ```
 
@@ -116,7 +114,7 @@ WHERE {
     if(!id2label[parent]){ return; }   // 親(id2label)にエントリがない子供は無視する。
     tree.push({
       id: d.tgv_id.value,
-      label: d.rs_id.value.replace(childLabelPrefix, ""),
+      label: "rs" + d.rs_id.value,
       leaf: true,
       parent: parent
     });
