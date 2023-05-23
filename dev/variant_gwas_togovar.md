@@ -26,7 +26,6 @@ SELECT DISTINCT ?parent ?child ?parent_label ?child_label
 FROM <http://togovar.biosciencedbc.jp/gwas-catalog>
 FROM <http://togovar.biosciencedbc.jp/efo>
 FROM <http://togovar.biosciencedbc.jp/variant>
-FROM <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>
 WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
   GRAPH <http://togovar.biosciencedbc.jp/efo>{
