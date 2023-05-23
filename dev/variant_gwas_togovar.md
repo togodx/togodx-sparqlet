@@ -41,9 +41,6 @@ WHERE {
   GRAPH <http://togovar.biosciencedbc.jp/variant>{
     ?variant dct:identifier ?child .
   }
-  GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>{
-    ?variant rdfs:seeAlso ?child_label.
-  }
 }
 ```
 
