@@ -33,11 +33,12 @@ WHERE {
             rdfs:subClassOf* ?root;  # The parent must be reachable from the root.
             a owl:Class .
   }
-  GRAPH <http://togovar.biosciencedbc.jp/gwas-catalog>{
-    ?parent ^terms:mapped_trait_uri/rdfs:seeAlso ?child_label .
+   GRAPH <http://togovar.biosciencedbc.jp/gwas-catalog>{
+    ?parent ^terms:mapped_trait_uri ?variant.
+    ?variant rdfs:seeAlso ?child_label .
   }
   GRAPH <http://togovar.biosciencedbc.jp/variant>{
-    ?child_label ^rdfs:seeAlso/dct:identifier ?child .
+    ?variant dct:identifier ?child .
   }
 }
 ```
