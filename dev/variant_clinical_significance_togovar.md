@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://stg-grch38.togovar.org/sparql
+https://grch38.togovar.org/sparql
 
 ## `leaf`
 
