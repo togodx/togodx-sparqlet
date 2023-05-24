@@ -25,11 +25,11 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX gvo: <http://genome-variation.org/resource#>
 
-SELECT DISTINCT ?togovar ?tgv_id ?rs_id ?category
+SELECT DISTINCT ?tgv_id ?rs_id ?category
 FROM <http://togovar.biosciencedbc.jp/variant>
 FROM <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>
 WHERE {
-   GRAPH <http://togovar.biosciencedbc.jp/variant>{
+  GRAPH <http://togovar.biosciencedbc.jp/variant>{
      ?togovar dct:identifier ?tgv_id.
    }
   GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>{
