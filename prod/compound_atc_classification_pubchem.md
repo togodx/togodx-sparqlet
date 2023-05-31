@@ -96,7 +96,9 @@ SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
   let tree = [
     {
       id: "root",
-      label: "root node",
+      // 2023-05-31 tateisi
+      // label: "root node",
+      label: "ATC",
       root: true
     },
     {
