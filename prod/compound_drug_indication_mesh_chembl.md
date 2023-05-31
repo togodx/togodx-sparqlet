@@ -65,7 +65,9 @@ WHERE {
   let tree = [
     {
       id: "root",
-      label: "root node",
+      // 2023-05-31 tateisi
+      // label: "root node",
+      label: "indication",
       root: true
     }
   ];
