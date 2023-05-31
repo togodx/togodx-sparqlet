@@ -22,23 +22,27 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 
-SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-FROM <http://togovar.biosciencedbc.jp/gwas-catalog>
+SELECT DISTINCT ?efo AS ?parent ?efo_label AS ?parent_label ?tgv_id AS ?child  ?rs_uri AS ?child_label
 FROM <http://togovar.biosciencedbc.jp/efo>
+FROM <http://togovar.biosciencedbc.jp/gwas-catalog>
 FROM <http://togovar.biosciencedbc.jp/variant>
+FROM <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>
 WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
   GRAPH <http://togovar.biosciencedbc.jp/efo>{
-    ?parent rdfs:label ?parent_label ;
-            rdfs:subClassOf* ?root;  # The parent must be reachable from the root.
-            a owl:Class .
+    ?efo rdfs:label ?efo_label ;
+      rdfs:subClassOf* ?root;  # The parent must be reachable from the root.
+      a owl:Class .
   }
   GRAPH <http://togovar.biosciencedbc.jp/gwas-catalog>{
-    ?parent ^terms:mapped_trait_uri ?variant.
-    ?variant rdfs:seeAlso ?child_label .
+    ?efo ^terms:mapped_trait_uri ?variant_gwas_catalog.
+    ?variant_gwas_catalog rdfs:seeAlso ?rs_uri .
   }
-  GRAPH <http://togovar.biosciencedbc.jp/variant>{
-    ?variant dct:identifier ?child .
+  GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/ensembl> {
+    ?rs_uri  ^rdfs:seeAlso ?variant_togovar .
+  }
+  GRAPH <http://togovar.biosciencedbc.jp/variant> {
+    ?variant_togovar dct:identifier ?tgv_id .
   }
 }
 ```
@@ -51,21 +55,28 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
 PREFIX efo: <http://www.ebi.ac.uk/efo/>
 SELECT DISTINCT ?parent ?child ?child_label
-FROM <http://togovar.biosciencedbc.jp/variant>
-FROM <http://togovar.biosciencedbc.jp/gwas-catalog>
 FROM <http://togovar.biosciencedbc.jp/efo>
+FROM <http://togovar.biosciencedbc.jp/gwas-catalog>
+FROM <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>
 WHERE {
   VALUES ?root {  efo:EFO_0000001  } 
   GRAPH <http://togovar.biosciencedbc.jp/efo> {
     ?child a owl:Class ;
-           rdfs:subClassOf ?parent ;
-           rdfs:label ?child_label .
+      rdfs:subClassOf ?parent ;
+      rdfs:label ?child_label .
     ?parent a owl:Class ;
-           rdfs:subClassOf* ?root .
-    ?trait rdfs:subClassOf* ?child .
+      rdfs:subClassOf* ?root .
+    ?efo rdfs:subClassOf* ?child .
   }
-  ?trait ^terms:mapped_trait_uri/rdfs:seeAlso/^rdfs:seeAlso ?togovar.
-}
+  # Ensure that an EFO entry links to a TogoVar variant via GWAS Catalog
+  GRAPH <http://togovar.biosciencedbc.jp/gwas-catalog>{
+    ?efo ^terms:mapped_trait_uri ?variant_gwas_catalog.
+    ?variant_gwas_catalog rdfs:seeAlso ?rs_uri .
+  }
+  GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/ensembl> {
+    ?rs_uri  ^rdfs:seeAlso ?variant_togovar .
+  }
+} 
 ```
 
 ## `return`
