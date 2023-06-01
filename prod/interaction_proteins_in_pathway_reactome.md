@@ -124,7 +124,7 @@ WHERE {
   let tree = [
     {
       id: "root",
-      label: "root node",
+      label: "Pathway",
       root: true
     },{
       id: withoutId,
