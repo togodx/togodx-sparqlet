@@ -164,7 +164,7 @@ Order by ?child
 ({withAnnotation,SecondClass,ThirdClass,FourthClass})=>{
   const idPrefix = "http://purl.uniprot.org/uniprot/";
   let tree = [
-    {id: "root", label: "root node", root: true},  
+    {id: "root", label: "Catalytic", root: true},  // {id: "root", label: "root node", root: true},  230602 ide fix
     {id: "10000000", label: "Oxidoreductases", leaf: false, parent: "root"},
     {id: "20000000", label: "Transferases",    leaf: false, parent: "root"},
     {id: "30000000", label: "Hydrolases",      leaf: false, parent: "root"},

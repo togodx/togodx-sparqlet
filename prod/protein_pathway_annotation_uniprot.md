@@ -90,7 +90,8 @@ WHERE {
   let tree = [
     {
       id: "root",
-      label: "root node",
+      //label: "root node", 230602 ide 
+      label: "Pathway",
       root: true
     }
   ];
