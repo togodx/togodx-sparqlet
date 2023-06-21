@@ -73,7 +73,7 @@ GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id
   let tree = [
     {
       id: "root",
-      label: "root node",
+      label: "Diseases",
       root: true
     }
   ];
