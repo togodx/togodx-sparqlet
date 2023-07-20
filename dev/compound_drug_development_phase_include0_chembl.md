@@ -19,21 +19,14 @@ async ({}) => {
     }
   ];
 
-  for (let i = 0; i <= 4; i++) {
-  // development_phase にラベルをつける
-    let label = "";
-    if (i == 0) label = "0: No description";
-    else if (i == 1) label = "1: PK tolerability";
-    else if (i == 2) label = "2: Efficacy";
-    else if (i == 3) label = "3: Safety & Efficacy";
-    else if (i == 4) label = "4: Indication Discovery & expansion";
-
-    tree.push({
-      id: i.toString(),
-      label: label,
-      parent: 'root'
-    });
-  };
+  // cf. https://chembl.gitbook.io/chembl-interface-documentation/frequently-asked-questions/drug-and-compound-questions
+  tree.push({id: "-1.0", parent: "root", label: "-1: Unknown"});
+  tree.push({id: "0", parent: "root", label: "0: Preclinical"});
+  tree.push({id: "0.5", parent: "root", label: "0.5: Early Phase 1"});
+  tree.push({id: "1.0", parent: "root", label: "1: PK tolerability"});
+  tree.push({id: "2.0", parent: "root", label: "2: Efficacy"});
+  tree.push({id: "3.0", parent: "root", label: "3: Safety & Efficacy"});
+  tree.push({id: "4.0", parent: "root", label: "4: Indication Discovery & expansion"});
 
   let errors = [];
   const url = 'backend_compound_drug_development_phase_include0_chembl';
