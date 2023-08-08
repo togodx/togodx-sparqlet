@@ -43,8 +43,8 @@ SELECT DISTINCT ?leaf ?label ?value ?seq_length ?begin_position #?range
    ?leaf up:proteome ?proteome.
    FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
-ORDER BY ?value #ORDER BY ?leaf
-limit 50
+ORDER BY ?leaf
+#limit 50
 ```
 
 ## `withoutdisorder`
@@ -71,7 +71,7 @@ SELECT DISTINCT ?leaf ?label ?value
    }
   BIND ("0" AS ?value)
 }
-limit 50
+#limit 50
 ```
 
 ## `results`
@@ -91,8 +91,7 @@ limit 50
       id_match = d.leaf.value;
       total_length = Number(d.value.value);
     }
-    const num = parseInt( 100* total_length/Number(d.seq_length.value));
-    console.log(num);
+    const num = parseInt( 100* total_length/Number(d.seq_length.value));            #console.log(num);
     tree.push({
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
@@ -107,7 +106,7 @@ limit 50
       label: f.label.value,
       value: Number(f.value.value),
       binId: 1,
-      binLabel: f.value.value
+      binLabel: f.value.value + "%"
     })
    });
     return tree;
