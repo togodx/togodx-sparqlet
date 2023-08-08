@@ -84,14 +84,15 @@ SELECT DISTINCT ?leaf ?label ?value
   let total_length = 0 ;
   disorder.results.bindings.map(d => {
     if (id_match == d.leaf.value){
-      console.log(id_match);
+      //console.log(id_match);
       total_length = total_length + Number(d.value.value);
       tree.pop();
     }else{  
       id_match = d.leaf.value;
       total_length = Number(d.value.value);
     }
-    const num = parseInt( 100* total_length/Number(d.seq_length.value));            #console.log(num);
+    const num = parseInt( 100* total_length/Number(d.seq_length.value));
+    //console.log(num);
     tree.push({
       id: d.leaf.value.replace(idPrefix, ""),
       label: d.label.value,
