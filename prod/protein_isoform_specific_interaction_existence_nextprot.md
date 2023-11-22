@@ -21,7 +21,7 @@ WHERE {
               :isoform ?iso .
           ?iso :generalAnnotation [
             a :BinaryInteraction ; 
-            :interactant ?target
+            :interactant/skos:exactMatch ?target
           ] . 
           {
             SELECT ?np (COUNT (?iso) AS ?iso_count)
