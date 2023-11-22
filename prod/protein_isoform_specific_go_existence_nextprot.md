@@ -4,20 +4,36 @@
 {{SPARQLIST_TOGODX_SPARQL}}
 
 ## `hasSpecific`
+* SPECIFIC フラグがなくなったので、数を数えて　isoform 間の違いを検出
 ```sparql
 PREFIX : <http://nextprot.org/rdf#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX core: <http://purl.uniprot.org/core/>
-SELECT ?np ?label ?go
+SELECT DISTINCT ?np ?label ?go
 FROM <http://rdf.integbio.jp/dataset/togosite/nextprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {
-  VALUES ?go { :GoBiologicalProcess :GoCellularComponent :GoMolecularFunction }
-  ?np a :Entry ;
-      skos:exactMatch/core:mnemonic ?label ;
-      :isoform/:generalAnnotation ?annotation .
-    ?annotation a ?go ; 
-                :isoformSpecificity :SPECIFIC .         
+      {
+        SELECT ?np ?label ?go ?go_term (COUNT (DISTINCT ?iso) AS ?go_count) ?iso_count
+        {
+          VALUES ?go { :GoBiologicalProcess :GoCellularComponent :GoMolecularFunction }
+          ?np a :Entry ;
+              skos:exactMatch/core:mnemonic ?label ;
+              :isoform ?iso .
+          ?iso :generalAnnotation [
+            a ?go ; 
+            :term ?go_term
+          ] . 
+          {
+            SELECT ?np (COUNT (?iso) AS ?iso_count)
+            {
+              ?np a :Entry ;
+                  :isoform ?iso.
+            }
+          }
+        }
+    }
+   FILTER (?iso_count > ?go_count)  # compare #isoforms : #isoforms_with_annotation
 }
 ```
 
