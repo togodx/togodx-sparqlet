@@ -34,16 +34,16 @@ PREFIX m2r: <http://med2rdf.org/ontology/med2rdf#>
 PREFIX tgvo: <http://togovar.biosciencedbc.jp/vocabulary/>
 
 SELECT DISTINCT ?tgv_id ?type ?hgvs ?link_to_togovar
-FROM <http://togovar.biosciencedbc.jp/so>
-FROM <http://togovar.biosciencedbc.jp/variant/annotation/ensembl>
-FROM <http://togovar.biosciencedbc.jp/variant>
+FROM <http://togovar.org/so>
+FROM <http://togovar.org/variant/annotation/ensembl>
+FROM <http://togovar.org/variant>
 WHERE {
     VALUES ?tgv_id { "{{tgv_id}}" }
 
     ?variant dct:identifier ?tgv_id ;
       a ?type .
 
-    GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/ensembl> {
+    GRAPH <http://togovar.org/variant/annotation/ensembl> {
       OPTIONAL {
         ?variant tgvo:hasConsequence/tgvo:hgvsg ?hgvs .
        }
