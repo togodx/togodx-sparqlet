@@ -8,7 +8,7 @@
 PREFIX : <http://nextprot.org/rdf#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX core: <http://purl.uniprot.org/core/>
-SELECT ?np ?label ?go
+SELECT ?np ?label
 FROM <http://rdf.integbio.jp/dataset/togosite/nextprot>
 FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
 WHERE {
@@ -47,7 +47,6 @@ WHERE {
 ```javascript
 ({hasSpecific, hasIsoform})=>{
   let idPrefix = "http://nextprot.org/rdf/entry/NX_";
-  let nodePrefix = "http://nextprot.org/rdf#";
   let withId = "hasSpecific";
   let withoutId = "unclassified";
   
@@ -56,16 +55,8 @@ WHERE {
       id: "root",
       root: true
     },{
-      id: "GoBiologicalProcess",
-      label: "With bibiological process specifcity",
-      parent: "root"
-    },{
-      id: "GoCellularComponent",
-      label: "With cellular component specifcity",
-      parent: "root"
-    },{
-      id: "GoMolecularFunction",
-      label: "With molecular function specifcity",
+      id: withId,
+      label: "With isoform specifcity",
       parent: "root"
     },{
       id: withoutId,
@@ -80,7 +71,7 @@ WHERE {
     tree.push({
       id: d.np.value.replace(idPrefix, ""),
       label: d.label.value,
-      parent: d.go.value.replace(nodePrefix, ""),
+      parent: withId,
       leaf: true
     });
   });

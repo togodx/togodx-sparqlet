@@ -9,7 +9,7 @@
   * example: GO_0008150 (biological process), GO_0005575 (cellular component), GO_0003674 (molecular function)
 
 ## Endpoint
- https://integbio.jp/rdf/sib/sparql
+ https://rdfportal.org/sib/sparql
 
 ## `leaf`
 - GO と UniProt のアノテーション関係
@@ -65,7 +65,7 @@ WHERE {
 ```
 
 ## Endpoint
-https://integbio.jp/rdf/bioportal/sparql
+https://rdfportal.org/bioportal/sparql
  
 ## `graph`
 - GO の親子関係

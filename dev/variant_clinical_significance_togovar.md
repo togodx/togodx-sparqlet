@@ -19,20 +19,20 @@ https://grch38.togovar.org/sparql
 ```sparql
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX tgvo: <http://togovar.biosciencedbc.jp/vocabulary/>
+PREFIX tgvo: <http://togovar.org/vocabulary/>
 PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX gvo: <http://genome-variation.org/resource#>
 
 SELECT DISTINCT ?tgv_id ?rs_id ?category
-FROM <http://togovar.biosciencedbc.jp/variant>
-FROM <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>
+FROM <http://togovar.org/variant>
+FROM <http://togovar.org/variant/annotation/clinvar>
 WHERE {
-   GRAPH <http://togovar.biosciencedbc.jp/variant>{
+   GRAPH <http://togovar.org/variant>{
      ?togovar dct:identifier ?tgv_id.
    }
-  GRAPH <http://togovar.biosciencedbc.jp/variant/annotation/clinvar>{
+  GRAPH <http://togovar.org/variant/annotation/clinvar>{
     ?togovar gvo:info ?info_rs;
       gvo:info ?info_clinvar.
     ?info_rs rdfs:label "RS";
