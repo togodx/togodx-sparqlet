@@ -67,7 +67,7 @@ WHERE {
     #?loc rdfs:label ?location .
     FILTER(STRSTARTS(STR(?type), "http://rdf.ebi.ac.uk/terms/ensembl/"))
     BIND(REPLACE(STRAFTER(STR(?type), "http://rdf.ebi.ac.uk/terms/ensembl/"), "_", " ") as ?type_label)
-    BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "#") as ?location)
+    BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "/") as ?location)
   }
 
   OPTIONAL {
