@@ -3,7 +3,7 @@
 ## Description
 
 - Data sources
-    - Ensembl human release 107: [http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index](http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index)
+    - Ensembl human release 111: [https://useast.ensembl.org/Homo_sapiens/Info/Index](https://useast.ensembl.org/Homo_sapiens/Info/Index)
 - Supplementary information
  	- A transcript classification such as "protein coding" and "lincRNA". Definition of biotypes is described [here](http://useast.ensembl.org/info/genome/genebuild/biotypes.html).
 	- protein coding, lncRNA といった、転写産物の分類です。分類の定義については [こちらをご覧ください](http://useast.ensembl.org/info/genome/genebuild/biotypes.html)。
@@ -32,7 +32,7 @@ WHERE {
         dcterms:identifier ?child ;
         rdfs:label ?child_label .
   FILTER(CONTAINS(STR(?parent), "terms/ensembl/"))
-  BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "#") as ?chromosome)
+  BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "/") as ?chromosome)
   VALUES ?chromosome {
       "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"
       "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22"

@@ -72,7 +72,7 @@ WHERE
   }
   FILTER REGEX(?type, "^http://rdf")
   BIND(REPLACE(STR(?type), "http://rdf.ebi.ac.uk/terms/ensembl/", "") AS ?type_name)
-  BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "#") as ?chr_num)
+  BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "/") as ?chr_num)
 }
 ORDER BY ?enst_id
 ```
