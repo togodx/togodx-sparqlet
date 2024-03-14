@@ -24,31 +24,23 @@
 ## `data`
 
 ```sparql
-PREFIX sio: <http://semanticscience.org/resource/>
-PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID>
-PREFIX concept: <http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_>
-PREFIX pubchemv: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sio: <http://semanticscience.org/resource/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-SELECT DISTINCT ?cid ?pubchem_label ?atc ?atc_label 
-    WHERE {
-      #test
-      #VALUES ?cid {  compound:3561  compound:6957673  compound:3226  compound:452548  compound:19861  
-      #               compound:41781  compound:4909  compound:15814656  compound:13342  compound:11597698  
-      #            }                  
-                   
- 	
-      ?attr a sio:CHEMINF_000562 ;
-            sio:is-attribute-of ?cid ; 
-            sio:has-value  ?inn ;
-            dcterms:subject ?atc .
-      ?atc  a skos:concept .  
-      ?cid sio:has-attribute  [a sio:CHEMINF_000382; sio:has-value ?pubchem_label_temp  ] .
+SELECT DISTINCT ?cid ?pubchem_label ?atc
+WHERE {
+ ?attr a sio:CHEMINF_000562 ;
+       sio:SIO_000011 ?cid ;
+       sio:SIO_000300 ?inn ;
+       dcterms:subject ?atc .
+  ?atc a skos:concept .  
+  ?cid sio:SIO_000008  [ 
+    a sio:CHEMINF_000382 ;
+    sio:SIO_000300 ?pubchem_label_temp  
+  ] .
 
-
-      BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp,"null") AS ?pubchem_label)      
-} 
+  BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp,"null") AS ?pubchem_label) 
+}
 ```
 
 
