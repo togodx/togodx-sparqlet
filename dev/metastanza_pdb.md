@@ -1,13 +1,15 @@
 # Gene attributes from PDB RDF（井手)
 
-## Endpoint
-
-{{SPARQLIST_TOGODX_SPARQL}}
-
 ## Parameters
 * `id`
   * default: 6TIW
   * example: 6TIW, 6W9K
+
+## Endpoint
+
+https://rdfportal.org/pdb/sparql
+
+* {{SPARQLIST_TOGODX_SPARQL}}
 
 ## `main`
 
