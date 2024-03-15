@@ -14,7 +14,9 @@
 
 ## Endpoint
 
-{{SPARQLIST_TOGODX_SPARQL}}
+https://rdfportal.org/pdb/sparl
+
+* {{SPARQLIST_TOGODX_SPARQL}}
 
 ## `withAnnotation`
 
@@ -23,17 +25,17 @@ PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX pdbo: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
 PREFIX pdbr: <http://rdf.wwpdb.org/pdb/>
+PREFIX tax: <http://purl.uniprot.org/taxonomy/>
 
 SELECT (COUNT(?polypeptide) AS ?value) ?leaf ?label
-   WHERE {
-      ?leaf a pdbo:datablock ;
-          dc:title ?label ;
-          pdbo:has_entity_polyCategory ?polypeptideEntity .
-      ?polypeptideEntity pdbo:has_entity_poly ?polypeptide .
-      VALUES ?parm { "polypeptide(L)"  "polypeptide(D)" }
-      ?polypeptide pdbo:entity_poly.type ?parm . #DNAのentryを排除
-    }
-
+WHERE {
+  VALUES ?parm { "polypeptide(L)"  "polypeptide(D)" } #DNAのentryを排除
+  ?leaf a pdbo:datablock ;
+        pdbo:has_entityCategory / pdbo:has_entity / pdbo:referenced_by_entity_src_gen / pdbo:link_to_taxonomy_source tax:9606 ;
+        dc:title ?label ;
+        pdbo:has_entity_polyCategory / pdbo:has_entity_poly ?polypeptide .
+  ?polypeptide pdbo:entity_poly.type ?parm .
+}
 ```
 
 ## `results`

@@ -1,12 +1,14 @@
 # PDB data for metastanza template （井手・池田)
 
-## Endpoint
-
-{{SPARQLIST_TOGODX_SPARQL}}
-
 ## Parameters
 * `id`
   * example: 6TIW, 6W9K
+
+## Endpoint
+
+https://rdfportal.org/pdb/sparql
+
+* {{SPARQLIST_TOGODX_SPARQL}}
 
 ## `main`
 
