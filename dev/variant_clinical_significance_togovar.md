@@ -12,7 +12,7 @@
 
 ## Endpoint
 
-https://grch38.togovar.org/sparql
+https://grch38.togovar.org/proxy/sparql
 
 ## `leaf`
 
@@ -29,16 +29,18 @@ SELECT DISTINCT ?tgv_id ?rs_id ?category
 FROM <http://togovar.org/variant>
 FROM <http://togovar.org/variant/annotation/clinvar>
 WHERE {
-   GRAPH <http://togovar.org/variant>{
-     ?togovar dct:identifier ?tgv_id.
-   }
+  GRAPH <http://togovar.org/variant>{
+    ?togovar dct:identifier ?tgv_id.
+  }
   GRAPH <http://togovar.org/variant/annotation/clinvar>{
-    ?togovar gvo:info ?info_rs;
-      gvo:info ?info_clinvar.
-    ?info_rs rdfs:label "RS";
-      rdf:value ?rs_id.
-    ?info_clinvar rdfs:label "CLNSIG";
-      rdf:value ?category.
+    ?togovar gvo:info [
+      rdfs:label "RS";
+      rdf:value ?rs_id
+    ] ;
+      gvo:info [
+      rdfs:label "CLNSIG";
+      rdf:value ?category
+    ] .
   }
 }
 ```
