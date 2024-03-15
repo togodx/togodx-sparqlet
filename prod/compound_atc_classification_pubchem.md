@@ -15,7 +15,9 @@
 
 ## Endpoint
 
-{{SPARQLIST_TOGODX_SPARQL}}
+https://rdfportal.org/pubchem/sparql
+
+* {{SPARQLIST_TOGODX_SPARQL}}
 
 ## Parameters
 
@@ -37,7 +39,7 @@ WHERE {
     sio:SIO_000300 ?pubchem_label_temp  
   ] .
 
-  BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp,"null") AS ?pubchem_label)   
+  BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp, "null") AS ?pubchem_label)   
 } 
 ```
 
@@ -45,27 +47,19 @@ WHERE {
 ## `atcGraph`
 
 ```sparql
-PREFIX sio: <http://semanticscience.org/resource/>
-PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID>
-PREFIX concept: <http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_>
-PREFIX pubchemv: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 SELECT DISTINCT  ?atc ?atc_label ?parent ?parent_label
-    WHERE {
-      #VALUES ?atctop {  concept:A    
-      #            }                  
-
-      ?atc  skos:broader* ?atctop ;
-            skos:prefLabel  ?atc_label;
-  		    a skos:concept .  # ATC分類である
-      OPTIONAL {
-      	?atc skos:broader ?parent .      
-      	?parent skos:prefLabel  ?parent_label .
-        FILTER (?atc != ?parent)
-        }
-} ORDER BY ?atc
+WHERE {
+  ?atc skos:broader* ?atctop ;
+       skos:prefLabel  ?atc_label;
+       a skos:concept .  # ATC分類である
+  OPTIONAL {
+    ?atc skos:broader ?parent .      
+    ?parent skos:prefLabel  ?parent_label .
+    FILTER (?atc != ?parent)
+  }
+}
+ORDER BY ?atc
 ```
 
 ## `return`
