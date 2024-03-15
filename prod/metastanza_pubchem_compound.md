@@ -7,7 +7,7 @@
 
 ## Endpoint
 
-https://integbio.jp/rdf/pubchem/sparql
+https://rdportal.org/pubchem/sparql
 
 ## `main`
 ```sparql
@@ -20,16 +20,16 @@ PREFIX pubchemv: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
 SELECT DISTINCT ?pubchem ?id ?molecular_formula ?label ?molecular_weight ?smiles ?inchi ?formula_img
 WHERE {
   VALUES ?pubchem  { compound:CID{{id}} }
-    OPTIONAL { ?pubchem sio:has-attribute
-      [ a sio:CHEMINF_000382; sio:has-value ?label  ] }
-    OPTIONAL { ?pubchem sio:has-attribute
-      [ a sio:CHEMINF_000334; sio:has-value ?molecular_weight] }
-    OPTIONAL { ?pubchem sio:has-attribute
-      [ a sio:CHEMINF_000335; sio:has-value ?molecular_formula ] }
-    OPTIONAL { ?pubchem sio:has-attribute
-      [ a sio:CHEMINF_000376; sio:has-value ?smiles ] }
-    OPTIONAL { ?pubchem sio:has-attribute
-      [ a sio:CHEMINF_000396; sio:has-value ?inchi ] }
+    OPTIONAL { ?pubchem sio:SIO_000008
+      [ a sio:CHEMINF_000382; sio:SIO_000300 ?label  ] }
+    OPTIONAL { ?pubchem sio:SIO_000008
+      [ a sio:CHEMINF_000334; sio:SIO_000300 ?molecular_weight] }
+    OPTIONAL { ?pubchem sio:SIO_000008
+      [ a sio:CHEMINF_000335; sio:SIO_000300 ?molecular_formula ] }
+    OPTIONAL { ?pubchem sio:SIO_000008
+      [ a sio:CHEMINF_000376; sio:SIO_000300 ?smiles ] }
+    OPTIONAL { ?pubchem sio:SIO_000008
+      [ a sio:CHEMINF_000396; sio:SIO_000300 ?inchi ] }
     BIND (strafter(str(?pubchem), "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/") AS ?id)
     BIND(CONCAT("https://pubchem.ncbi.nlm.nih.gov/image/imagefly.cgi?cid=",(SUBSTR(STR(?id),4)),"&width=500&height=500") AS ?formula_img)
 }
