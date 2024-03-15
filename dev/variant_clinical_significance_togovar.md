@@ -36,8 +36,8 @@ WHERE {
     ?togovar gvo:info [
       rdfs:label "RS";
       rdf:value ?rs_id
-    ] ;
-      gvo:info [
+    ] .
+    ?togovar gvo:info [
       rdfs:label "CLNSIG";
       rdf:value ?category
     ] .
