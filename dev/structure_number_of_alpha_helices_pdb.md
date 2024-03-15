@@ -14,7 +14,9 @@
 
 ## Endpoint
 
-{{SPARQLIST_TOGODX_SPARQL}}
+https://rdfportal.org/pdb/sparql
+
+* {{SPARQLIST_TOGODX_SPARQL}}
 
 ## `withAnnotation`
 
