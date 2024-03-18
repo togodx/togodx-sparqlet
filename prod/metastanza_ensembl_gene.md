@@ -1,5 +1,3 @@
-# Ensembl gene data for metastanza template (池田）
-
 ## Endpoint
 
 {{SPARQLIST_TOGODX_SPARQL}}
@@ -35,6 +33,7 @@ PREFIX refexo: <http://purl.jp/bio/01/refexo#>
 PREFIX schema: <http://schema.org/>
 PREFIX ensg: <http://rdf.ebi.ac.uk/resource/ensembl/>
 PREFIX enst: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>
+PREFIX terms: <http://rdf.ebi.ac.uk/terms/ensembl/>
 
 SELECT DISTINCT ?ensg_id ?idt_ensg ?gene_symbol ?desc ?type_label ?location ?type_gtex ?type_hpa_cell ?type_hpa_tissue
   ?begin ?end ?strand
@@ -65,12 +64,14 @@ WHERE {
             ]
           ] ;
           so:part_of ?chr ;
-          a ?type .
+          terms:has_biotype ?type .
     #?loc rdfs:label ?location .
-    FILTER(STRSTARTS(STR(?type), "http://rdf.ebi.ac.uk/terms/ensembl/"))
-    BIND(REPLACE(STRAFTER(STR(?type), "http://rdf.ebi.ac.uk/terms/ensembl/"), "_", " ") as ?type_label)
-    BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "#") as ?location)
+    #FILTER(STRSTARTS(STR(?type), "http://rdf.ebi.ac.uk/terms/ensembl/"))
+    FILTER(STRSTARTS(STR(?chr), "http://identifiers.org/hco/"))
+    BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "/") as ?location)
   }
+  ?type rdfs:label ?type_label_
+  BIND(REPLACE(?type_label_, "_", " ") as ?type_label)
 
   OPTIONAL {
     GRAPH <http://rdf.integbio.jp/dataset/togosite/refex_tissue_specific_genes_gtex_v6> {

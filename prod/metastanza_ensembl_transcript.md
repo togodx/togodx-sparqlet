@@ -36,11 +36,13 @@ PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX ensembl: <http://identifiers.org/ensembl/>
 PREFIX so: <http://purl.obolibrary.org/obo/so#>
 PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX terms: <http://rdf.ebi.ac.uk/terms/ensembl/>
 
-SELECT DISTINCT ?enst_id ?label ?chr_num ?type_name
+SELECT DISTINCT ?enst_id ?label ?chr_num ?type_label
   (GROUP_CONCAT(DISTINCT ?uniprot_id; separator=",") AS ?uniprot_ids) #(COUNT(DISTINCT ?exon) AS ?exon_count)
   ?begin ?end
 FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
+FROM <http://rdf.integbio.jp/dataset/togosite/so>
 WHERE
 {
   {{#if is_ensg}}
@@ -52,7 +54,7 @@ WHERE
   VALUES ?strand { faldo:ReverseStrandPosition faldo:ForwardStrandPosition }
   ?ensg so:part_of ?chr .
   ?enst so:transcribed_from ?ensg ;
-        a ?type ;
+        terms:has_biotype ?type ;
         rdfs:label ?label ;
         dct:identifier ?enst_id ;
         so:has_part ?exon .
@@ -64,15 +66,17 @@ WHERE
       faldo:position ?end
     ]
   ] .
+  ?type rdfs:label ?type_label .
 
   OPTIONAL {
     ?enst rdfs:seeAlso ?uniprot .
     FILTER(CONTAINS(STR(?uniprot), "http://purl.uniprot.org/uniprot/"))
     BIND(STRAFTER(STR(?uniprot), "http://purl.uniprot.org/uniprot/") AS ?uniprot_id)
   }
-  FILTER REGEX(?type, "^http://rdf")
-  BIND(REPLACE(STR(?type), "http://rdf.ebi.ac.uk/terms/ensembl/", "") AS ?type_name)
-  BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "#") as ?chr_num)
+  #FILTER REGEX(?type, "^http://rdf")
+  #BIND(REPLACE(STR(?type), "http://rdf.ebi.ac.uk/terms/ensembl/", "") AS ?type_label)
+  FILTER(STRSTARTS(STR(?chr), "http://identifiers.org/hco/"))
+  BIND(STRBEFORE(STRAFTER(STR(?chr), "http://identifiers.org/hco/"), "/") as ?chr_num)
 }
 ORDER BY ?enst_id
 ```
@@ -92,7 +96,7 @@ ORDER BY ?enst_id
         enst_url: "http://identifiers.org/ensembl/" + elem.enst_id.value,
         uniprot_id: elem.uniprot_ids.value.split(",").map((elem)=>("<a href=\"http://identifiers.org/uniprot/"+elem+"\">"+elem+"</a>")).join(", "),
         //uniprot_url: "http://identifiers.org/uniprot/" + elem.uniprot_id?.value,
-        type: elem.type_name.value.replace(/_/g, " "),
+        type: elem.type_label.value.replace(/_/g, " "),
         label: elem.label.value,
         bp: exon_length,
         exon_count: 1
