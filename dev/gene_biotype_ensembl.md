@@ -25,7 +25,7 @@ PREFIX faldo: <http://biohackathon.org/resource/faldo#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX terms: <http://rdf.ebi.ac.uk/terms/ensembl/>
 
-SELECT DISTINCT ?parent ?child ?child_label
+SELECT DISTINCT ?parent ?parent_label ?child ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
 FROM <http://rdf.integbio.jp/dataset/togosite/so>
 FROM <http://rdf.integbio.jp/dataset/togosite/ensemblglossary>
