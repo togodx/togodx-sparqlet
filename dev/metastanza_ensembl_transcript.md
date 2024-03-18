@@ -43,8 +43,6 @@ SELECT DISTINCT ?enst_id ?label ?chr_num ?type_label
   ?begin ?end
 FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
 FROM <http://rdf.integbio.jp/dataset/togosite/so>
-FROM <http://rdf.integbio.jp/dataset/togosite/ensemblglossary>
-FROM <http://rdf.integbio.jp/dataset/togosite/ensemblterms>
 WHERE
 {
   {{#if is_ensg}}

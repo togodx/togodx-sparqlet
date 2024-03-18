@@ -26,8 +26,6 @@ PREFIX terms: <http://rdf.ebi.ac.uk/terms/ensembl/>
 SELECT DISTINCT ?parent ?parent_label ?child ?child_label
 FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
 FROM <http://rdf.integbio.jp/dataset/togosite/so>
-FROM <http://rdf.integbio.jp/dataset/togosite/ensemblglossary>
-FROM <http://rdf.integbio.jp/dataset/togosite/ensemblterms>
 WHERE {
   ?enst so:transcribed_from ?ensg .
   ?ensg obo:RO_0002162 taxon:9606 ;
