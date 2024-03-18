@@ -3,7 +3,7 @@
 ## Description
 
 - Data sources
-    - Ensembl human release 106: [http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index](http://nov2020.archive.ensembl.org/Homo_sapiens/Info/Index)
+    - Ensembl human release 111: [https://useast.ensembl.org/Homo_sapiens/Info/Index](https://useast.ensembl.org/Homo_sapiens/Info/Index)
 - Input/Output
     -  Input
         - Ensembl gene ID
@@ -35,7 +35,7 @@ WHERE {
         dcterms:identifier ?child ;
         rdfs:label ?child_label ;
         so:part_of ?chr .
-  BIND(STRBEFORE(STRAFTER(STR(?chr), "hco/"), "#GRCh38") AS ?parent)
+  BIND(STRBEFORE(STRAFTER(STR(?chr), "hco/"), "/GRCh38") AS ?parent)
   VALUES ?parent {
       "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"
       "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22"
