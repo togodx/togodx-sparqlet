@@ -160,7 +160,7 @@ WHERE
   atcArray.map(d=>{
     tree.push({     
         id: d,
-        label: atcLabel[d],
+        label: (atcLabel[d] == undefined ? "undef (ATC alteration)" : atcLabel[d]),
         leaf: false,
         parent: atcGraph[d]
       })
