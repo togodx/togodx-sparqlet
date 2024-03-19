@@ -12,7 +12,6 @@
 ## `data`
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
-PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX refexo:  <http://purl.jp/bio/01/refexo#>
@@ -45,7 +44,7 @@ WHERE {
 ```sparql
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX so: <http://purl.obolibrary.org/obo/so#>
-PREFIX enso: <http://rdf.ebi.ac.uk/terms/ensembl/>
+PREFIX terms: <http://rdf.ebi.ac.uk/terms/ensembl/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX refexo:  <http://purl.jp/bio/01/refexo#>
 
@@ -56,7 +55,7 @@ WHERE {
            refexo:isMeasurementOf ?child .
   }
   GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
-    ?child a ?type ;
+    ?child terms:has_biotype ?type ;
            rdfs:label ?child_label .
     [] so:transcribed_from ?child .
   }
@@ -79,24 +78,23 @@ WHERE {
   let unclassified = {};
   // GTEx のプロトコルの原理上、small RNA は取れていないはずだが、GTEx のデータ上には存在してしまっている。
   // そのような RNA を GTEx のデータを用いて「無発現」と判断するべきでないので、除く。
-  const biotypes = new Set([
-    "protein_coding", "lncRNA", "pseudogene",
-    "polymorphic_pseudogene", "processed_pseudogene", "unitary_pseudogene", "unprocessed_pseudogene",
-    "transcribed_processed_pseudogene", "transcribed_unitary_pseudogene", "transcribed_unprocessed_pseudogene",
-    "translated_processed_pseudogene", "translated_unprocessed_pseudogene",
-    "IG_C_gene", "IG_D_gene", "IG_J_gene", "IG_V_gene",
-    "IG_pseudogene", "IG_C_pseudogene", "IG_J_pseudogene", "IG_V_pseudogene",
-    "TR_C_gene", "TR_D_gene", "TR_J_gene", "TR_V_gene",
-    "TR_J_pseudogene", "TR_V_pseudogene",
-    "TEC"
-  ])
-  const ensoPrefix = "http://rdf.ebi.ac.uk/terms/ensembl/"
+  // "Protein coding", "Long non-coding RNA (lncRNA)", "Processed pseudogene",
+  // "Unprocessed pseudogene", "Unitary pseudogene", "IG pseudogene", "TEC (To be Experimentally Confirmed)",
+  // "IG V gene", "IG D gene", "IG J gene", "IG C gene", "TR V gene", "TR D gene", "TR J gene", "TR C gene",
+  // "mt_gene", "IG_C_pseudogene", "IG_J_pseudogene", "IG_V_pseudogene", "TR_V_pseudogene", "TR_J_pseudogene",
+  // "translated_processed_pseudogene", "transcribed_unprocessed_pseudogene",
+  // "transcribed_unitary_pseudogene", "transcribed_processed_pseudogene"
+
+  const biotypes_ensgloss = ["26", "28", "48", "49", "53", "54", "57", "59", "60", "61", "62", "63", "64", "65", "66"].map((x)=>{return "http://ensembl.org/glossary/ENSGLOSSARY_00000" + x});
+  const biotypes_so = ["0088", "2100", "2101", "2102", "2103", "2104", "2105", "2107", "2108", "2109"].map((x)=>{return "http://purl.obolibrary.org/obo/SO_000" + x});
+  const biotypes = new Set(biotypes_so.concat(biotypes_ensgloss))
+ 
   all.results.bindings.forEach(d => {
     let label = d.child_label.value;
     if (label == "") {
       label = d.child.value.replace(idPrefix, "");
     }
-    if (biotypes.has(d.type.value.replace(ensoPrefix, ""))) {
+    if (biotypes.has(d.type.value)) {
       allEnsg[d.child.value] = label;
       unclassified[d.child.value] = true;
     }
