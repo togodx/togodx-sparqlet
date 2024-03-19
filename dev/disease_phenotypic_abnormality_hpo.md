@@ -27,7 +27,7 @@ SELECT DISTINCT ?hp ?label ?parent (SAMPLE(?tmp_child) AS ?child)
 FROM <http://rdf.integbio.jp/dataset/togosite/hpo>
 WHERE {
   VALUES ?root {  obo:HP_0000118  }    #root nodeはHP_000118
-  ?parent rdfs:subClassOf+ ?root .
+  ?parent rdfs:subClassOf* ?root .
   ?hp a owl:Class ;
       rdfs:subClassOf ?parent ;
       rdfs:label ?label ;
