@@ -1,5 +1,6 @@
 # chembl mesh（山本、守屋、信定、建石）
-Server対応済み
+* Server対応済み
+* MeSH の D番号を node ID として使うと、情報が減って DAG がループしてしまうので、Tree番号をIDとする
 
 ## Description
 
@@ -39,7 +40,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 
-SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id
+SELECT DISTINCT ?mesh_id ?mesh_label ?node ?parent
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH Treeの Diseases[C] 以下を取得
@@ -48,7 +49,6 @@ WHERE {
   ?node meshv:parentTreeNumber* ?tree .
   OPTIONAL {
     ?node meshv:parentTreeNumber ?parent  .
-    ?parent_mesh_id meshv:treeNumber ?parent .
   }
 
   ?mesh_id meshv:treeNumber ?node ;
@@ -61,38 +61,39 @@ WHERE {
 ```javascript
 ({ chemblHasMesh, meshTree }) => {
   const idPrefix = "http://id.nlm.nih.gov/mesh/";
+  const idMeshPrefix = "http://identifiers.org/";
 
   let tree = [
     {
       id: "root",
-      // 2023-05-31 tateisi
-      // label: "root node",
-      label: "indication",
+      label: "root node",
       root: true
     }
   ];
-  let mesh_id_list=[]
+  let mesh2tree = {};
   
   meshTree.results.bindings.forEach((d) => {
-    let mesh_id = d.mesh_id.value.replace(idPrefix, "") ;
+    const tree_id = d.node.value.replace(idPrefix, "");
+    const mesh_id = d.mesh_id.value.replace(idPrefix, "");
     tree.push({
-      id: mesh_id,
+      id: tree_id,
       label: d.mesh_label.value,
-      parent: d.parent_mesh_id ? d.parent_mesh_id.value.replace(idPrefix, "") : "root"
+      parent: d.parent_mesh_id ? d.parent.value.replace(idPrefix, "") : "root"
     });
-    mesh_id_list.push(mesh_id)
+    if (! mesh2tree[mesh_id]) mesh2tree[mesh_id] = [];
+    mesh2tree[mesh_id].push(tree_id);
   });
 
   chemblHasMesh.results.bindings.map((d) => {
-    let mesh_id = d.mesh.value.replace('http://identifiers.org/mesh/', '')
-    if (mesh_id_list.includes(mesh_id)) { 
+    const mesh_id = d.mesh.value.replace(idMeshPrefix, '');
+    for (let tree_id in mesh2tree[mesh_id]) {
       tree.push({
         id: d.chembl_id.value,
-        label: d.chembl_label.value,
+         label: d.chembl_label.value,
         leaf: true,
-        parent: mesh_id
+        parent: tree_id
       });
-    };
+    }
   });
 
   return tree;
