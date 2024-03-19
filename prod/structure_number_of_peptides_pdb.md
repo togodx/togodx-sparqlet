@@ -14,7 +14,7 @@
 
 ## Endpoint
 
-https://rdfportal.org/pdb/sparl
+https://rdfportal.org/pdb/sparql
 
 * {{SPARQLIST_TOGODX_SPARQL}}
 
