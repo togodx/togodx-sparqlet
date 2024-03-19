@@ -29,18 +29,18 @@ SELECT DISTINCT ?tgv_id ?rs_id ?category
 FROM <http://togovar.org/variant>
 FROM <http://togovar.org/variant/annotation/clinvar>
 WHERE {
-  GRAPH <http://togovar.org/variant>{
-    ?togovar dct:identifier ?tgv_id.
-  }
   GRAPH <http://togovar.org/variant/annotation/clinvar>{
-    ?togovar gvo:info [
-      rdfs:label "RS";
-      rdf:value ?rs_id
-    ] .
     ?togovar gvo:info [
       rdfs:label "CLNSIG";
       rdf:value ?category
+    ] ;
+      gvo:info [
+      rdfs:label "RS";
+      rdf:value ?rs_id
     ] .
+  }
+  GRAPH <http://togovar.org/variant>{
+    ?togovar dct:identifier ?tgv_id.
   }
 }
 ```

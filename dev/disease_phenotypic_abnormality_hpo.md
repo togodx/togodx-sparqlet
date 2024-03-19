@@ -23,7 +23,7 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT DISTINCT ?hp ?label ?parent (SAMPLE(?child_tmp) AS ?child)
+SELECT DISTINCT ?hp ?label ?parent (SAMPLE(?tmp_child) AS ?child)
 FROM <http://rdf.integbio.jp/dataset/togosite/hpo>
 WHERE {
   VALUES ?root {  obo:HP_0000118  }    #root nodeはHP_000118
@@ -35,7 +35,7 @@ WHERE {
   FILTER regex(str(?hp), "http://purl.obolibrary.org/obo/HP_" )   # HP以外のIDも登録されているため、HPに限定するためにフィルターを追加
   # 中間ノードの場合は？parentに値が存在し、leafノードの場合は?parentは存在しないのでOPTIONALが必要
   OPTIONAL {
-    ?hp ^rdfs:subClassOf ?child_tmp .
+    ?tmp_child rdfs:subClassOf ?hp .
   }
  } 
  GROUP BY ?hp ?parent ?label
