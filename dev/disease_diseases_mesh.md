@@ -84,7 +84,8 @@ GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id ?node ?parent
       id: (d.tree_child == undefined ? d.mesh_id.value.replace(idPrefix, "") : d.node.value.replace(idPrefix, "")), 
       label: d.mesh_label.value,
       leaf: (d.tree_child == undefined ? true : false),
-      parent: (d.parent == undefined ? "root" :  d.parent.value.replace(idPrefix, ""))
+      parent: (d.parent == undefined ? "root" :  d.parent.value.replace(idPrefix, "")),
+      classification_origin: d.mesh_id.value.replace(idPrefix, "")
     });
   });
   return tree;
