@@ -1,6 +1,7 @@
 # Diseases in MeSH （三橋,守屋）
 
-* MeSH の D番号を node ID として使うと、情報が減って DAG がループしてしまうので、Tree番号をIDとする
+* 注意：親子関係が両方向のものがあったら取り除く
+  * 2024年3月の： "id": "D015835", "parent", "D013285" を手動で削除
 
 ## Description
 
@@ -45,7 +46,7 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 
-SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id ?node ?parent (SAMPLE(?child) AS ?tree_child)
+SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id (SAMPLE(?child) AS ?tree_child)
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH Treeの Diseases[C] 以下を取得
@@ -81,11 +82,10 @@ GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id ?node ?parent
   ];
   data.results.bindings.forEach(d => {
     tree.push({
-      id: (d.tree_child == undefined ? d.mesh_id.value.replace(idPrefix, "") : d.node.value.replace(idPrefix, "")), 
+      id: d.mesh_id.value.replace(idPrefix, ""), 
       label: d.mesh_label.value,
       leaf: (d.tree_child == undefined ? true : false),
-      parent: (d.parent == undefined ? "root" :  d.parent.value.replace(idPrefix, "")),
-      classification_origin: d.mesh_id.value.replace(idPrefix, "")
+      parent: (d.parent == undefined ? "root" :  d.parent_mesh_id.value.replace(idPrefix, ""))
     });
   });
   return tree;
