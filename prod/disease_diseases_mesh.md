@@ -1,7 +1,7 @@
 # Diseases in MeSH （三橋,守屋）
 
 * 注意：親子関係が両方向のものがあったら取り除く
-  * 2024年3月の： "id": "D015835", "parent", "D013285" を手動で削除
+  * 2024年3月の：{ "id": "D015835", "parent", "D013285", "leaf": true }を手動で削除。また。逆向きの "leaf" を true に変更
   
 ## Description
 
@@ -85,7 +85,7 @@ GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id ?node ?parent
       id: d.mesh_id.value.replace(idPrefix, ""), 
       label: d.mesh_label.value,
       leaf: (d.tree_child == undefined ? true : false),
-      parent: (d.parent == undefined ? "root" :  d.parent_mesh_id.value.replace(idPrefix, ""))
+      parent: (d.parent_mesh_id == undefined ? "root" :  d.parent_mesh_id.value.replace(idPrefix, ""))
     });
   });
   return tree;
