@@ -61,7 +61,7 @@ WHERE {
 ```javascript
 ({ chemblHasMesh, meshTree }) => {
   const idPrefix = "http://id.nlm.nih.gov/mesh/";
-  const idMeshPrefix = "http://identifiers.org/";
+  const idMeshPrefix = "http://identifiers.org/mesh/";
 
   let tree = [
     {
@@ -78,21 +78,23 @@ WHERE {
     tree.push({
       id: tree_id,
       label: d.mesh_label.value,
-      parent: d.parent_mesh_id ? d.parent.value.replace(idPrefix, "") : "root"
-    });
+      parent: d.parent ? d.parent.value.replace(idPrefix, "") : "root"
+    }); 
     if (! mesh2tree[mesh_id]) mesh2tree[mesh_id] = [];
     mesh2tree[mesh_id].push(tree_id);
   });
 
-  chemblHasMesh.results.bindings.map((d) => {
-    const mesh_id = d.mesh.value.replace(idMeshPrefix, '');
-    for (let tree_id in mesh2tree[mesh_id]) {
-      tree.push({
-        id: d.chembl_id.value,
-         label: d.chembl_label.value,
-        leaf: true,
-        parent: tree_id
-      });
+  chemblHasMesh.results.bindings.forEach((d) => {
+    const mesh_id = d.mesh.value.replace(idMeshPrefix, "");
+    if (mesh2tree[mesh_id]) {
+      for (let tree_id of mesh2tree[mesh_id]) {
+        tree.push({
+          id: d.chembl_id.value,
+          label: d.chembl_label.value,
+          leaf: true,
+          parent: tree_id
+        });
+      }
     }
   });
 
