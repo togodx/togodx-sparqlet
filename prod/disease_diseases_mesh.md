@@ -1,8 +1,9 @@
 # Diseases in MeSH （三橋,守屋）
 
-* 注意：親子関係が両方向のものがあったら取り除く
-  * 2024年3月の：{ "id": "D015835", "parent", "D013285", "leaf": true }を手動で削除。また。逆向きの "leaf" を true に変更
-  
+* MeSH の D番号を node ID として使うと、情報が減って DAG がループしてしまうので、Tree番号をIDとする
+  * 中間ノードへのIDのマッピングのために、すべての tree ID node に D番号を leaf としてぶら下げる
+  * attributes.yml の ontology フラグによる、nested_set_indexer の --conplete-leaf オプションでの leaf の補間的な作業を SPARQList 側でしておく
+
 ## Description
 
 - Data sources
@@ -46,26 +47,21 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
 
-SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id (SAMPLE(?child) AS ?tree_child)
+SELECT DISTINCT ?mesh_id ?mesh_label ?parent_mesh_id ?node ?parent_node
 FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
 WHERE {
   # MeSH Treeの Diseases[C] 以下を取得
   # See https://meshb.nlm.nih.gov/treeView
   FILTER (contains(str(?node), "C"))
   OPTIONAL {
-    ?node meshv:parentTreeNumber ?parent  .
-    ?parent_mesh_id meshv:treeNumber ?parent .
+    ?node meshv:parentTreeNumber ?parent_node  .
+    ?parent_mesh_id meshv:treeNumber ?parent_node .
   }
 
   ?mesh_id meshv:treeNumber ?node ;
     rdfs:label ?mesh_label .
   FILTER(lang(?mesh_label) = "en")
-  
-  OPTIONAL {
-    ?child meshv:parentTreeNumber ?node.
-  }
 }
-GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id ?node ?parent
 ```
 
 ## `return`
@@ -82,10 +78,16 @@ GROUP BY ?mesh_id ?mesh_label ?parent_mesh_id ?node ?parent
   ];
   data.results.bindings.forEach(d => {
     tree.push({
+      id: d.node.value.replace(idPrefix, ""), 
+      label: d.mesh_label.value,
+      leaf: false,
+      parent: (d.parent_node == undefined ? "root" :  d.parent_node.value.replace(idPrefix, ""))
+    });
+    tree.push({
       id: d.mesh_id.value.replace(idPrefix, ""), 
       label: d.mesh_label.value,
-      leaf: (d.tree_child == undefined ? true : false),
-      parent: (d.parent_mesh_id == undefined ? "root" :  d.parent_mesh_id.value.replace(idPrefix, ""))
+      leaf: true,
+      parent: d.node.value.replace(idPrefix, "")
     });
   });
   return tree;
