@@ -1,4 +1,4 @@
-# UniProt reactome-pathway classification（守屋）
+# UniProt reactome-pathway classification(RDF portal)（守屋）
 
 ## Description
 
@@ -14,7 +14,7 @@
         - If a Uniprot id is entered, it returns the pathway to which the protein belongs
 
 ## Endpoint
-{{SPARQLIST_TOGODX_SPARQL}}
+https://rdfportal.org/ebi/sparql
 
 ## `leaf`
 - pathway と UniProt のアノテーション関係
@@ -25,7 +25,7 @@
 PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT DISTINCT ?parent ?child ?parent_label
-FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
+FROM <http://rdf.ebi.ac.uk/dataset/reactome>
 WHERE {
   ?top_path a biopax:Pathway ;
             biopax:organism ?org .
@@ -54,7 +54,7 @@ WHERE {
 PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
+FROM <http://rdf.ebi.ac.uk/dataset/reactome>
 WHERE {
   ?top_path a biopax:Pathway ;
             biopax:organism ?org .
@@ -83,7 +83,7 @@ WHERE {
 PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT DISTINCT ?top ?top_label
-FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
+FROM <http://rdf.ebi.ac.uk/dataset/reactome>
 WHERE {
   ?top_path a biopax:Pathway ;
             biopax:pathwayComponent ?child_path .
@@ -98,19 +98,25 @@ WHERE {
 }
 ```
 
+## Endpoint
+https://rdfportal.org/sib/sparql
+
 ## `allLeaf`
 - 全 UniProt (without annotation 用)
 ```sparql
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+PREFIX ch: <http://purl.uniprot.org/proteomes/UP000005640#Chromosome%20>
+PREFIX chx: <http://purl.uniprot.org/proteomes/UP000005640#>
 SELECT DISTINCT ?leaf ?leaf_label
-FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+FROM <http://sparql.uniprot.org/uniprot>
 WHERE {
+  VALUES ?proteome { ch:1 ch:2 ch:3 ch:4 ch:5 ch:6 ch:7 ch:8 ch:9 ch:10
+                     ch:11 ch:12 ch:13 ch:14 ch:15 ch:16 ch:17 ch:18 ch:19 ch:20
+                     ch:21 ch:22 ch:X ch:Y chx:Mitochondrion chx:Unplaced }
   ?leaf a up:Protein ;
-        up:organism taxon:9606 ;
         up:mnemonic ?leaf_label ;
         up:proteome ?proteome .
-  FILTER(REGEX(STR(?proteome), "UP000005640"))
 }
 ```
 
@@ -124,7 +130,7 @@ WHERE {
   let tree = [
     {
       id: "root",
-      label: "Pathway",
+      label: "root node",
       root: true
     },{
       id: withoutId,
