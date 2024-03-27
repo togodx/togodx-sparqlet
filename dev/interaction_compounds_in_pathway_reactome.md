@@ -1,4 +1,4 @@
-# ChEBI reactome-pathway classification（守屋）
+# ChEBI reactome-pathway classification (RDF prtal)（守屋）
 
 - アノテーション無しは取得していない
   - "パスウェイに乗っていない化合物" を考慮することは難しいため
@@ -17,7 +17,8 @@
         - If a ChEBI id is entered, it returns the pathway to which the chemical compound belongs
 
 ## Endpoint
-{{SPARQLIST_TOGODX_SPARQL}}
+
+https://rdfportal.org/ebi/sparql
 
 ## `leaf`
 - pathway と UniProt のアノテーション関係
@@ -30,8 +31,8 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
-FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
+FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+FROM <http://rdf.ebi.ac.uk/dataset/chebi>
 WHERE {
   ?top_path a biopax:Pathway ;
             biopax:organism ?org .
@@ -62,7 +63,7 @@ WHERE {
 PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT DISTINCT ?parent ?child ?parent_label ?child_label
-FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
+FROM <http://rdf.ebi.ac.uk/dataset/reactome>
 WHERE {
   ?top_path a biopax:Pathway ;
             biopax:organism ?org .
@@ -91,7 +92,7 @@ WHERE {
 PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT DISTINCT ?top ?top_label
-FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
+FROM <http://rdf.ebi.ac.uk/dataset/reactome>
 WHERE {
   ?top_path a biopax:Pathway ;
             biopax:pathwayComponent ?child_path .
