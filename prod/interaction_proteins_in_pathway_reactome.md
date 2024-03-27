@@ -1,4 +1,4 @@
-# UniProt reactome-pathway classification(RDF portal)（守屋）
+# UniProt reactome-pathway classification (RDF portal)（守屋）
 
 ## Description
 
