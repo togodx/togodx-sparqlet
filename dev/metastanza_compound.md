@@ -9,10 +9,6 @@
   * default: pubchem_compound
   * example: pubchem_compound, chembl_compound, chebi
 
-## Endpoint
-
-{{SPARQLIST_TOGODX_SPARQL}}
-
  ## `idDict` returns an id type object
 
 ```javascript
@@ -33,7 +29,45 @@
 }
 ```
 
-## `main`
+## Endpoint
+
+https://rdfportal.org/pubchem/sparql
+
+## `pubchem`
+```sparql
+PREFIX sio: <http://semanticscience.org/resource/>
+SELECT ?pubchem_id ?pubchem_molecular_formula ?pubchem_label ?pubchem_molecular_weight ?pubchem_smiles ?pubchem_inchi ?pubchem_formula_img
+WHERE {
+{{#if idDict.pubchem}}
+      VALUES ?pubchem_uri  { <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID{{idDict.pubchem}}> }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000382; sio:SIO_000300 ?pubchem_label_temp  ] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000334; sio:SIO_000300 ?pubchem_molecular_weight_temp] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000335; sio:SIO_000300 ?pubchem_molecular_formula_temp ] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000376; sio:SIO_000300 ?pubchem_smiles_temp ] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000396; sio:SIO_000300 ?pubchem_inchi_temp ] }
+        BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp,"null") AS ?pubchem_label)
+        BIND(IF(bound(?pubchem_molecular_weight_temp), ?pubchem_molecular_weight_temp,"null") AS ?pubchem_molecular_weight)
+        BIND(IF(bound(?pubchem_molecular_formula_temp), ?pubchem_molecular_formula_temp,"null") AS ?pubchem_molecular_formula)
+        BIND(IF(bound(?pubchem_smiles_temp), ?pubchem_smiles_temp,"null") AS ?pubchem_smiles)
+        BIND(IF(bound(?pubchem_inchi_temp), ?pubchem_inchi_temp,"null") AS ?pubchem_inchi)  
+        BIND (strafter(str(?pubchem_uri), "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/") AS ?pubchem_id)
+        BIND(CONCAT("https://pubchem.ncbi.nlm.nih.gov/image/imagefly.cgi?cid=",(SUBSTR(STR(?pubchem_id),4)),"&width=500&height=500") AS ?pubchem_formula_fig)
+        #BIND(CONCAT('<img src="',  ?pubchem_formula_fig,   '"/>') AS ?pubchem_formula_img)
+        BIND( ?pubchem_formula_fig AS ?pubchem_formula_img)
+{{/if}}
+}
+```
+
+## Endpoint
+
+{{SPARQLIST_TOGODX_SPARQL}}
+
+## `other`
 ```sparql
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -56,34 +90,6 @@ prefix chebi_id: <http://purl.obolibrary.org/obo/CHEBI_>
 
 SELECT DISTINCT *
 WHERE {
-{{#if idDict.pubchem}}
-  {
-  SERVICE <https://integbio.jp/rdf/pubchem/sparql> {
-    SELECT ?pubchem_id ?pubchem_molecular_formula ?pubchem_label ?pubchem_molecular_weight ?pubchem_smiles ?pubchem_inchi ?pubchem_formula_img
-    WHERE {
-      VALUES ?pubchem_uri  { <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID{{idDict.pubchem}}> }
-        OPTIONAL{ ?pubchem_uri sio:SIO_000008
-          [ a sio:CHEMINF_000382; sio:SIO_000300 ?pubchem_label_temp  ] }
-        OPTIONAL{ ?pubchem_uri sio:SIO_000008
-          [ a sio:CHEMINF_000334; sio:SIO_000300 ?pubchem_molecular_weight_temp] }
-        OPTIONAL{ ?pubchem_uri sio:SIO_000008
-          [ a sio:CHEMINF_000335; sio:SIO_000300 ?pubchem_molecular_formula_temp ] }
-        OPTIONAL{ ?pubchem_uri sio:SIO_000008
-          [ a sio:CHEMINF_000376; sio:SIO_000300 ?pubchem_smiles_temp ] }
-        OPTIONAL{ ?pubchem_uri sio:SIO_000008
-          [ a sio:CHEMINF_000396; sio:SIO_000300 ?pubchem_inchi_temp ] }
-        BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp,"null") AS ?pubchem_label)
-        BIND(IF(bound(?pubchem_molecular_weight_temp), ?pubchem_molecular_weight_temp,"null") AS ?pubchem_molecular_weight)
-        BIND(IF(bound(?pubchem_molecular_formula_temp), ?pubchem_molecular_formula_temp,"null") AS ?pubchem_molecular_formula)
-        BIND(IF(bound(?pubchem_smiles_temp), ?pubchem_smiles_temp,"null") AS ?pubchem_smiles)
-        BIND(IF(bound(?pubchem_inchi_temp), ?pubchem_inchi_temp,"null") AS ?pubchem_inchi)  
-        BIND (strafter(str(?pubchem_uri), "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/") AS ?pubchem_id)
-        BIND(CONCAT("https://pubchem.ncbi.nlm.nih.gov/image/imagefly.cgi?cid=",(SUBSTR(STR(?pubchem_id),4)),"&width=500&height=500") AS ?pubchem_formula_fig)
-        #BIND(CONCAT('<img src="',  ?pubchem_formula_fig,   '"/>') AS ?pubchem_formula_img)
-        BIND( ?pubchem_formula_fig AS ?pubchem_formula_img)
-    }}}
-  {{/if}}
-   
 {{#if idDict.chembl}}
 {
  SELECT ?chembl_id ?chembl_molecular_formula  ?chembl_type  (GROUP_concat(distinct ucase(?label_temp); separator = ", ") as ?chembl_label) ?chembl_molecular_weight ?chembl_smiles ?chembl_inchi  ?chembl_formula_img
@@ -174,7 +180,9 @@ WHERE {
 ## `return`
 
 ```javascript
-({ main, columns }) => {
+({ pubchem, other, columns }) => {
+  let main = pubchem;
+  if (! other.results.bindings[0]._star_fake) main = other;
   return main.results.bindings.map((binding) => {
     const results = columns.map((row) => {
       const obj = {};
