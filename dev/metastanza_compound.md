@@ -62,16 +62,16 @@ WHERE {
     SELECT ?pubchem_id ?pubchem_molecular_formula ?pubchem_label ?pubchem_molecular_weight ?pubchem_smiles ?pubchem_inchi ?pubchem_formula_img
     WHERE {
       VALUES ?pubchem_uri  { <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID{{idDict.pubchem}}> }
-        OPTIONAL{ ?pubchem_uri sio:has-attribute
-          [ a sio:CHEMINF_000382; sio:has-value ?pubchem_label_temp  ] }
-        OPTIONAL{ ?pubchem_uri sio:has-attribute
-          [ a sio:CHEMINF_000334; sio:has-value ?pubchem_molecular_weight_temp] }
-        OPTIONAL{ ?pubchem_uri sio:has-attribute
-          [ a sio:CHEMINF_000335; sio:has-value ?pubchem_molecular_formula_temp ] }
-        OPTIONAL{ ?pubchem_uri sio:has-attribute
-          [ a sio:CHEMINF_000376; sio:has-value ?pubchem_smiles_temp ] }
-        OPTIONAL{ ?pubchem_uri sio:has-attribute
-          [ a sio:CHEMINF_000396; sio:has-value ?pubchem_inchi_temp ] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000382; sio:SIO_000300 ?pubchem_label_temp  ] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000334; sio:SIO_000300 ?pubchem_molecular_weight_temp] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000335; sio:SIO_000300 ?pubchem_molecular_formula_temp ] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000376; sio:SIO_000300 ?pubchem_smiles_temp ] }
+        OPTIONAL{ ?pubchem_uri sio:SIO_000008
+          [ a sio:CHEMINF_000396; sio:SIO_000300 ?pubchem_inchi_temp ] }
         BIND(IF(bound(?pubchem_label_temp), ?pubchem_label_temp,"null") AS ?pubchem_label)
         BIND(IF(bound(?pubchem_molecular_weight_temp), ?pubchem_molecular_weight_temp,"null") AS ?pubchem_molecular_weight)
         BIND(IF(bound(?pubchem_molecular_formula_temp), ?pubchem_molecular_formula_temp,"null") AS ?pubchem_molecular_formula)
