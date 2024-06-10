@@ -7,7 +7,7 @@
 
 ## Endpoint
 
-https://rdportal.org/pubchem/sparql
+https://rdfportal.org/pubchem/sparql
 
 ## `main`
 ```sparql
